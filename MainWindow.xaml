@@ -118,13 +118,14 @@
 
                     <Button x:Name="Export" Content="Export" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Click="ExportClick" />
 
-                    <DataGrid x:Name="DebugGrid" AutoGenerateColumns="False" Margin="10,10,0,0" ClipboardCopyMode="IncludeHeader" Width="920" Height="450">
+                    <DataGrid x:Name="DebugGrid" AutoGenerateColumns="False" Margin="10,10,0,0" ClipboardCopyMode="IncludeHeader" Width="940" Height="450">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Name" Width="180" Binding="{Binding Name}"/>
-                            <DataGridTextColumn Header="Address" Width="80" Binding="{Binding BaseAddressHex, Mode=OneWay}"/>
-                            <DataGridTextColumn Header="Type" Width="80" Binding="{Binding PageName, Mode=OneWay}"/>
+                            <DataGridTextColumn Header="Id" Width="150" Binding="{Binding Id}"/>
+                            <DataGridTextColumn Header="Name" Width="150" Binding="{Binding Name}"/>
+                            <DataGridTextColumn Header="Address" Width="75" Binding="{Binding BaseAddressHex, Mode=OneWay}"/>
+                            <DataGridTextColumn Header="Type" Width="70" Binding="{Binding PageName, Mode=OneWay}"/>
                             <DataGridTextColumn Header="Value" Width="70" Binding="{Binding Value}"/>
-                            <DataGridCheckBoxColumn Header="Equipped" Width="50" Binding="{Binding EquippedBool, Mode=OneWay}" IsReadOnly="True"/>
+                            <DataGridCheckBoxColumn Header="Equipped" Width="40" Binding="{Binding EquippedBool, Mode=OneWay}" IsReadOnly="True"/>
                             <DataGridTextColumn Header="?" Width="30" Binding="{Binding Unknown}"/>
                             <DataGridTextColumn Header="Modifier1" Width="75" Binding="{Binding Modifier1Value, Mode=OneWay}"/>
                             <DataGridTextColumn Header="Modifier2" Width="75" Binding="{Binding Modifier2Value, Mode=OneWay}"/>
@@ -133,8 +134,6 @@
                             <DataGridTextColumn Header="Modifier5" Width="75" Binding="{Binding Modifier5Value, Mode=OneWay}"/>
                         </DataGrid.Columns>
                     </DataGrid>
-
-
 
                 </WrapPanel>
             </TabItem>

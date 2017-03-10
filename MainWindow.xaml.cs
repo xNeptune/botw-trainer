@@ -6,6 +6,7 @@
     using System.IO;
     using System.Linq;
     using System.Net;
+    using System.Reflection;
     using System.Text;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
@@ -13,8 +14,11 @@
     using System.Windows.Controls;
     using System.Windows.Input;
     using System.Windows.Media;
+    using System.Windows.Resources;
 
     using BotwTrainer.Properties;
+
+    using Newtonsoft.Json.Linq;
 
     /// <summary>
     /// Interaction logic for MainWindow
@@ -36,6 +40,8 @@
         private const uint CodeHandlerEnabled = 0x10014CFC;
 
         private readonly List<Item> items;
+
+        private readonly JToken json;
 
         private readonly string version;
 
@@ -65,9 +71,25 @@
 
             client.Headers.Add("Cache-Control", "no-cache");
             client.DownloadStringCompleted += this.ClientDownloadStringCompleted;
+
             client.DownloadStringAsync(new Uri(string.Format("{0}{1}", client.BaseAddress, "version.txt")));
 
             this.items = new List<Item>();
+
+            try
+            {
+                var file = Assembly.GetExecutingAssembly().GetManifestResourceStream("BotwTrainer.items.json");
+                using (var reader = new StreamReader(file))
+                {
+                    var data = reader.ReadToEnd();
+                    this.json = JObject.Parse(data);
+
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Error loading json");
+            }
         }
 
         private enum Cheat
@@ -130,11 +152,12 @@
                         {
                             break;
                         }
+
                         builder.Append((char)data);
                     }
 
-                    var name = builder.ToString();
-
+                    var id = builder.ToString();
+                    
                     var item = new Item
                                    {
                                        BaseAddress = currentItemAddress,
@@ -143,13 +166,17 @@
                                        Value = value,
                                        Equipped = equipped,
                                        NameStart = nameStart,
-                                       Name = name,
+                                       Id = id,
                                        Modifier1Value = this.ReadStream(stream, 92).ToString("x8").ToUpper(),
                                        Modifier2Value = this.ReadStream(stream, 96).ToString("x8").ToUpper(),
                                        Modifier3Value = this.ReadStream(stream, 100).ToString("x8").ToUpper(),
                                        Modifier4Value = this.ReadStream(stream, 104).ToString("x8").ToUpper(),
                                        Modifier5Value = this.ReadStream(stream, 108).ToString("x8").ToUpper()
                                    };
+
+                    // look for name in json
+                    var name = this.GetNameFromId(id, item.PageName);
+                    item.Name = name;
 
                     this.items.Add(item);
 
@@ -169,8 +196,9 @@
 
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                //throw new Exception(ex.Message);
                 Dispatcher.Invoke(() => this.ToggleControls("LoadError"));
                 return false;
             }
@@ -528,20 +556,25 @@
             {
                 grid.RowDefinitions.Add(new RowDefinition());
 
-                var value = item.Value;
-                if (value > int.MaxValue)
-                {
-                    value = 0;
-                }
-
                 // Name
                 var name = new TextBox
                 {
-                    Text = item.Name, 
-                    ToolTip = item.NameStart.ToString("x8").ToUpper(), 
+                    Text = item.Name,
+                    Margin = new Thickness(0),
+                    BorderThickness = new Thickness(0),
+                    Height = 22,
+                    Width = 180,
+                    IsReadOnly = true
+                };
+
+                // Id
+                var id = new TextBox
+                {
+                    Text = item.Id, 
+                    ToolTip = item.NameStartHex,
                     Margin = new Thickness(0), 
                     Height = 22, 
-                    Width = 180, 
+                    Width = 130,
                     IsReadOnly = false, 
                     Name = "Name_" + item.NameStartHex
                 };
@@ -556,6 +589,7 @@
 
                 if (item.EquippedBool)
                 {
+                    id.Foreground = Brushes.Red;
                     name.Foreground = Brushes.Red;
                 }
 
@@ -563,29 +597,39 @@
                 Grid.SetColumn(name, 0);
                 grid.Children.Add(name);
 
+                Grid.SetRow(id, x);
+                Grid.SetColumn(id, 1);
+                grid.Children.Add(id);
+
                 // Value
-                var val = this.GenerateGridTextBox(value.ToString(), item.BaseAddressHex, x, 1);
+                var value = item.Value;
+                if (value > int.MaxValue)
+                {
+                    value = 0;
+                }
+
+                var val = this.GenerateGridTextBox(value.ToString(), item.BaseAddressHex, x, 2, 75);
                 val.PreviewTextInput += this.NumberValidationTextBox;
                 grid.Children.Add(val);
 
                 // Mod1
-                var mtb1 = this.GenerateGridTextBox(item.Modifier1Value, item.Modifier1Address, x, 2);
+                var mtb1 = this.GenerateGridTextBox(item.Modifier1Value, item.Modifier1Address, x, 3, 65);
                 grid.Children.Add(mtb1);
 
                 // Mod2
-                var mtb2 = this.GenerateGridTextBox(item.Modifier2Value, item.Modifier2Address, x, 3);
+                var mtb2 = this.GenerateGridTextBox(item.Modifier2Value, item.Modifier2Address, x, 4, 65);
                 grid.Children.Add(mtb2);
 
-                // Mod3
-                var mtb3 = this.GenerateGridTextBox(item.Modifier3Value, item.Modifier3Address, x, 4);
+                // Mod3s
+                var mtb3 = this.GenerateGridTextBox(item.Modifier3Value, item.Modifier3Address, x, 5, 65);
                 grid.Children.Add(mtb3);
 
                 // Mod4
-                var mtb4 = this.GenerateGridTextBox(item.Modifier4Value, item.Modifier4Address, x, 5);
+                var mtb4 = this.GenerateGridTextBox(item.Modifier4Value, item.Modifier4Address, x, 6, 65);
                 grid.Children.Add(mtb4);
 
                 // Mod5
-                var mtb5 = this.GenerateGridTextBox(item.Modifier5Value, item.Modifier5Address, x, 6);
+                var mtb5 = this.GenerateGridTextBox(item.Modifier5Value, item.Modifier5Address, x, 7, 65);
                 grid.Children.Add(mtb5);
 
                 // dropdown
@@ -917,7 +961,7 @@
 
             if (state == "LoadError")
             {
-                
+                MessageBox.Show("Something went wrong");
             }
         }
 
@@ -956,7 +1000,7 @@
             }
             catch (Exception)
             {
-                MessageBox.Show("Error checking for new version");
+                MessageBox.Show("Error checkign for new  version.");
             }
         }
 
@@ -1013,13 +1057,13 @@
             return data;
         }
 
-        private TextBox GenerateGridTextBox(string value, string field, int x, int col)
+        private TextBox GenerateGridTextBox(string value, string field, int x, int col, int width = 75)
         {
             var tb = new TextBox
             {
                 Text = value, 
-                ToolTip = field, 
-                Width = 90, 
+                ToolTip = field,
+                Width = width, 
                 Height = 22, 
                 Margin = new Thickness(10, 0, 10, 0), 
                 Name = "Item_" + field, 
@@ -1053,21 +1097,33 @@
             };
 
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(200) }); // Name
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(150) }); // Id
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(110) });
 
             grid.RowDefinitions.Add(new RowDefinition());
 
             // Headers
-            var itemHeader = new TextBlock
+            var nameHeader = new TextBlock
             {
                 Text = "Item Name",
                 FontSize = 14,
                 FontWeight = FontWeights.Bold,
                 Width = 180
             };
-            Grid.SetRow(itemHeader, 0);
-            Grid.SetColumn(itemHeader, 0);
-            grid.Children.Add(itemHeader);
+            Grid.SetRow(nameHeader, 0);
+            Grid.SetColumn(nameHeader, 0);
+            grid.Children.Add(nameHeader);
+
+            var idHeader = new TextBlock
+            {
+                Text = "Item Id",
+                FontSize = 14,
+                FontWeight = FontWeights.Bold,
+                Width = 150
+            };
+            Grid.SetRow(idHeader, 0);
+            Grid.SetColumn(idHeader, 1);
+            grid.Children.Add(idHeader);
 
             var valueHeader = new TextBlock
             {
@@ -1077,14 +1133,14 @@
                 HorizontalAlignment = HorizontalAlignment.Center
             };
             Grid.SetRow(valueHeader, 0);
-            Grid.SetColumn(valueHeader, 1);
+            Grid.SetColumn(valueHeader, 2);
             grid.Children.Add(valueHeader);
 
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(110) });
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(110) });
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(110) });
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(110) });
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(110) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition());
+            grid.ColumnDefinitions.Add(new ColumnDefinition());
+            grid.ColumnDefinitions.Add(new ColumnDefinition());
+            grid.ColumnDefinitions.Add(new ColumnDefinition());
+            grid.ColumnDefinitions.Add(new ColumnDefinition());
 
             var headerNames = new[] { "Mod. 1", "Mod. 2", "Mod. 3", "Mod. 4", "Mod. 5" };
 
@@ -1108,11 +1164,24 @@
                     HorizontalAlignment = HorizontalAlignment.Center
                 };
                 Grid.SetRow(header, 0);
-                Grid.SetColumn(header, y + 2);
+                Grid.SetColumn(header, y + 3);
                 grid.Children.Add(header);
             }
 
             return grid;
+        }
+
+        private string GetNameFromId(string id, string pagename)
+        {
+            var name = "Unknown";
+            var path = string.Format("Items.{0}.{1}.Name", pagename.Replace(" ", string.Empty), id);
+            var obj = this.json.SelectToken(path);
+            if (obj != null)
+            {
+                name = obj.ToString();
+            }
+
+            return name;
         }
     }
 }
