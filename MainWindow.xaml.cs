@@ -776,7 +776,7 @@
 
                 codes.Add(0x09000000);
                 codes.Add(activator);
-                codes.Add(0x00000020);
+                codes.Add(0x00000008);
                 codes.Add(0x00000000);
                 codes.Add(0x00020000);
                 codes.Add(0x439BF528);
@@ -787,7 +787,7 @@
 
                 codes.Add(0x06000000);
                 codes.Add(activator);
-                codes.Add(0x00000020);
+                codes.Add(0x00000008);
                 codes.Add(0x00000000);
                 codes.Add(0x00020000);
                 codes.Add(0x439BF528);
