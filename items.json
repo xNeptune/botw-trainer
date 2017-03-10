@@ -1619,6 +1619,9 @@
       },
       "Obj_HeroSoul_Rito": {
         "Name": "Revali's Gale"
+      },
+      "Obj_Maracas": {
+        "Name": "Hestu's Maracas"
       }
     }
   }
