@@ -14,7 +14,6 @@
     using System.Windows.Controls;
     using System.Windows.Input;
     using System.Windows.Media;
-    using System.Windows.Resources;
 
     using BotwTrainer.Properties;
 
@@ -174,7 +173,7 @@
                                    };
 
                     // look for name in json
-                    var name = this.GetNameFromId(id, item.PageName);
+                    var name = this.GetNameFromId(item.Id, item.PageName);
                     item.Name = name;
 
                     this.items.Add(item);
@@ -426,7 +425,7 @@
 
             foreach (var item in collection)
             {
-                // Name
+                // Id
                 var foundTextBox = (TextBox)this.FindName("Name_" + item.NameStartHex);
                 if (foundTextBox != null)
                 {
@@ -446,6 +445,15 @@
                         this.tcpGecko.poke08(item.NameStart + x, b);
                         x = x + 0x1;
                     }
+
+                    item.Id = foundTextBox.Text;
+                }
+
+                // Name
+                foundTextBox = (TextBox)this.FindName("JsonName_" + item.NameStartHex);
+                if (foundTextBox != null)
+                {
+                    foundTextBox.Text = this.GetNameFromId(item.Id, item.PageName);
                 }
 
                 // Value
@@ -562,9 +570,18 @@
                     Margin = new Thickness(0),
                     BorderThickness = new Thickness(0),
                     Height = 22,
-                    Width = 180,
-                    IsReadOnly = true
+                    Width = 190,
+                    IsReadOnly = true,
+                    Name = "JsonName_" + item.NameStartHex
                 };
+
+                var check = (TextBox)this.FindName("JsonName_" + item.NameStartHex);
+                if (check != null)
+                {
+                    this.UnregisterName("JsonName_" + item.NameStartHex);
+                }
+
+                this.RegisterName("JsonName_" + item.NameStartHex, name);
 
                 // Id
                 var id = new TextBox
@@ -578,7 +595,7 @@
                     Name = "Name_" + item.NameStartHex
                 };
 
-                var check = (TextBox)this.FindName("Name_" + item.NameStartHex);
+                check = (TextBox)this.FindName("Name_" + item.NameStartHex);
                 if (check != null)
                 {
                     this.UnregisterName("Name_" + item.NameStartHex);
@@ -607,28 +624,28 @@
                     value = 0;
                 }
 
-                var val = this.GenerateGridTextBox(value.ToString(), item.BaseAddressHex, x, 2, 75);
+                var val = this.GenerateGridTextBox(value.ToString(), item.BaseAddressHex, x, 2, 70);
                 val.PreviewTextInput += this.NumberValidationTextBox;
                 grid.Children.Add(val);
 
                 // Mod1
-                var mtb1 = this.GenerateGridTextBox(item.Modifier1Value, item.Modifier1Address, x, 3, 65);
+                var mtb1 = this.GenerateGridTextBox(item.Modifier1Value, item.Modifier1Address, x, 3, 70);
                 grid.Children.Add(mtb1);
 
                 // Mod2
-                var mtb2 = this.GenerateGridTextBox(item.Modifier2Value, item.Modifier2Address, x, 4, 65);
+                var mtb2 = this.GenerateGridTextBox(item.Modifier2Value, item.Modifier2Address, x, 4, 70);
                 grid.Children.Add(mtb2);
 
                 // Mod3s
-                var mtb3 = this.GenerateGridTextBox(item.Modifier3Value, item.Modifier3Address, x, 5, 65);
+                var mtb3 = this.GenerateGridTextBox(item.Modifier3Value, item.Modifier3Address, x, 5, 70);
                 grid.Children.Add(mtb3);
 
                 // Mod4
-                var mtb4 = this.GenerateGridTextBox(item.Modifier4Value, item.Modifier4Address, x, 6, 65);
+                var mtb4 = this.GenerateGridTextBox(item.Modifier4Value, item.Modifier4Address, x, 6, 70);
                 grid.Children.Add(mtb4);
 
                 // Mod5
-                var mtb5 = this.GenerateGridTextBox(item.Modifier5Value, item.Modifier5Address, x, 7, 65);
+                var mtb5 = this.GenerateGridTextBox(item.Modifier5Value, item.Modifier5Address, x, 7, 70);
                 grid.Children.Add(mtb5);
 
                 // dropdown
@@ -1091,13 +1108,13 @@
             {
                 Name = "TabGrid",
                 Margin = new Thickness(10),
-                ShowGridLines = false,
+                ShowGridLines = true,
                 VerticalAlignment = VerticalAlignment.Top
             };
 
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(200) }); // Name
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(210) }); // Name
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(150) }); // Id
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(110) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition());
 
             grid.RowDefinitions.Add(new RowDefinition());
 
@@ -1107,7 +1124,7 @@
                 Text = "Item Name",
                 FontSize = 14,
                 FontWeight = FontWeights.Bold,
-                Width = 180
+                Width = 190
             };
             Grid.SetRow(nameHeader, 0);
             Grid.SetColumn(nameHeader, 0);
@@ -1118,7 +1135,8 @@
                 Text = "Item Id",
                 FontSize = 14,
                 FontWeight = FontWeights.Bold,
-                Width = 150
+                Width = 150,
+                Margin = new Thickness(10, 0, 0, 0)
             };
             Grid.SetRow(idHeader, 0);
             Grid.SetColumn(idHeader, 1);
@@ -1147,12 +1165,12 @@
             {
                 if (tab == "Food")
                 {
-                    headerNames = new[] { "Hearts Restored", "Duration", "Mod Value?", "Mod Type", "Mod Level" };
+                    headerNames = new[] { "Hearts", "Duration", "Mod Value?", "Mod Type", "Mod Level" };
                 }
 
                 if (tab == "Weapons" || tab == "Bows" || tab == "Shields")
                 {
-                    headerNames = new[] { "Mod. Amount", "N/A", " Mod. Type", "N/A", "N/A" };
+                    headerNames = new[] { "Mod Amount", "N/A", " Mod Type", "N/A", "N/A" };
                 }
 
                 var header = new TextBlock
