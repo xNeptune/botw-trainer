@@ -80,7 +80,8 @@
             WeaponInv = 5,
             BowInv = 6,
             ShieldInv = 7,
-            Speed = 8
+            Speed = 8,
+            Mon = 9
         }
 
         private bool LoadDataAsync()
@@ -202,7 +203,8 @@
                 var healthPointer = this.tcpGecko.peek(0x4225B4B0);
                 CurrentHealth.Text = this.tcpGecko.peek(healthPointer + 0x430).ToString(CultureInfo.InvariantCulture);
                 CurrentRupees.Text = this.tcpGecko.peek(0x4010AA0C).ToString(CultureInfo.InvariantCulture);
-                CurrentSpeed.Text = this.tcpGecko.peek(0x439BF514).ToString("x8").ToUpper();
+                CurrentMon.Text = this.tcpGecko.peek(0x4010B14C).ToString(CultureInfo.InvariantCulture);
+                CbSpeed.SelectedValue = this.tcpGecko.peek(0x439BF514).ToString("X").ToUpper();
                 CurrentWeaponSlots.Text = this.tcpGecko.peek(0x3FCFB498).ToString(CultureInfo.InvariantCulture);
                 CurrentBowSlots.Text = this.tcpGecko.peek(0x3FD4BB50).ToString(CultureInfo.InvariantCulture);
                 CurrentShieldSlots.Text = this.tcpGecko.peek(0x3FCC0B40).ToString(CultureInfo.InvariantCulture);
@@ -454,6 +456,11 @@
                     selected.Add(Cheat.Rupees);
                 }
 
+                if (Mon.IsChecked == true)
+                {
+                    selected.Add(Cheat.Mon);
+                }
+
                 if (Run.IsChecked == true)
                 {
                     selected.Add(Cheat.Run);
@@ -635,8 +642,12 @@
             var rupee2 = this.tcpGecko.peek(0x4010AA0C);
             this.RupeeData.Content = string.Format("[0x3FC92D10 = {0}, 0x4010AA0C = {1}]", rupee1, rupee2);
 
+            var mon1 = this.tcpGecko.peek(0x3FD41158);
+            var mon2 = this.tcpGecko.peek(0x4010B14C);
+            this.MonData.Content = string.Format("[0x3FD41158 = {0}, 0x4010B14C = {1}]", mon1, mon2);
+
             var run = this.tcpGecko.peek(0x43A88CC4).ToString("X");
-            this.RunData.Content = string.Format("0x43A88CC4 = {0}", run);
+            this.RunData.Content = string.Format("0x43A88CC4 = {0} (Redundant really due to speed code)", run);
 
             var speed = this.tcpGecko.peek(0x439BF514).ToString("X");
             this.SpeedData.Content = string.Format("0x439BF514 = {0}", speed);
@@ -713,7 +724,7 @@
 
             if (cheats.Contains(Cheat.Speed))
             {
-                var value = uint.Parse(CurrentSpeed.Text, NumberStyles.HexNumber);
+                var value = uint.Parse(CbSpeed.SelectedValue.ToString(), NumberStyles.HexNumber);
 
                 codes.Add(0x00020000);
                 codes.Add(0x439BF514);
@@ -736,10 +747,25 @@
                 codes.Add(0x00000000);
             }
 
+            if (cheats.Contains(Cheat.Mon))
+            {
+                var value = Convert.ToUInt32(CurrentMon.Text);
+
+                codes.Add(0x00020000);
+                codes.Add(0x3FD41158);
+                codes.Add(value);
+                codes.Add(0x00000000);
+
+                codes.Add(0x00020000);
+                codes.Add(0x4010B14C);
+                codes.Add(value);
+                codes.Add(0x00000000);
+            }
+
             if (cheats.Contains(Cheat.MoonJump))
             {
                 uint activator;
-                if (this.Controller.SelectedIndex == 0)
+                if (this.Controller.SelectedValue.ToString() == "Pro")
                 {
                     activator = 0x112671AB;
                 }

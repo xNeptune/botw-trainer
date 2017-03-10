@@ -49,11 +49,11 @@
                     <Label Content="To enable these codes check the box and click save. Current address/values printed to the right." Height="30" Margin="0" Canvas.Left="50" Canvas.Top="24" FontSize="14" Width="642"/>
 
                     <Label Content="Controller Type" Height="26" Margin="0" Canvas.Left="50" Canvas.Top="64"/>
-                    <ComboBox x:Name="Controller" Canvas.Left="200" Canvas.Top="67" Width="90" SelectedValuePath="Content">
+                    <ComboBox x:Name="Controller" Canvas.Left="200" Canvas.Top="67" Width="80" SelectedValuePath="Content">
                         <ComboBoxItem Name="Pro" Content="Pro"></ComboBoxItem>
                         <ComboBoxItem Name="Gamepad" Content="Gamepad"></ComboBoxItem>
                     </ComboBox>
-                    
+
 
                     <Label Content="Stamina" Height="26" Margin="0" Canvas.Left="50" Canvas.Top="94"/>
                     <CheckBox x:Name="Stamina" Margin="0" Canvas.Left="160" Canvas.Top="100"/>
@@ -70,33 +70,47 @@
                     <TextBox x:Name="CurrentRupees" Height="25" Width="90" Margin="0" Canvas.Left="200" Canvas.Top="155" PreviewTextInput="NumberValidationTextBox"></TextBox>
                     <Label x:Name="RupeeData" Content="RupeeData" Height="25" Margin="0" Canvas.Left="315" Canvas.Top="155"/>
 
-                    <Label Content="Always Run" Height="26" Margin="0" Canvas.Left="50" Canvas.Top="184"></Label>
-                    <CheckBox x:Name="Run" Margin="0" Canvas.Left="160" Canvas.Top="190" />
-                    <Label x:Name="RunData" Content="RunData" Height="25" Margin="0" Canvas.Left="280" Canvas.Top="144" Visibility="Hidden"/>
+                    <Label Content="Mon" Height="26" Margin="0" Canvas.Left="50" Canvas.Top="184"/>
+                    <CheckBox x:Name="Mon" Margin="0" Canvas.Left="160" Canvas.Top="190" />
+                    <TextBox x:Name="CurrentMon" Height="25" Width="90" Margin="0" Canvas.Left="200" Canvas.Top="185" PreviewTextInput="NumberValidationTextBox"/>
+                    <Label x:Name="MonData" Content="MonData" Height="25" Margin="0" Canvas.Left="315" Canvas.Top="185"/>
 
-                    <Label Content="Speed" Height="26" Margin="0" Canvas.Left="50" Canvas.Top="214"/>
-                    <CheckBox x:Name="Speed" Margin="0" Canvas.Left="160" Canvas.Top="220"/>
-                    <TextBox x:Name="CurrentSpeed" Height="25" Width="90" Margin="0" Canvas.Left="200" Canvas.Top="214" CharacterCasing="Upper" MaxLength="8"/>
-                    <Label x:Name="SpeedData" Content="SpeedData" Height="25" Margin="0" Canvas.Left="315" Canvas.Top="214"/>
+                    <Label Content="Always Run" Height="26" Margin="0" Canvas.Left="50" Canvas.Top="214"></Label>
+                    <CheckBox x:Name="Run" Margin="0" Canvas.Left="160" Canvas.Top="220" />
+                    <Label x:Name="RunData" Content="RunData" Height="25" Margin="0" Canvas.Left="315" Canvas.Top="214" />
 
-                    <Label Content="Moon Jump" Height="26" Canvas.Left="50" Canvas.Top="244"></Label>
-                    <CheckBox x:Name="MoonJump" Margin="0" Canvas.Left="160" Canvas.Top="250" />
-                    <Label x:Name="MoonJumpData" Content="MoonJumpData" Height="25" Margin="0" Canvas.Left="315" Canvas.Top="244"/>
+                    <Label Content="Speed" Height="26" Margin="0" Canvas.Left="50" Canvas.Top="244"/>
+                    <CheckBox x:Name="Speed" Margin="0" Canvas.Left="160" Canvas.Top="250"/>
 
-                    <Label Content="Weapon Slots" Height="26" Margin="0" Canvas.Left="50" Canvas.Top="274"></Label>
-                    <CheckBox x:Name="WeaponSlots" Margin="0" Canvas.Left="160" Canvas.Top="280" />
-                    <TextBox x:Name="CurrentWeaponSlots" Height="25" Width="30" Margin="0" Canvas.Left="200" Canvas.Top="275" PreviewTextInput="NumberValidationTextBox"/>
-                    <Label x:Name="WeaponSlotsData" Content="WeaponSlotsData" Height="25" Margin="0" Canvas.Left="315" Canvas.Top="275"/>
+                    <ComboBox x:Name="CbSpeed" Canvas.Left="200" Canvas.Top="247" Width="80" SelectedValuePath="Tag">
+                        <ComboBoxItem Tag="00000000" Content="00000000 - 0x Speed (Frozen)"/>
+                        <ComboBoxItem Tag="3F800000" Content="3F800000 - 1x Speed (Default)"/>
+                        <ComboBoxItem Tag="40000000" Content="40000000 - 2x Speed"/>
+                        <ComboBoxItem Tag="40800000" Content="40800000 - 4x Speed"/>
+                        <ComboBoxItem Tag="41000000" Content="41000000 - 8x Speed"/>
+                        <ComboBoxItem Tag="42000000" Content="42000000 - 32x Speed"/>
+                    </ComboBox>
 
-                    <Label Content="Bow Slots" Height="26" Margin="0" Canvas.Left="50" Canvas.Top="304"/>
-                    <CheckBox x:Name="BowSlots" Margin="0" Canvas.Left="160" Canvas.Top="310" />
-                    <TextBox x:Name="CurrentBowSlots" Height="25" Width="30" Margin="0" Canvas.Left="200" Canvas.Top="305" PreviewTextInput="NumberValidationTextBox"/>
-                    <Label x:Name="BowSlotsData" Content="BowSlotsData" Height="25" Margin="0" Canvas.Left="315" Canvas.Top="305"/>
+                    <Label x:Name="SpeedData" Content="SpeedData" Height="25" Margin="0" Canvas.Left="315" Canvas.Top="244"/>
 
-                    <Label Content="Shield Slots" Height="26" Margin="0" Canvas.Left="50" Canvas.Top="334"/>
-                    <CheckBox x:Name="ShieldSlots" Margin="0" Canvas.Left="160" Canvas.Top="340" />
-                    <TextBox x:Name="CurrentShieldSlots" Height="25" Width="30" Margin="0" Canvas.Left="200" Canvas.Top="335" PreviewTextInput="NumberValidationTextBox"/>
-                    <Label x:Name="ShieldSlotsData" Content="ShieldSlotsData" Height="25" Margin="0" Canvas.Left="315" Canvas.Top="335"/>
+                    <Label Content="Moon Jump" Height="26" Canvas.Left="50" Canvas.Top="274"></Label>
+                    <CheckBox x:Name="MoonJump" Margin="0" Canvas.Left="160" Canvas.Top="280" />
+                    <Label x:Name="MoonJumpData" Content="MoonJumpData" Height="25" Margin="0" Canvas.Left="315" Canvas.Top="274"/>
+
+                    <Label Content="Weapon Slots" Height="26" Margin="0" Canvas.Left="50" Canvas.Top="304"></Label>
+                    <CheckBox x:Name="WeaponSlots" Margin="0" Canvas.Left="160" Canvas.Top="310" />
+                    <TextBox x:Name="CurrentWeaponSlots" Height="25" Width="30" Margin="0" Canvas.Left="200" Canvas.Top="305" PreviewTextInput="NumberValidationTextBox"/>
+                    <Label x:Name="WeaponSlotsData" Content="WeaponSlotsData" Height="25" Margin="0" Canvas.Left="315" Canvas.Top="305"/>
+
+                    <Label Content="Bow Slots" Height="26" Margin="0" Canvas.Left="50" Canvas.Top="334"/>
+                    <CheckBox x:Name="BowSlots" Margin="0" Canvas.Left="160" Canvas.Top="340" />
+                    <TextBox x:Name="CurrentBowSlots" Height="25" Width="30" Margin="0" Canvas.Left="200" Canvas.Top="335" PreviewTextInput="NumberValidationTextBox"/>
+                    <Label x:Name="BowSlotsData" Content="BowSlotsData" Height="25" Margin="0" Canvas.Left="315" Canvas.Top="335"/>
+
+                    <Label Content="Shield Slots" Height="26" Margin="0" Canvas.Left="50" Canvas.Top="364"/>
+                    <CheckBox x:Name="ShieldSlots" Margin="0" Canvas.Left="160" Canvas.Top="370" />
+                    <TextBox x:Name="CurrentShieldSlots" Height="25" Width="30" Margin="0" Canvas.Left="200" Canvas.Top="365" PreviewTextInput="NumberValidationTextBox"/>
+                    <Label x:Name="ShieldSlotsData" Content="ShieldSlotsData" Height="25" Margin="0" Canvas.Left="315" Canvas.Top="365"/>
                 </Canvas>
             </TabItem>
 
