@@ -726,18 +726,18 @@
             {
                 var value = uint.Parse(CbSpeed.SelectedValue.ToString(), NumberStyles.HexNumber);
 
-                codes.Add(0x09020000);
-                codes.Add(0x102F48A8);
-                codes.Add(0x00004000);
-                codes.Add(0x00000000);
+                //codes.Add(0x09020000);
+                //codes.Add(0x102F48A8);
+                //codes.Add(0x00004000);
+                //codes.Add(0x00000000);
 
                 codes.Add(0x00020000);
                 codes.Add(0x439BF514);
                 codes.Add(value);
                 codes.Add(0x00000000);
 
-                codes.Add(0xD0000000);
-                codes.Add(0xDEADCAFE);
+                //codes.Add(0xD0000000);
+                //codes.Add(0xDEADCAFE);
             }
 
             if (cheats.Contains(Cheat.Rupees))
