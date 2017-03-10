@@ -23,7 +23,7 @@
 
             <Button x:Name="Load" Content="Load Data" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="75" Click="LoadClick" Canvas.Left="240" Canvas.Top="13" IsEnabled="False" />
 
-            <Label x:Name="Info" Content="Only Save/Load the game if you change Weapons/Bows/Shields/Armour." Canvas.Right="10" Canvas.Top="9" HorizontalContentAlignment="Right" Foreground="Red" FontSize="14" />
+            <Label x:Name="Info" Content="Only Save/Load the game if you change Weapons/Bows/Shields/Armor." Canvas.Right="10" Canvas.Top="9" HorizontalContentAlignment="Right" Foreground="Red" FontSize="14" />
         </Canvas>
 
         <TabControl x:Name="TabControl" HorizontalAlignment="Left" Height="530" VerticalAlignment="Top" IsEnabled="False" Grid.Row="1" SelectedIndex="0" Width="980" SelectionChanged="TabControlSelectionChanged">
@@ -34,7 +34,7 @@
 
             <TabItem Header="Shields" x:Name="Shields" Margin="0,0,0,0" Background="CadetBlue"/>
 
-            <TabItem Header="Armour" x:Name="Armour" Margin="0,0,0,0" Background="CadetBlue"/>
+            <TabItem Header="Armor" x:Name="Armor" Margin="0,0,0,0" Background="CadetBlue"/>
 
             <TabItem Header="Arrows" x:Name="Arrows" Margin="0,0,0,0" Background="PaleVioletRed"/>
 

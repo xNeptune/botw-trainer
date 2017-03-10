@@ -220,7 +220,7 @@
                 this.LoadTab(this.Bows, 1);
                 this.LoadTab(this.Arrows, 2);
                 this.LoadTab(this.Shields, 3);
-                this.LoadTab(this.Armour, 4);
+                this.LoadTab(this.Armor, 4);
                 this.LoadTab(this.Materials, 7);
                 this.LoadTab(this.Food, 8);
                 this.LoadTab(this.KeyItems, 9);
@@ -304,13 +304,13 @@
             var tab = (TabItem)TabControl.SelectedItem;
 
             // For these we amend the 0x3FCE7FF0 area which requires save/load
-            if (Equals(tab, this.Weapons) || Equals(tab, this.Bows) || Equals(tab, this.Shields) || Equals(tab, this.Armour))
+            if (Equals(tab, this.Weapons) || Equals(tab, this.Bows) || Equals(tab, this.Shields) || Equals(tab, this.Armor))
             {
                 var weaponList = this.items.Where(x => x.Page == 0).ToList();
                 var bowList = this.items.Where(x => x.Page == 1).ToList();
                 var arrowList = this.items.Where(x => x.Page == 2).ToList();
                 var shieldList = this.items.Where(x => x.Page == 3).ToList();
-                var armourList = this.items.Where(x => x.Page == 4 || x.Page == 5 || x.Page == 6).ToList();
+                var armorList = this.items.Where(x => x.Page == 4 || x.Page == 5 || x.Page == 6).ToList();
 
                 var y = 0;
                 if (Equals(tab, this.Weapons))
@@ -366,12 +366,12 @@
                     }
                 }
 
-                if (Equals(tab, this.Armour))
+                if (Equals(tab, this.Armor))
                 {
                     // jump past weapons/bows/arrows/shields before we start
                     y += weaponList.Count + bowList.Count + arrowList.Count + shieldList.Count;
 
-                    foreach (var item in armourList)
+                    foreach (var item in armorList)
                     {
                         var offset = (uint)(SaveItemStart + (y * 0x8));
 
@@ -404,7 +404,7 @@
                 case "Shields":
                     page = 3;
                     break;
-                case "Armour":
+                case "Armor":
                     page = 4;
                     break;
                 case "Materials":
@@ -1172,6 +1172,11 @@
 
         private string GetNameFromId(string id, string pagename)
         {
+            if (pagename == "Head" || pagename == "Torso" || pagename == "Legs")
+            {
+                pagename = "Armor";
+            }
+
             var name = "Unknown";
             var path = string.Format("Items.{0}.{1}.Name", pagename.Replace(" ", string.Empty), id);
             var obj = this.json.SelectToken(path);
