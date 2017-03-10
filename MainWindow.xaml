@@ -23,7 +23,7 @@
 
             <Button x:Name="Load" Content="Load Data" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="75" Click="LoadClick" Canvas.Left="250" Canvas.Top="13" IsEnabled="False" />
 
-            <Label x:Name="Info" Content="As items move around it is best to refresh to get the latest data before you try to save anything." Canvas.Right="10" Canvas.Top="14" HorizontalContentAlignment="Right"/>
+            <Label x:Name="Info" Content="" Canvas.Right="10" Canvas.Top="14" HorizontalContentAlignment="Right" Foreground="Red"/>
         </Canvas>
 
         <TabControl x:Name="TabControl" HorizontalAlignment="Left" Height="530" VerticalAlignment="Top" IsEnabled="False" Grid.Row="1" SelectedIndex="0" Width="980" SelectionChanged="TabControlSelectionChanged">
@@ -46,8 +46,14 @@
 
             <TabItem Header="Codes" x:Name="Codes" Margin="0,0,0,0" Background="PaleVioletRed">
                 <Canvas>
-                    <Label Content="To enable these codes check the box and click save." Height="30" Margin="0" Canvas.Left="50" Canvas.Top="24" FontSize="14" Width="642"/>
-                    <Label Content="Current address/values printed to the right. These are for EUR so may not work on US." Height="30" Margin="0" Canvas.Left="50" Canvas.Top="54"/>
+                    <Label Content="To enable these codes check the box and click save. Current address/values printed to the right." Height="30" Margin="0" Canvas.Left="50" Canvas.Top="24" FontSize="14" Width="642"/>
+
+                    <Label Content="Controller Type" Height="26" Margin="0" Canvas.Left="50" Canvas.Top="64"/>
+                    <ComboBox x:Name="Controller" Canvas.Left="200" Canvas.Top="67" Width="90" SelectedValuePath="Content">
+                        <ComboBoxItem Name="Pro" Content="Pro"></ComboBoxItem>
+                        <ComboBoxItem Name="Gamepad" Content="Gamepad"></ComboBoxItem>
+                    </ComboBox>
+                    
 
                     <Label Content="Stamina" Height="26" Margin="0" Canvas.Left="50" Canvas.Top="94"/>
                     <CheckBox x:Name="Stamina" Margin="0" Canvas.Left="160" Canvas.Top="100"/>
@@ -75,10 +81,7 @@
 
                     <Label Content="Moon Jump" Height="26" Canvas.Left="50" Canvas.Top="244"></Label>
                     <CheckBox x:Name="MoonJump" Margin="0" Canvas.Left="160" Canvas.Top="250" />
-                    <ComboBox x:Name="Controller" Canvas.Left="200" Canvas.Top="246" Width="90" SelectedIndex="0">
-                        <ComboBoxItem Name="Pro" Content="Pro"></ComboBoxItem>
-                        <ComboBoxItem Name="Gamepad" Content="Gamepad"></ComboBoxItem>
-                    </ComboBox>
+                    <Label x:Name="MoonJumpData" Content="MoonJumpData" Height="25" Margin="0" Canvas.Left="315" Canvas.Top="244"/>
 
                     <Label Content="Weapon Slots" Height="26" Margin="0" Canvas.Left="50" Canvas.Top="274"></Label>
                     <CheckBox x:Name="WeaponSlots" Margin="0" Canvas.Left="160" Canvas.Top="280" />

@@ -152,26 +152,6 @@
 
                     this.items.Add(item);
 
-                    /*
-                    var item = new Item
-                    {
-                        BaseAddress = currentItem,
-                        Page = Convert.ToInt32(page),
-                        Unknown = Convert.ToInt32(this.tcpGecko.peek(currentItem + 0x4)),
-                        Value = this.tcpGecko.peek(currentItem + 0x8),
-                        Equipped = this.tcpGecko.peek(currentItem + 0xC),
-                        NameStart = this.tcpGecko.peek(currentItem + 0x1C),
-                        Name = this.ReadString(currentItem + 0x1C),
-                        Modifier1Value = this.tcpGecko.peek(currentItem + 0x5C).ToString("x8").ToUpper(),
-                        Modifier2Value = this.tcpGecko.peek(currentItem + 0x60).ToString("x8").ToUpper(),
-                        Modifier3Value = this.tcpGecko.peek(currentItem + 0x64).ToString("x8").ToUpper(),
-                        Modifier4Value = this.tcpGecko.peek(currentItem + 0x68).ToString("x8").ToUpper(),
-                        Modifier5Value = this.tcpGecko.peek(currentItem + 0x6C).ToString("x8").ToUpper()
-                    };
-
-                    this.items.Add(item);
-                    */
-
                     var currentPercent = (100m / 418m) * x;
                     Dispatcher.Invoke(
                         () =>
@@ -201,6 +181,7 @@
 
             this.items.Clear();
 
+            // talk to wii u and get mem dump of data
             var result = await Task.Run(() => this.LoadDataAsync());
 
             if (result)
@@ -217,11 +198,11 @@
                 this.LoadTab(this.KeyItems, 9);
 
                 // Code Tab Values
-                CurrentStamina.Text = this.tcpGecko.peek(0x42439598).ToString("X");
-                CurrentSpeed.Text = this.tcpGecko.peek(0x439BF514).ToString("X");
-                CurrentHealth.Text = this.tcpGecko.peek(0x439B6558).ToString(CultureInfo.InvariantCulture);
+                CurrentStamina.Text = this.tcpGecko.peek(0x42439598).ToString("x8").ToUpper();
+                var healthPointer = this.tcpGecko.peek(0x4225B4B0);
+                CurrentHealth.Text = this.tcpGecko.peek(healthPointer + 0x430).ToString(CultureInfo.InvariantCulture);
                 CurrentRupees.Text = this.tcpGecko.peek(0x4010AA0C).ToString(CultureInfo.InvariantCulture);
-
+                CurrentSpeed.Text = this.tcpGecko.peek(0x439BF514).ToString("x8").ToUpper();
                 CurrentWeaponSlots.Text = this.tcpGecko.peek(0x3FCFB498).ToString(CultureInfo.InvariantCulture);
                 CurrentBowSlots.Text = this.tcpGecko.peek(0x3FD4BB50).ToString(CultureInfo.InvariantCulture);
                 CurrentShieldSlots.Text = this.tcpGecko.peek(0x3FCC0B40).ToString(CultureInfo.InvariantCulture);
@@ -242,17 +223,20 @@
 
                 if (this.connected)
                 {
+                    // Saved settings stuff
                     var shown = Settings.Default.Warning;
 
                     if (shown < 3)
                     {
                         Settings.Default.Warning++;
 
-                        MessageBox.Show("WARNING: Item names are now editable. Using bad data may mess up your game so use with care.");
+                        //MessageBox.Show("WARNING: Item names are now editable. Using bad data may mess up your game so use with care.");
                     }
 
                     Settings.Default.IpAddress = IpAddress.Text;
                     Settings.Default.Save();
+
+                    Controller.SelectedValue = Settings.Default.Controller;
 
                     this.ToggleControls("Connected");
                 }
@@ -418,7 +402,6 @@
                 if (foundTextBox != null)
                 {
                     var newName = Encoding.Default.GetBytes(foundTextBox.Text);
-                    var length = newName.Length;
 
                     //clear current name
                     this.tcpGecko.poke32(item.NameStart, 0x0);
@@ -502,6 +485,9 @@
                 }
 
                 this.SetCheats(selected);
+
+                Settings.Default.Controller = Controller.SelectedValue.ToString();
+                Settings.Default.Save();
             }
 
             this.DebugData();
@@ -518,7 +504,7 @@
         {
             var scroll = new ScrollViewer { Name = "ScrollContent", Margin = new Thickness(10), VerticalAlignment = VerticalAlignment.Top };
 
-            var holder = new WrapPanel { Margin = new Thickness(0), VerticalAlignment = VerticalAlignment.Top};
+            var holder = new WrapPanel { Margin = new Thickness(0), VerticalAlignment = VerticalAlignment.Top };
 
             // setup grid
             var grid = this.GenerateTabGrid(tab.Name);
@@ -544,12 +530,12 @@
                 // Name
                 var name = new TextBox
                 {
-                    Text = item.Name,
+                    Text = item.Name, 
                     ToolTip = item.NameStart.ToString("x8").ToUpper(), 
-                    Margin = new Thickness(0,0,0,0),
-                    Height = 22,
-                    Width = 230,
-                    IsReadOnly = false,
+                    Margin = new Thickness(0), 
+                    Height = 22, 
+                    Width = 230, 
+                    IsReadOnly = false, 
                     Name = "Name_" + item.NameStartHex
                 };
 
@@ -558,6 +544,7 @@
                 {
                     this.UnregisterName("Name_" + item.NameStartHex);
                 }
+
                 this.RegisterName("Name_" + item.NameStartHex, name);
 
                 if (item.EquippedBool)
@@ -594,6 +581,20 @@
                 var mtb5 = this.GenerateGridTextBox(item.Modifier5Value, item.Modifier5Address, x, 6);
                 grid.Children.Add(mtb5);
 
+                // dropdown
+                /*
+                var test = new ComboBox
+                               {
+                                   Name = "CbName_" + item.NameStartHex, 
+                                   ItemsSource = this.weaponList, 
+                                   Width = 150, 
+                                   Height = 25, 
+                                   SelectedValue = item.Name
+                               };
+                Grid.SetRow(test, x);
+                Grid.SetColumn(test, 7);
+                grid.Children.Add(test);
+                */
                 x++;
             }
 
@@ -603,10 +604,11 @@
             {
                 Background = Brushes.Transparent,
                 BorderThickness = new Thickness(0),
-                Margin = new Thickness(10, 10, 0, 0),
+                Margin = new Thickness(20, 10, 0, 0),
                 IsReadOnly = true,
                 TextWrapping = TextWrapping.Wrap,
-                Text = "Modifiers aren't used for all Types/Items. See help for more info."
+                Text = "Items move around. What you see below may not be what is in memory. Refresh to get the latest data before you try to save anything.",
+                Foreground = Brushes.Red
             });
 
             holder.Children.Add(grid);
@@ -629,15 +631,17 @@
             var health = this.tcpGecko.peek(0x439B6558);
             this.HealthData.Content = string.Format("0x439B6558 = {0}", health);
 
+            var rupee1 = this.tcpGecko.peek(0x3FC92D10);
+            var rupee2 = this.tcpGecko.peek(0x4010AA0C);
+            this.RupeeData.Content = string.Format("[0x3FC92D10 = {0}, 0x4010AA0C = {1}]", rupee1, rupee2);
+
             var run = this.tcpGecko.peek(0x43A88CC4).ToString("X");
             this.RunData.Content = string.Format("0x43A88CC4 = {0}", run);
 
             var speed = this.tcpGecko.peek(0x439BF514).ToString("X");
             this.SpeedData.Content = string.Format("0x439BF514 = {0}", speed);
 
-            var rupee1 = this.tcpGecko.peek(0x3FC92D10);
-            var rupee2 = this.tcpGecko.peek(0x4010AA0C);
-            this.RupeeData.Content = string.Format("[0x3FC92D10 = {0}, 0x4010AA0C = {1}]", rupee1, rupee2);
+            this.MoonJumpData.Content = "Hold X";
 
             var weapon1 = this.tcpGecko.peek(0x3FCFB498);
             var weapon2 = this.tcpGecko.peek(0x4010B34C);
@@ -689,10 +693,14 @@
             {
                 var value = Convert.ToUInt32(CurrentHealth.Text);
 
-                codes.Add(0x00020000);
-                codes.Add(0x439B6558);
+                codes.Add(0x30000000);
+                codes.Add(0x4225B4B0);
+                codes.Add(0x43000000);
+                codes.Add(0x46000000);
+                codes.Add(0x00120430);
                 codes.Add(value);
-                codes.Add(0x00000000);
+                codes.Add(0xD0000000);
+                codes.Add(0xDEADCAFE);
             }
 
             if (cheats.Contains(Cheat.Run))
@@ -1035,6 +1043,7 @@
             Grid.SetColumn(valueHeader, 1);
             grid.Children.Add(valueHeader);
 
+            grid.ColumnDefinitions.Add(new ColumnDefinition());
             grid.ColumnDefinitions.Add(new ColumnDefinition());
             grid.ColumnDefinitions.Add(new ColumnDefinition());
             grid.ColumnDefinitions.Add(new ColumnDefinition());
