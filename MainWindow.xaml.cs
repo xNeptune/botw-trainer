@@ -44,6 +44,8 @@
 
         private readonly string version;
 
+        private List<TextBox> changed = new List<TextBox>(); 
+
         private int itemsFound;
 
         private TCPGecko tcpGecko;
@@ -423,6 +425,12 @@
                 collection = this.items.Where(i => i.Page == 4 || i.Page == 5 || i.Page == 6);
             }
 
+            // TODO: Only update what has changed to avoid corruption.
+            foreach (var tb in this.changed)
+            {
+                // These text boxes have been edited
+            }
+
             foreach (var item in collection)
             {
                 // Id
@@ -533,8 +541,10 @@
             }
 
             this.DebugData();
-            
             Debug.UpdateLayout();
+
+            // clear changed after save
+            this.changed.Clear();
         }
 
         private void ExportClick(object sender, RoutedEventArgs e)
@@ -594,6 +604,8 @@
                     IsReadOnly = false, 
                     Name = "Name_" + item.NameStartHex
                 };
+
+                id.TextChanged += this.TextChanged;
 
                 check = (TextBox)this.FindName("Name_" + item.NameStartHex);
                 if (check != null)
@@ -683,6 +695,11 @@
             scroll.Content = holder;
 
             tab.Content = scroll;
+        }
+
+        private void TextChanged(object sender, TextChangedEventArgs textChangedEventArgs)
+        {
+            this.changed.Add(sender as TextBox);
         }
 
         private void DebugData()
