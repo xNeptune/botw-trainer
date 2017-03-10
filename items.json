@@ -799,6 +799,9 @@
             "Armor_043_Lower": {
                 "Name": "Well-Worn Trousers"
             },
+            "Armor_044_Upper": {
+                "Name": "Warm Doublet"
+            },
             "Armor_045_Head": {
                 "Name": "Moblin Mask"
             },
@@ -1609,15 +1612,22 @@
                 "Name": "Bomb Arrow"
             }
         },
-        "Materials": { 
-
+        "Materials": {
+            "Item_Fruit_A": {
+                "Name": "Apple"
+            }
+        },
+        "Food": {
+            "Item_Roast_03": { 
+                "Name": "Baked Apple"
+            }
         },
         "KeyItems": {
             "Obj_DungeonClearSeal": {
-                "Name": "Spirit Orbs"
+                "Name": "Spirit Orb"
             },
             "Obj_KorokNuts": {
-                "Name": "Korok Seeds"
+                "Name": "Korok Seed"
             },
             "PlayerStole2": {
                 "Name": "Paraglider"
