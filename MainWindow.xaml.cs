@@ -83,7 +83,6 @@
                 {
                     var data = reader.ReadToEnd();
                     this.json = JObject.Parse(data);
-
                 }
             }
             catch (Exception)
@@ -585,7 +584,7 @@
                     this.UnregisterName("Name_" + item.NameStartHex);
                 }
 
-                this.RegisterName("Name_" + item.NameStartHex, name);
+                this.RegisterName("Name_" + item.NameStartHex, id);
 
                 if (item.EquippedBool)
                 {
