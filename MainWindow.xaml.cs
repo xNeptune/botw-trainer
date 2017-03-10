@@ -358,7 +358,7 @@
                     }
                 }
 
-                MessageBox.Show("Data sent. Please save/load the game if you changed the 'Item Value'");
+                //MessageBox.Show("Data sent. Please save/load the game if you changed the 'Item Value'");
             }
 
             // Here we can poke the values as it has and immediate effect
@@ -541,7 +541,7 @@
                     ToolTip = item.NameStart.ToString("x8").ToUpper(), 
                     Margin = new Thickness(0), 
                     Height = 22, 
-                    Width = 230, 
+                    Width = 180, 
                     IsReadOnly = false, 
                     Name = "Name_" + item.NameStartHex
                 };
@@ -726,10 +726,18 @@
             {
                 var value = uint.Parse(CbSpeed.SelectedValue.ToString(), NumberStyles.HexNumber);
 
+                codes.Add(0x09020000);
+                codes.Add(0x102F48A8);
+                codes.Add(0x00004000);
+                codes.Add(0x00000000);
+
                 codes.Add(0x00020000);
                 codes.Add(0x439BF514);
                 codes.Add(value);
                 codes.Add(0x00000000);
+
+                codes.Add(0xD0000000);
+                codes.Add(0xDEADCAFE);
             }
 
             if (cheats.Contains(Cheat.Rupees))
@@ -765,18 +773,21 @@
             if (cheats.Contains(Cheat.MoonJump))
             {
                 uint activator;
+                uint button;
                 if (this.Controller.SelectedValue.ToString() == "Pro")
                 {
                     activator = 0x112671AB;
+                    button = 0x00000008;
                 }
                 else
                 {
                     activator = 0x102F48AA;
+                    button = 0x00000020;
                 }
 
                 codes.Add(0x09000000);
                 codes.Add(activator);
-                codes.Add(0x00000008);
+                codes.Add(button);
                 codes.Add(0x00000000);
                 codes.Add(0x00020000);
                 codes.Add(0x439BF528);
@@ -787,7 +798,7 @@
 
                 codes.Add(0x06000000);
                 codes.Add(activator);
-                codes.Add(0x00000008);
+                codes.Add(button);
                 codes.Add(0x00000000);
                 codes.Add(0x00020000);
                 codes.Add(0x439BF528);
@@ -1006,14 +1017,14 @@
         {
             var tb = new TextBox
             {
-                Text = value,
-                ToolTip = field,
-                Width = 70,
-                Height = 22,
-                Margin = new Thickness(10,0,10,0),
-                Name = "Item_" + field,
-                IsEnabled = true,
-                CharacterCasing = CharacterCasing.Upper,
+                Text = value, 
+                ToolTip = field, 
+                Width = 90, 
+                Height = 22, 
+                Margin = new Thickness(10, 0, 10, 0), 
+                Name = "Item_" + field, 
+                IsEnabled = true, 
+                CharacterCasing = CharacterCasing.Upper, 
                 MaxLength = 8
             };
 
@@ -1041,8 +1052,8 @@
                 VerticalAlignment = VerticalAlignment.Top
             };
 
-            grid.ColumnDefinitions.Add(new ColumnDefinition{ Width = new GridLength(250) });
-            grid.ColumnDefinitions.Add(new ColumnDefinition());
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(200) }); // Name
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(110) });
 
             grid.RowDefinitions.Add(new RowDefinition());
 
@@ -1052,7 +1063,7 @@
                 Text = "Item Name",
                 FontSize = 14,
                 FontWeight = FontWeights.Bold,
-                Width = 230
+                Width = 180
             };
             Grid.SetRow(itemHeader, 0);
             Grid.SetColumn(itemHeader, 0);
@@ -1069,20 +1080,24 @@
             Grid.SetColumn(valueHeader, 1);
             grid.Children.Add(valueHeader);
 
-            grid.ColumnDefinitions.Add(new ColumnDefinition());
-            grid.ColumnDefinitions.Add(new ColumnDefinition());
-            grid.ColumnDefinitions.Add(new ColumnDefinition());
-            grid.ColumnDefinitions.Add(new ColumnDefinition());
-            grid.ColumnDefinitions.Add(new ColumnDefinition());
-            grid.ColumnDefinitions.Add(new ColumnDefinition());
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(110) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(110) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(110) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(110) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(110) });
 
-            var headerNames = new[] { "Modifier 1", "Modifier 2", "Modifier 3", "Modifier 4", "Modifier 5" };
+            var headerNames = new[] { "Mod. 1", "Mod. 2", "Mod. 3", "Mod. 4", "Mod. 5" };
 
             for (int y = 0; y < 5; y++)
             {
                 if (tab == "Food")
                 {
                     headerNames = new[] { "Hearts Restored", "Duration", "Mod Value?", "Mod Type", "Mod Level" };
+                }
+
+                if (tab == "Weapons" || tab == "Bows" || tab == "Shields")
+                {
+                    headerNames = new[] { "Mod. Amount", "N/A", " Mod. Type", "N/A", "N/A" };
                 }
 
                 var header = new TextBlock
