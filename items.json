@@ -1622,6 +1622,12 @@
       },
       "Obj_Maracas": {
         "Name": "Hestu's Maracas"
+      },
+      "GameRomHorseSaddle_02": {
+        "Name": "Royal Saddle"
+      },
+      "GameRomHorseReins_02": {
+        "Name": "Royal Reins"
       }
     }
   }
