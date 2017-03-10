@@ -1619,6 +1619,45 @@
       },
       "Obj_HeroSoul_Rito": {
         "Name": "Revali's Gale"
+      },
+      "Obj_Maracas": {
+        "Name": "Hestu's Maracas"
+      },
+      "GameRomHorseReins_00": {
+        "name": "Stable Bridle"
+      },
+      "GameRomHorseSaddle_00": {
+        "Name": "Stable Saddle"
+      },
+      "GameRomHorseReins_01": {
+        "Name": "Traveler's Bridle"
+      },
+      "GameRomHorseSaddle_01": {
+        "Name": "Traveler's Saddle"
+      },
+      "GameRomHorseSaddle_02": {
+        "Name": "Royal Saddle"
+      },
+      "GameRomHorseReins_02": {
+        "Name": "Royal Reins"
+      },
+      "GameRomHorseReins_03": {
+        "Name": "Knight's Bridle"
+      },
+      "GameRomHorseSaddle_03": {
+        "Name": "Knight's Saddle"
+      },
+      "GameRomHorseReins_04": {
+        "Name": "Monster Bridle"
+      },
+      "GameRomHorseSaddle_04": {
+        "Name": "Monster Saddle"
+      },
+      "GameRomHorseReins_05": {
+        "Name": "Extravagant Bridle"
+      },
+      "GameRomHorseSaddle_05": {
+        "Name": "Extravagant Saddle
       }
     }
   }
