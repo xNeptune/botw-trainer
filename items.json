@@ -1615,6 +1615,450 @@
         "Materials": {
             "Item_Fruit_A": {
                 "Name": "Apple"
+            },
+            "Item_Fruit_B": {
+                "Name": "Wildberry"
+            },
+            "Item_Fruit_C": {
+                "Name": "Voltfruit"
+            },
+            "Item_Fruit_D": {
+                "Name": "Hearty Durian"
+            },
+            "Item_Fruit_E": {
+                "Name": "Fleet-Lotus Seeds"
+            },
+            "Item_Fruit_F": {
+                "Name": "Hydromelon"
+            },
+            "Item_Fruit_G": {
+                "Name": "Palm Fruit"
+            },
+            "Item_Fruit_H": {
+                "Name": "Mighty Bananas"
+            },
+            "Item_Fruit_I": {
+                "Name": "Spicy Pepper"
+            },
+            "Item_Fruit_J": {
+                "Name": "Fortified Pumpkin"
+            },
+            "Item_Fruit_K": {
+                "Name": "Acorn"
+            },
+            "Item_Fruit_L": {
+                "Name": "Chickaloo Tree Nut"
+            },
+            "Item_Mushroom_A": {
+                "Name": "Stamella Mushroom"
+            },
+            "Item_Mushroom_B": {
+                "Name": "Chillshroom"
+            },
+            "Item_Mushroom_C": {
+                "Name": "Sunshroom"
+            },
+            "Item_Mushroom_D": {
+                "Name": "Rushroom"
+            },
+            "Item_Mushroom_E": {
+                "Name": "Hylian Mushroom"
+            },
+            "Item_Mushroom_F": {
+                "Name": "Hearty Truffle"
+            },
+            "Item_Mushroom_H": {
+                "Name": "Zapshroom"
+            },
+            "Item_Mushroom_J": {
+                "Name": "Silent Shroom"
+            },
+            "Item_Mushroom_L": {
+                "Name": "Razorshroom"
+            },
+            "Item_Mushroom_M": {
+                "Name": "Ironshroom"
+            },
+            "Item_Mushroom_N": {
+                "Name": "Big Hearty Truffle"
+            },
+            "Item_Mushroom_O": {
+                "Name": "Endura Shroom"
+            },
+            "Item_Plant_A": {
+                "Name": "Hyrule Herb"
+            },
+            "Item_Plant_B": {
+                "Name": "Hearty Radish"
+            },
+            "Item_Plant_C": {
+                "Name": "Big Hearty Radish"
+            },
+            "Item_Plant_E": {
+                "Name": "Cool Safflina"
+            },
+            "Item_Plant_F": {
+                "Name": "Warm Safflina"
+            },
+            "Item_Plant_G": {
+                "Name": "Mighty Thistle"
+            },
+            "Item_Plant_H": {
+                "Name": "Armoranth"
+            },
+            "Item_Plant_I": {
+                "Name": "Blue Nightshade"
+            },
+            "Item_Plant_J": {
+                "Name": "Silent Princess"
+            },
+            "Item_Plant_L": {
+                "Name": "Electric Safflina"
+            },
+            "Item_Plant_M": {
+                "Name": "Swift Carrot"
+            },
+            "Item_Plant_O": {
+                "Name": "Swift Violet"
+            },
+            "Item_Plant_Q": {
+                "Name": "Endura Carrot"
+            },
+            "Item_Meat_01": {
+                "Name": "Raw Meat"
+            },
+            "Item_Meat_02": {
+                "Name": "Raw Prime Meat"
+            },
+            "Item_Meat_06": {
+                "Name": "Raw Bird Drumstick"
+            },
+            "Item_Meat_07": {
+                "Name": "Raw Bird Thigh"
+            },
+            "Item_Meat_11": {
+                "Name": "Raw Gourmet Meat"
+            },
+            "Item_Meat_12": {
+                "Name": "Raw Whole Meat"
+            },
+            "Item_FishGet_A": {
+                "Name": "Hylian Bass"
+            },
+            "Item_FishGet_B": {
+                "Name": "Hearty Bass"
+            },
+            "Item_FishGet_C": {
+                "Name": "Chillfin Trout"
+            },
+            "Item_FishGet_D": {
+                "Name": "Voltfin Trout"
+            },
+            "Item_FishGet_E": {
+                "Name": "MIghty Carp"
+            },
+            "Item_FishGet_F": {
+                "Name": "Mighty Porgy"
+            },
+            "Item_FishGet_G": {
+                "Name": "Armored Porgy"
+            },
+            "Item_FishGet_H": {
+                "Name": "Armored Carp"
+            },
+            "Item_FishGet_I": {
+                "Name": "Hearty Salmon"
+            },
+            "Item_FishGet_J": {
+                "Name": "Sizzlefin Trout"
+            },
+            "Item_FishGet_K": {
+                "Name": "Hearty Blueshell Snail"
+            },
+            "Item_FishGet_L": {
+                "Name": "Staminoka Bass"
+            },
+            "Item_FishGet_M": {
+                "Name": "Sneaky River Snail"
+            },
+            "Item_FishGet_X": {
+                "Name": "Stealthfin Trout"
+            },
+            "Item_FishGet_Z": {
+                "Name": "Sanke Carp"
+            },
+            "Animal_Insect_A": {
+                "Name": "Hot-Footed Frog"
+            },
+            "Animal_Insect_B": {
+                "Name": "Tireless Frog"
+            },
+            "Animal_Insect_C": {
+                "Name": "Cold Darner"
+            },
+            "Animal_Insect_E": {
+                "Name": "Sunset Firefly"
+            },
+            "Animal_Insect_F": {
+                "Name": "Fairy"
+            },
+            "Animal_Insect_G": {
+                "Name": "Bladed Rhino Beetle"
+            },
+            "Animal_Insect_H": {
+                "Name": "Restless Cricket"
+            },
+            "Animal_Insect_I": {
+                "Name": "Electric Darner"
+            },
+            "Animal_Insect_K": {
+                "Name": "Razorclaw Crab"
+            },
+            "Animal_Insect_M": {
+                "Name": "Hearty Lizard"
+            },
+            "Animal_Insect_N": {
+                "Name": "Winterwing Butterfly"
+            },
+            "Animal_Insect_O": {
+                "Name": "Ironshell Crab"
+            },
+            "Animal_Insect_P": {
+                "Name": "Rugged Rhino Beetle"
+            },
+            "Animal_Insect_Q": {
+                "Name": "Summerwing Butterfly"
+            },
+            "Animal_Insect_R": {
+                "Name": "Thunderwing Butterfly"
+            },
+            "Animal_Insect_S": {
+                "Name": "Hightail Lizard"
+            },
+            "Animal_Insect_T": {
+                "Name": "Warm Darner"
+            },
+            "Animal_Insect_X": {
+                "Name": "Fireproof Lizard"
+            },
+            "Animal_Insect_Z": {
+                "Name": "Bright-Eyed Crab"
+            },
+            "Animal_Insect_AA": {
+                "Name": "Energetic Rhino Beetle"
+            },
+            "Animal_Insect_AB": {
+                "Name": "Smotherwing Butterfly"
+            },
+            "BeeHome": {
+                "Name": "Courser Bee Honey"
+            },
+            "Obj_FireWoodBundle": {
+                "Name": "Wood"
+            },
+            "Item_Enemy_00": {
+                "Name": "Bokoblin Horn"
+            },
+            "Item_Enemy_01": {
+                "Name": "Bokoblin Fang"
+            },
+            "Item_Enemy_02": {
+                "Name": "Bokoblin Guts"
+            },
+            "Item_Enemy_03": {
+                "Name": "Lizalfos Horn"
+            },
+            "Item_Enemy_04": {
+                "Name": "Lizalfos Talon" 
+            },
+            "Item_Enemy_05": {
+                "Name": "Lizalfos Tail"
+            },
+            "Item_Enemy_06": {
+                "Name": "Moblin Horn"
+            },
+            "Item_Enemy_07": {
+                "Name": "Moblin Fang"
+            },
+            "Item_Enemy_08": {
+                "Name": "Moblin Guts"
+            },
+            "Item_Enemy_12": {
+                "Name": "Lynel Horn"
+            },
+            "Item_Enemy_13": {
+                "Name": "Lynel Hoof"
+            },
+            "Item_Enemy_14": {
+                "Name": "Lynel Guts"
+            },
+            "Item_Enemy_15": {
+                "Name": "Red Chuchu Jelly"
+            },
+            "Item_Enemy_16": {
+                "Name": "Yellow Chuchu Jelly"
+            },
+            "Item_Enemy_17": {
+                "Name": "White Chuchu Jelly"
+            },
+            "Item_Enemy_18": {
+                "Name": "Keese Wing"
+            },
+            "Item_Enemy_19": {
+                "Name": "Keese Eyeball"
+            },
+            "Item_Enemy_20": {
+                "Name": "Octorok Tentacle"
+            },
+            "Item_Enemy_21": {
+                "Name": "Tentacle Eyeball"
+            },
+            "Item_Enemy_24": {
+                "Name": "Molduga Fin"
+            },
+            "Item_Enemy_25": {
+                "Name": "Molduga Guts"
+            },
+            "Item_Enemy_26": {
+                "Name": "Ancient Gear"
+            },
+            "Item_Enemy_27": {
+                "Name": "Ancient Screw"
+            },
+            "Item_Enemy_28": {
+                "Name": "Ancient Spring"
+            },
+            "Item_Enemy_29": {
+                "Name": "Ancient Shaft"
+            },
+            "Item_Enemy_30": {
+                "Name": "Ancient Core"
+            },
+            "Item_Enemy_31": {
+                "Name": "Giant Ancient Core"
+            },
+            "Item_Enemy_32": {
+                "Name": "Hinox Toenail"
+            },
+            "Item_Enemy_33": {
+                "Name": "Hinox Tooth"
+            },
+            "Item_Enemy_34": {
+                "Name": "Hinox Guts"
+            },
+            "Item_Enemy_38": {
+                "Name": "Dinraal's Scale"
+            },
+            "Item_Enemy_39": {
+                "Name": "Dinraal's Claw"
+            },
+            "Item_Enemy_40": {
+                "Name": "Chuchu Jelly"
+            },
+            "Item_Enemy_41": {
+                "Name": "Red Lizalfos Tail"
+            },
+            "Item_Enemy_42": {
+                "Name": "Icy Lizalfos Tail"
+            },
+            "Item_Enemy_43": {
+                "Name": "Yellow Lizalfos Tail"
+            },
+            "Item_Enemy_44": {
+                "Name": "Fire Keese Wing"
+            },
+            "Item_Enemy_45": {
+                "Name": "Electric Keese Wing"
+            },
+            "Item_Enemy_46": {
+                "Name": "Ice Keese Wing"
+            },
+            "Item_Enemy_47": {
+                "Name": "Shard of Dinraal's Fang"
+            },
+            "Item_Enemy_48": {
+                "Name": "Shard of Dinraal's Horn"
+            },
+            "Item_Enemy_49": {
+                "Name": "Naydra's Scale"
+            },
+            "Item_Enemy_50": {
+                "Name": "Naydra's Claw"
+            },
+            "Item_Enemy_51": {
+                "Name": "Shard of Naydra's Fang"
+            },
+            "Item_Enemy_52": {
+                "Name": "Shard of Naydra's Horn"
+            },
+            "Item_Enemy_53": {
+                "Name": "Farosh's Scale"
+            },
+            "Item_Enemy_54": {
+                "Name": "Farosh's Claw"
+            },
+            "Item_Enemy_55": {
+                "Name": "Shard of Farosh's Fang"
+            },
+            "Item_Enemy_56": {
+                "Name": "Shard of Farosh's Horn"
+            },
+            "Item_Enemy_57": {
+                "Name": "Octo Balloon"
+            },
+            "Item_Material_01": {
+                "Name": "Cane Sugar"
+            },
+            "Item_Material_02": {
+                "Name": "Goron Spice"
+            },
+            "Item_Material_03": {
+                "Name": "Hylian Rice"
+            },
+            "Item_Material_04": {
+                "Name": "Bird Egg"
+            },
+            "Item_Material_05": {
+                "Name": "Fresh Milk"
+            },
+            "Item_Material_06": {
+                "Name": "Goat Butter"
+            },
+            "Item_Material_07": {
+                "Name": "Tabantha Wheat"
+            },
+            "Item_Material_08": {
+                "Name": "Monster Extract"
+            },
+            "Item_Ore_A": {
+                "Name": "Diamond"
+            },
+            "Item_Ore_B": {
+                "Name": "Ruby"
+            },
+            "Item_Ore_C": {
+                "Name": "Sapphire"
+            },
+            "Item_Ore_D": {
+                "Name": "Topaz"
+            },
+            "Item_Ore_E": {
+                "Name": "Opal"
+            },
+            "Item_Ore_F": {
+                "Name": "Amber"
+            },
+            "Item_Ore_G": {
+                "Name": "Luminous Stone"
+            },
+            "Item_Ore_H": {
+                "Name": "Rock Salt"
+            },
+            "Item_Ore_I": {
+                "Name": "Flint"
+            },
+            "Item_Ore_J": {
+                "Name": "Star Fragment"
             }
         },
         "Food": {
