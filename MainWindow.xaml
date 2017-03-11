@@ -205,7 +205,20 @@
                     <Label Content="PandaOnSmack"></Label>
                     <Label Content="Shadow LAG"></Label>
                     <Label Content="Missing Number"></Label>
+                    <Label Content="Saber"></Label>
                 </StackPanel>
+            </TabItem>
+            
+            <TabItem Header="Error Log" x:Name="Error" Margin="0">
+                <WrapPanel>
+                    <RichTextBox x:Name="ErrorLog" IsReadOnly="True" IsDocumentEnabled="False" Margin="10" BorderThickness="0">
+                        <FlowDocument>
+                            <Paragraph FontSize="13">
+                                Error data will appear here
+                            </Paragraph>
+                        </FlowDocument>
+                    </RichTextBox>
+                </WrapPanel>
             </TabItem>
         </TabControl>
 
