@@ -2062,8 +2062,545 @@
             }
         },
         "Food": {
+            "Item_Boiled_01": { 
+                "Name": "Hard-Boiled Egg"
+            },
+            "Item_ChilledFish_01": { 
+                "Name": "Frozen Bass"
+            },
+            "Item_ChilledFish_02": { 
+                "Name": "Frozen Hearty Salmon"
+            },
+            "Item_ChilledFish_03": { 
+                "Name": "Frozen Trout"
+            },
+            "Item_ChilledFish_04": { 
+                "Name": "Frozen Carp"
+            },
+            "Item_ChilledFish_05": { 
+                "Name": "Frozen Porgy"
+            },
+            "Item_ChilledFish_06": { 
+                "Name": "Frozen Hearty Bass"
+            },
+            "Item_ChilledFish_07": { 
+                "Name": "Frozen Crab"
+            },
+            "Item_ChilledFish_08": { 
+                "Name": "Frozen River Snail"
+            },
+            "Item_ChilledFish_09": { 
+                "Name": "Icy Hearty Blueshell Snail"
+            },
+            "Item_RoastFish_01": { 
+                "Name": "Roasted Bass"
+            },
+            "Item_RoastFish_02": { 
+                "Name": "Roasted Hearty Bass"
+            },
+            "Item_RoastFish_03": { 
+                "Name": "Roasted Trout"
+            },
+            "Item_RoastFish_04": { 
+                "Name": "Roasted Hearty Salmon"
+            },
+            "Item_RoastFish_07": { 
+                "Name": "Roasted Carp"
+            },
+            "Item_RoastFish_09": { 
+                "Name": "Roasted Porgy"
+            },
+            "Item_RoastFish_11": { 
+                "Name": "Blueshell Escargot"
+            },
+            "Item_RoastFish_13": { 
+                "Name": "Sneaky River Escargot"
+            },
+            "Item_RoastFish_15": { 
+                "Name": "Blackened Crab"
+            },
+            "Item_Roast_01": { 
+                "Name": "Seared Steak"
+            },
+            "Item_Roast_02": { 
+                "Name": "Roasted Bird Drumstick"
+            },
             "Item_Roast_03": { 
                 "Name": "Baked Apple"
+            },
+            "Item_Roast_04": { 
+                "Name": "Toasty Stamella Shroom"
+            },
+            "Item_Roast_05": { 
+                "Name": "Toasted Hearty Truffle"
+            },
+            "Item_Roast_06": { 
+                "Name": "Toasty Hylian Shroom"
+            },
+            "Item_Roast_07": { 
+                "Name": "Roasted Wildberry"
+            },
+            "Item_Roast_08": { 
+                "Name": "Roasted Voltfruit"
+            },
+            "Item_Roast_09": { 
+                "Name": "Roasted Hearty Durian"
+            },
+            "Item_Roast_10": { 
+                "Name": "Baked Palm Fruit"
+            },
+            "Item_Roast_11": { 
+                "Name": "Roasted Mighty Bananas"
+            },
+            "Item_Roast_12": { 
+                "Name": "Roasted Hydromelon"
+            },
+            "Item_Roast_13": { 
+                "Name": "Charred Pepper"
+            },
+            "Item_Roast_15": { 
+                "Name": "Baked Fortified Pumpkin"
+            },
+            "Item_Roast_16": { 
+                "Name": "Roasted Lotus Seed"
+            },
+            "Item_Roast_18": { 
+                "Name": "Roasted Radish"
+            },
+            "Item_Roast_19": { 
+                "Name": "Roasted Big Radish"
+            },
+            "Item_Roast_24": { 
+                "Name": "Roasted Swift Carrot"
+            },
+            "Item_Roast_27": { 
+                "Name": "Roasted Mighty Thistle"
+            },
+            "Item_Roast_28": { 
+                "Name": "Roasted Armoranth"
+            },
+            "Item_Roast_31": { 
+                "Name": "Toasty Chillshroom"
+            },
+            "Item_Roast_32": { 
+                "Name": "Toasty Sunshroom"
+            },
+            "Item_Roast_33": { 
+                "Name": "Toasty Zapshroom"
+            },
+            "Item_Roast_36": { 
+                "Name": "Toasty Rushroom"
+            },
+            "Item_Roast_37": { 
+                "Name": "Toasty Razorshroom"
+            },
+            "Item_Roast_38": { 
+                "Name": "Toasty Ironshroom"
+            },
+            "Item_Roast_39": { 
+                "Name": "Toasty Silent Shroom"
+            },
+            "Item_Roast_40": { 
+                "Name": "Seared Prime Steak"
+            },
+            "Item_Roast_41": { 
+                "Name": "Roasted Bird Thigh"
+            },
+            "Item_Roast_45": { 
+                "Name": "Seared Gourmet Steak"
+            },
+            "Item_Roast_46": { 
+                "Name": "Roasted Whole Bird"
+            },
+            "Item_Roast_48": { 
+                "Name": "Roasted Acorn"
+            },
+            "Item_Roast_49": { 
+                "Name": "Toasted Big Heart Truffle"
+            },
+            "Item_Roast_50": { 
+                "Name": "Roasted Endura Carrot"
+            },
+            "Item_Roast_51": { 
+                "Name": "Campfire Egg"
+            },
+            "Item_Roast_52": { 
+                "Name": "Roasted Tree Nut"
+            },
+            "Item_Roast_53": { 
+                "Name": "Toasty Endura Shroom"
+            },
+            "Item_Chilled_01": { 
+                "Name": "Icy Meat"
+            },
+            "Item_Chilled_02": { 
+                "Name": "Icy Prime Meat"
+            },
+            "Item_Chilled_03": { 
+                "Name": "Icy Gourmet Meat"
+            },
+            "Item_Chilled_04": { 
+                "Name": "Frozen Bird Drumstick"
+            },
+            "Item_Chilled_05": { 
+                "Name": "Frozen Bird Thigh"
+            },
+            "Item_Chilled_06": { 
+                "Name": "Frozen Whole Bird"
+            },
+            "Item_Cook_A_01": { 
+                "Name": "Mushroom Skewer"
+            },
+            "Item_Cook_A_02": { 
+                "Name": "Steamed Mushrooms"
+            },
+            "Item_Cook_A_03": { 
+                "Name": "Steamed Fruit"
+            },
+            "Item_Cook_A_04": { 
+                "Name": "Steamed Fish"
+            },
+            "Item_Cook_A_05": { 
+                "Name": "Steamed Meat"
+            },
+            "Item_Cook_A_07": { 
+                "Name": "Fruit and Mushroom Mix"
+            },
+            "Item_Cook_A_08": { 
+                "Name": "Fish and Mushroom Skewer"
+            },
+            "Item_Cook_A_09": { 
+                "Name": "Meat and Mushroom Skewer"
+            },
+            "Item_Cook_A_10": { 
+                "Name": "Omelet"
+            },
+            "Item_Cook_A_11": { 
+                "Name": "Glazed Mushroom"
+            },
+            "Item_Cook_A_12": { 
+                "Name": "Glazed Meat"
+            },
+            "Item_Cook_A_13": { 
+                "Name": "Glazed Seafood"
+            },
+            "Item_Cook_A_14": { 
+                "Name": "Glazed Veggies"
+            },
+            "Item_Cook_B_01": { 
+                "Name": "Fried Wild Greens"
+            },
+            "Item_Cook_B_02": { 
+                "Name": "Simmered Fruits"
+            },
+            "Item_Cook_B_05": { 
+                "Name": "Fish Skewer"
+            },
+            "Item_Cook_B_06": { 
+                "Name": "Meat Skewer"
+            },
+            "Item_Cook_B_11": { 
+                "Name": "Copious Fried Wild Greens"
+            },
+            "Item_Cook_B_12": { 
+                "Name": "Copious Simmered Fruits"
+            },
+            "Item_Cook_B_13": { 
+                "Name": "Copious Mushroom Skewers"
+            },
+            "Item_Cook_B_15": { 
+                "Name": "Copious Seafood Skewers"
+            },
+            "Item_Cook_B_16": { 
+                "Name": "Copious Meat Skewers"
+            },
+            "Item_Cook_B_17": { 
+                "Name": "Meat and Seafood Fry"
+            },
+            "Item_Cook_B_18": { 
+                "Name": "Prime Meat and Seafood Fry"
+            },
+            "Item_Cook_B_19": { 
+                "Name": "Gourmet Meat and Seafood Fry"
+            },
+            "Item_Cook_B_20": { 
+                "Name": "Meat-Stuffed Pumpkin"
+            },
+            "Item_Cook_B_21": { 
+                "Name": "Sautéed Peppers"
+            },
+            "Item_Cook_B_22": { 
+                "Name": "Sautéed Nuts"
+            },
+            "Item_Cook_B_23": { 
+                "Name": "Seafood Skewers"
+            },
+            "Item_Cook_C_16": { 
+                "Name": "Fairy Tonic"
+            },
+            "Item_Cook_C_17": { 
+                "Name": "Elixir"
+            },
+            "Item_Cook_D_01": { 
+                "Name": "Salt-Grilled Mushrooms"
+            },
+            "Item_Cook_D_02": { 
+                "Name": "Salt-Grilled Greens"
+            },
+            "Item_Cook_D_03": { 
+                "Name": "Salt-Grilled Fish"
+            },
+            "Item_Cook_D_04": { 
+                "Name": "Salt-Grilled Meat"
+            },
+            "Item_Cook_D_05": { 
+                "Name": "Salt-Grilled Prime Meat"
+            },
+            "Item_Cook_D_06": { 
+                "Name": "Salt-Grilled Gourmet Meat"
+            },
+            "Item_Cook_D_07": { 
+                "Name": "Pepper Steak"
+            },
+            "Item_Cook_D_08": { 
+                "Name": "Pepper Seafood"
+            },
+            "Item_Cook_D_09": { 
+                "Name": "Salt-Grilled Crab"
+            },
+            "Item_Cook_D_10": { 
+                "Name": "Crab Stir-Fry"
+            },
+            "Item_Cook_E_01": { 
+                "Name": "Poultry Pilaf"
+            },
+            "Item_Cook_E_02": { 
+                "Name": "Prime Poultry Pilaf"
+            },
+            "Item_Cook_E_03": { 
+                "Name": "Gourmet Poultry Pilaf"
+            },
+            "Item_Cook_E_04": { 
+                "Name": "Fried Egg and Rice"
+            },
+            "Item_Cook_F_01": { 
+                "Name": "Creamy Meat Soup"
+            },
+            "Item_Cook_F_02": { 
+                "Name": "Creamy Seafood Soup"
+            },
+            "Item_Cook_F_03": { 
+                "Name": "Veggie Cream Soup"
+            },
+            "Item_Cook_F_04": { 
+                "Name": "Creamy Heart Soup"
+            },
+            "Item_Cook_G_02": { 
+                "Name": "Seafood Rice Balls"
+            },
+            "Item_Cook_G_03": { 
+                "Name": "Veggie Rice Balls"
+            },
+            "Item_Cook_G_04": { 
+                "Name": "Mushroom Rice Balls"
+            },
+            "Item_Cook_G_05": { 
+                "Name": "Meat and Rice Bowl"
+            },
+            "Item_Cook_G_06": { 
+                "Name": "Prime Meat and Rice Bowl"
+            },
+            "Item_Cook_G_09": { 
+                "Name": "Gourmet Meat and Rice Bowl"
+            },
+            "Item_Cook_G_10": { 
+                "Name": "Seafood Fried Rice"
+            },
+            "Item_Cook_G_11": { 
+                "Name": "Curry Pilaf"
+            },
+            "Item_Cook_G_12": { 
+                "Name": "Mushroom Risotto"
+            },
+            "Item_Cook_G_13": { 
+                "Name": "Vegetable Risotto"
+            },
+            "Item_Cook_G_14": { 
+                "Name": "Salmon Risotto"
+            },
+            "Item_Cook_G_15": { 
+                "Name": "Meaty Rice Balls"
+            },
+            "Item_Cook_G_16": { 
+                "Name": "Crab Omelet with Rice"
+            },
+            "Item_Cook_G_17": { 
+                "Name": "Crab Risotto"
+            },
+            "Item_Cook_H_01": { 
+                "Name": "Seafood Meunière"
+            },
+            "Item_Cook_H_02": { 
+                "Name": "Porgy Meunière"
+            },
+            "Item_Cook_H_03": { 
+                "Name": "Salmon Meunière"
+            },
+            "Item_Cook_I_01": { 
+                "Name": "Fruit Pie"
+            },
+            "Item_Cook_I_02": { 
+                "Name": "Apple Pie"
+            },
+            "Item_Cook_I_03": { 
+                "Name": "Egg Tart"
+            },
+            "Item_Cook_I_04": { 
+                "Name": "Meat Pie"
+            },
+            "Item_Cook_I_05": { 
+                "Name": "Carrot Cake"
+            },
+            "Item_Cook_I_06": { 
+                "Name": "Pumpkin Pie"
+            },
+            "Item_Cook_I_07": { 
+                "Name": "Hot Buttered Apple"
+            },
+            "Item_Cook_I_08": { 
+                "Name": "Honeyed Apple"
+            },
+            "Item_Cook_I_09": { 
+                "Name": "Honeyed Fruits"
+            },
+            "Item_Cook_I_10": { 
+                "Name": "Plain Crepe"
+            },
+            "Item_Cook_I_11": { 
+                "Name": "Wildberry Crepe"
+            },
+            "Item_Cook_I_12": { 
+                "Name": "Nutcake"
+            },
+            "Item_Cook_I_13": { 
+                "Name": "Fried Bananas"
+            },
+            "Item_Cook_I_14": { 
+                "Name": "Egg Pudding"
+            },
+            "Item_Cook_I_15": { 
+                "Name": "Fish Pie"
+            },
+            "Item_Cook_I_16": { 
+                "Name": "Honey Candy"
+            },
+            "Item_Cook_I_17": { 
+                "Name": "Honey Crepe"
+            },
+            "Item_Cook_J_01": { 
+                "Name": "Curry Rice"
+            },
+            "Item_Cook_J_02": { 
+                "Name": "Vegetable Curry"
+            },
+            "Item_Cook_J_03": { 
+                "Name": "Seafood Curry"
+            },
+            "Item_Cook_J_04": { 
+                "Name": "Poultry Curry"
+            },
+            "Item_Cook_J_05": { 
+                "Name": "Prime Poultry Curry"
+            },
+            "Item_Cook_J_06": { 
+                "Name": "Meat Curry"
+            },
+            "Item_Cook_J_07": { 
+                "Name": "Prime Meat Curry"
+            },
+            "Item_Cook_J_08": { 
+                "Name": "Gourmet Poultry Curry"
+            },
+            "Item_Cook_J_09": { 
+                "Name": "Gourmet Meat Curry"
+            },
+            "Item_Cook_K_01": { 
+                "Name": "Meat Stew"
+            },
+            "Item_Cook_K_02": { 
+                "Name": "Prime Meat Stew"
+            },
+            "Item_Cook_K_03": { 
+                "Name": "Pumpkin Stew"
+            },
+            "Item_Cook_K_04": { 
+                "Name": "Clam Chowder"
+            },
+            "Item_Cook_K_05": { 
+                "Name": "Gourmet Meat Stew"
+            },
+            "Item_Cook_K_06": { 
+                "Name": "Cream of Mushroom Soup"
+            },
+            "Item_Cook_K_07": { 
+                "Name": "Cream of Vegetable Soup"
+            },
+            "Item_Cook_K_08": { 
+                "Name": "Carrot Stew"
+            },
+            "Item_Cook_K_09": { 
+                "Name": "Milk"
+            },
+            "Item_Cook_L_01": { 
+                "Name": "Monster Stew"
+            },
+            "Item_Cook_L_02": { 
+                "Name": "Monster Soup"
+            },
+            "Item_Cook_L_03": { 
+                "Name": "Monster Cake"
+            },
+            "Item_Cook_L_04": { 
+                "Name": "Monster Rice Balls"
+            },
+            "Item_Cook_L_05": { 
+                "Name": "Monster Curry"
+            },
+            "Item_Cook_M_01": { 
+                "Name": "Wheat Bread"
+            },
+            "Item_Cook_N_01": { 
+                "Name": "Seafood Paella"
+            },
+            "Item_Cook_N_02": { 
+                "Name": "Fruitcake"
+            },
+            "Item_Cook_N_03": { 
+                "Name": "Vegetable Omelet"
+            },
+            "Item_Cook_N_04": { 
+                "Name": "Mushroom Omelet"
+            },
+            "Item_Cook_O_01": { 
+                "Name": "Dubious Food"
+            },
+            "Item_Cook_O_02": { 
+                "Name": "Rock-Hard Food"
+            },
+            "Item_Cook_P_01": { 
+                "Name": "Fragrant Mushroom Sauté"
+            },
+            "Item_Cook_P_02": { 
+                "Name": "Herb Sauté"
+            },
+            "Item_Cook_P_03": { 
+                "Name": " Spiced Meat Skewer"
+            },
+            "Item_Cook_P_04": { 
+                "Name": "Prime Spiced Meat Skewer"
+            },
+            "Item_Cook_P_05": { 
+                "Name": "Gourmet Spiced Meat Skewer"
             }
         },
         "KeyItems": {
