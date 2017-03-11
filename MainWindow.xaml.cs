@@ -199,8 +199,7 @@
             }
             catch (Exception ex)
             {
-                //throw new Exception(ex.Message);
-                Dispatcher.Invoke(() => this.ToggleControls("LoadError"));
+                Dispatcher.Invoke(() => this.LogError(ex.Message));
                 return false;
             }
         }
@@ -1012,11 +1011,6 @@
                 TabControl.IsEnabled = true;
                 this.Refresh.IsEnabled = true;
                 this.Save.IsEnabled = true;
-            }
-
-            if (state == "LoadError")
-            {
-                MessageBox.Show("Something went wrong");
             }
         }
 
