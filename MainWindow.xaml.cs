@@ -199,7 +199,7 @@
             }
             catch (Exception ex)
             {
-                Dispatcher.Invoke(() => this.LogError(ex.Message));
+                Dispatcher.Invoke(() => this.LogError(ex));
                 return false;
             }
         }
@@ -273,15 +273,19 @@
             }
             catch (ETCPGeckoException ex)
             {
-                MessageBox.Show(ex.Message);
-
                 this.connected = false;
+
+                MessageBox.Show(ex.Message);
             }
             catch (System.Net.Sockets.SocketException)
             {
-                MessageBox.Show("Wrong IP");
-
                 this.connected = false;
+
+                MessageBox.Show("Wrong IP");
+            }
+            catch (Exception ex)
+            {
+                this.LogError(ex);
             }
         }
 
@@ -289,7 +293,8 @@
         {
             try
             {
-                this.connected = this.tcpGecko.Disconnect();
+                this.connected = false;
+                this.tcpGecko.Disconnect();
 
                 this.ToggleControls("Disconnected");
             }
@@ -301,6 +306,12 @@
 
         private void SaveClick(object sender, RoutedEventArgs e)
         {
+            if (!this.changed.Any())
+            {
+                // Nothing to update
+                // MessageBox.Show("No changes have been made");
+            }
+
             // Grab the values from the relevant tab and poke them back to memory
             var tab = (TabItem)TabControl.SelectedItem;
 
@@ -392,7 +403,7 @@
             }
             catch (Exception ex)
             {
-                this.LogError(ex.Message);
+                this.LogError(ex);
             }
 
             // Here we can poke the values as it has and immediate effect
@@ -489,7 +500,7 @@
             }
             catch (Exception ex)
             {
-                this.LogError(ex.Message);
+                this.LogError(ex);
             }
 
 
@@ -564,7 +575,7 @@
             }
             catch (Exception ex)
             {
-                this.LogError(ex.Message);
+                this.LogError(ex);
             }
         }
 
@@ -1239,7 +1250,7 @@
             return name;
         }
 
-        private void LogError(string text)
+        private void LogError(Exception ex)
         {
             ErrorLog.Document.Blocks.Clear();
 
@@ -1251,9 +1262,12 @@
                 LineHeight = 14
             };
 
-            paragraph.Inlines.Add(text);
+            paragraph.Inlines.Add(ex.Message);
+            paragraph.Inlines.Add(ex.StackTrace);
 
             ErrorLog.Document.Blocks.Add(paragraph);
+
+            TabControl.IsEnabled = true;
 
             MessageBox.Show("Error caught. Check Error Tab");
         }
