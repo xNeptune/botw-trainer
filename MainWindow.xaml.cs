@@ -15,6 +15,7 @@
     using System.Windows.Documents;
     using System.Windows.Input;
     using System.Windows.Media;
+    using System.Windows.Threading;
 
     using BotwTrainer.Properties;
 
@@ -51,9 +52,13 @@
 
         private List<CheckBox> cbChanged = new List<CheckBox>();
 
-        private int itemsFound;
-
         private TCPGecko tcpGecko;
+
+        private DispatcherTimer timer;
+
+        private TimeSpan time;
+
+        private int itemsFound;
 
         private bool connected;
 
@@ -61,7 +66,7 @@
         {
             this.InitializeComponent();
 
-            this.Loaded += new RoutedEventHandler(MainWindowLoaded);
+            this.Loaded += this.MainWindowLoaded;
 
             IpAddress.Text = Settings.Default.IpAddress;
             this.version = Settings.Default.CurrentVersion;
@@ -110,7 +115,10 @@
             BowInv = 6,
             ShieldInv = 7,
             Speed = 8,
-            Mon = 9
+            Mon = 9,
+            Urbosa = 10,
+            Revali = 11,
+            Daruk = 12
         }
 
         private bool HasChanged
@@ -250,6 +258,11 @@
                 CurrentWeaponSlots.Text = this.tcpGecko.peek(0x3FCFB498).ToString(CultureInfo.InvariantCulture);
                 CurrentBowSlots.Text = this.tcpGecko.peek(0x3FD4BB50).ToString(CultureInfo.InvariantCulture);
                 CurrentShieldSlots.Text = this.tcpGecko.peek(0x3FCC0B40).ToString(CultureInfo.InvariantCulture);
+                /*
+                CurrentUrbosa.Text = this.tcpGecko.peek(0x3FCFFA80).ToString(CultureInfo.InvariantCulture);
+                CurrentRevali.Text = this.tcpGecko.peek(0x3FD5ED90).ToString(CultureInfo.InvariantCulture);
+                CurrentDaruk.Text = this.tcpGecko.peek(0x3FD50088).ToString(CultureInfo.InvariantCulture);
+                 */
 
                 this.Notification.Content = string.Format("Items found: {0}", this.itemsFound);
 
@@ -618,6 +631,23 @@
                         selected.Add(Cheat.ShieldInv);
                     }
 
+                    /*
+                    if (Urbosa.IsChecked == true)
+                    {
+                        selected.Add(Cheat.Urbosa);
+                    }
+
+                    if (Revali.IsChecked == true)
+                    {
+                        selected.Add(Cheat.Revali);
+                    }
+
+                    if (Daruk.IsChecked == true)
+                    {
+                        selected.Add(Cheat.Daruk);
+                    }
+                    */
+
                     this.SetCheats(selected);
 
                     Settings.Default.Controller = Controller.SelectedValue.ToString();
@@ -803,8 +833,8 @@
             try
             {
                 // Show extra info in 'Codes' tab to see if our cheats are looking in the correct place
-                var stamina1 = this.tcpGecko.peek(0x42439594).ToString("X");
-                var stamina2 = this.tcpGecko.peek(0x42439598).ToString("X");
+                var stamina1 = this.tcpGecko.peek(0x42439594).ToString("x8");
+                var stamina2 = this.tcpGecko.peek(0x42439598).ToString("x8");
                 this.StaminaData.Content = string.Format("[0x42439594 = {0}, 0x42439598 = {1}]", stamina1, stamina2);
             }
             catch (Exception ex)
@@ -899,6 +929,41 @@
             {
                 this.LogError(ex, "Shield Slot Code");
             }
+
+            /*
+            try
+            {
+                var urbosa1 = this.tcpGecko.peek(0x3FCFFA80);
+                var urbosa2 = this.tcpGecko.peek(0x4011BA2C);
+                this.UrbosaData.Content = string.Format("[0x3FCFFA80 = {0}, 0x4011BA2C = {1}]", urbosa1, urbosa2);
+            }
+            catch (Exception ex)
+            {
+                this.LogError(ex, "Urbosa Code");
+            }
+
+            try
+            {
+                var revali1 = this.tcpGecko.peek(0x3FD5ED90);
+                var revali2 = this.tcpGecko.peek(0x4011BA0C);
+                this.RevaliData.Content = string.Format("[0x3FD5ED90 = {0}, 0x4011BA0C = {1}]", revali1, revali2);
+            }
+            catch (Exception ex)
+            {
+                this.LogError(ex, "Urbosa Code");
+            }
+
+            try
+            {
+                var daruk1 = this.tcpGecko.peek(0x3FD50088);
+                var daruk2 = this.tcpGecko.peek(0x4011B9EC);
+                this.DarukData.Content = string.Format("[0x3FD50088 = {0}, 0x4011B9EC = {1}]", daruk1, daruk2);
+            }
+            catch (Exception ex)
+            {
+                this.LogError(ex, "Urbosa Code");
+            }
+             * */
         }
 
         private void SetCheats(ICollection<Cheat> cheats)
@@ -938,7 +1003,7 @@
 
                 if (cheats.Contains(Cheat.Health))
                 {
-                    var value = Convert.ToUInt32(CurrentHealth.Text);
+                    var value = uint.Parse(CurrentHealth.Text, NumberStyles.HexNumber);
 
                     codes.Add(0x30000000);
                     codes.Add(0x4225B4B0);
@@ -1088,6 +1153,53 @@
                     codes.Add(value);
                     codes.Add(0x00000000);
                 }
+
+                /*
+                if (cheats.Contains(Cheat.Urbosa))
+                {
+                    var value = Convert.ToUInt32(CurrentUrbosa.Text);
+
+                    codes.Add(0x00020000);
+                    codes.Add(0x3FCFFA80);
+                    codes.Add(value);
+                    codes.Add(0x00000000);
+
+                    codes.Add(0x00020000);
+                    codes.Add(0x4011BA2C);
+                    codes.Add(value);
+                    codes.Add(0x00000000);
+                }
+
+                if (cheats.Contains(Cheat.Revali))
+                {
+                    var value = Convert.ToUInt32(CurrentRevali.Text);
+
+                    codes.Add(0x00020000);
+                    codes.Add(0x3FD5ED90);
+                    codes.Add(value);
+                    codes.Add(0x00000000);
+
+                    codes.Add(0x00020000);
+                    codes.Add(0x4011BA0C);
+                    codes.Add(value);
+                    codes.Add(0x00000000);
+                }
+
+                if (cheats.Contains(Cheat.Daruk))
+                {
+                    var value = Convert.ToUInt32(CurrentDaruk.Text);
+
+                    codes.Add(0x00020000);
+                    codes.Add(0x3FD50088);
+                    codes.Add(value);
+                    codes.Add(0x00000000);
+
+                    codes.Add(0x00020000);
+                    codes.Add(0x4011B9EC);
+                    codes.Add(value);
+                    codes.Add(0x00000000);
+                }
+                */
 
                 // Write our selected codes
                 var address = CodeHandlerStart;
