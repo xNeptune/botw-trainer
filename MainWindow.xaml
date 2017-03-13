@@ -211,7 +211,7 @@
 
             <TabItem Header="Error Log" x:Name="Error" Margin="0">
                 <WrapPanel>
-                    <RichTextBox x:Name="ErrorLog" IsReadOnly="True" IsDocumentEnabled="False" Margin="10" BorderThickness="0">
+                    <RichTextBox x:Name="ErrorLog" IsReadOnly="True" Margin="10" BorderThickness="0">
                         <FlowDocument>
                             <Paragraph FontSize="13">
                                 Error data will appear here

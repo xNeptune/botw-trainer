@@ -330,6 +330,9 @@
 
         private void SaveClick(object sender, RoutedEventArgs e)
         {
+            // Clear old errors
+            ErrorLog.Document.Blocks.Clear();
+
             // Grab the values from the relevant tab and poke them back to memory
             var tab = (TabItem)TabControl.SelectedItem;
 
@@ -877,7 +880,6 @@
 
             try
             {
-
                 var bow1 = this.tcpGecko.peek(0x3FD4BB50);
                 var bow2 = this.tcpGecko.peek(0x4011126C);
                 this.BowSlotsData.Content = string.Format("[0x3FD4BB50 = {0}, 0x4011126C = {1}]", bow1, bow2);
@@ -1380,8 +1382,6 @@
 
         private void LogError(Exception ex, string more = null)
         {
-            ErrorLog.Document.Blocks.Clear();
-
             var paragraph = new Paragraph
             {
                 FontSize = 14,
@@ -1392,13 +1392,15 @@
 
             if (more != null)
             {
-                paragraph.Inlines.Add(more);
+                paragraph.Inlines.Add(more + Environment.NewLine);
             }
+
             paragraph.Inlines.Add(ex.Message);
             paragraph.Inlines.Add(ex.StackTrace);
-            
 
             ErrorLog.Document.Blocks.Add(paragraph);
+
+            ErrorLog.Document.Blocks.Add(new Paragraph());
 
             TabControl.IsEnabled = true;
 
