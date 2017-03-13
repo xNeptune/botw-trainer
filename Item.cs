@@ -39,6 +39,14 @@
             }
         }
 
+        public string ValueAddressHex
+        {
+            get
+            {
+                return (this.BaseAddress + 0x8).ToString("x8").ToUpper();
+            }
+        }
+
         public uint Equipped { get; set; }
 
         public bool EquippedBool

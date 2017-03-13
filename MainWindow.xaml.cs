@@ -357,7 +357,7 @@
                     {
                         foreach (var item in weaponList)
                         {
-                            var foundTextBox = (TextBox)this.FindName("Item_" + item.BaseAddressHex);
+                            var foundTextBox = (TextBox)this.FindName("Value_" + item.ValueAddressHex);
                             if (foundTextBox != null)
                             {
                                 var offset = (uint)(SaveItemStart + (y * 0x8));
@@ -375,7 +375,7 @@
 
                         foreach (var item in bowList)
                         {
-                            var foundTextBox = (TextBox)this.FindName("Item_" + item.BaseAddressHex);
+                            var foundTextBox = (TextBox)this.FindName("Value_" + item.ValueAddressHex);
                             if (foundTextBox != null)
                             {
                                 var offset = (uint)(SaveItemStart + (y * 0x8));
@@ -394,7 +394,7 @@
 
                         foreach (var item in shieldList)
                         {
-                            var foundTextBox = (TextBox)this.FindName("Item_" + item.BaseAddressHex);
+                            var foundTextBox = (TextBox)this.FindName("Value_" + item.ValueAddressHex);
                             if (foundTextBox != null)
                             {
                                 var offset = (uint)(SaveItemStart + (y * 0x8));
@@ -415,7 +415,7 @@
                         {
                             var offset = (uint)(SaveItemStart + (y * 0x8));
 
-                            var foundTextBox = (TextBox)this.FindName("Item_" + item.BaseAddressHex);
+                            var foundTextBox = (TextBox)this.FindName("Value_" + item.ValueAddressHex);
                             if (foundTextBox != null)
                             {
                                 this.tcpGecko.poke32(offset, Convert.ToUInt32(foundTextBox.Text));
@@ -431,51 +431,78 @@
                 this.LogError(ex);
             }
 
-            // Here we can poke the values as it has and immediate effect
-            var page = 0;
-            switch (tab.Name)
-            {
-                case "Weapons":
-                    page = 0;
-                    break;
-                case "Bows":
-                    page = 1;
-                    break;
-                case "Arrows":
-                    page = 2;
-                    break;
-                case "Shields":
-                    page = 3;
-                    break;
-                case "Armor":
-                    page = 4;
-                    break;
-                case "Materials":
-                    page = 7;
-                    break;
-                case "Food":
-                    page = 8;
-                    break;
-                case "KeyItems":
-                    page = 9;
-                    break;
-            }
-
             try
             {
                 // TODO: Only update what has changed to avoid corruption.
                 foreach (var tb in this.tbChanged)
                 {
                     // These text boxes have been edited
-                    var name = tb.Name.Split('_');
+                    var type = tb.Name.Split('_')[0];
+                    var tag = tb.Tag;
+
+                    if (type == "Id")
+                    {
+                        var newName = Encoding.Default.GetBytes(tb.Text);
+
+                        var add = uint.Parse(tag.ToString(), NumberStyles.HexNumber);
+                        var thisItem = this.items.Single(i => i.NameStart == add);
+
+                        //clear current name
+                        this.tcpGecko.poke32(add, 0x0);
+                        this.tcpGecko.poke32(add + 0x4, 0x0);
+                        this.tcpGecko.poke32(add + 0x8, 0x0);
+                        this.tcpGecko.poke32(add + 0xC, 0x0);
+                        this.tcpGecko.poke32(add + 0x10, 0x0);
+                        this.tcpGecko.poke32(add + 0x14, 0x0);
+
+                        uint x = 0x0;
+                        foreach (var b in newName)
+                        {
+                            this.tcpGecko.poke08(add + x, b);
+                            x = x + 0x1;
+                        }
+
+                        thisItem.Id = tb.Text;
+
+                        // Name
+                        var foundTextBox = (TextBox)this.FindName("JsonName_" + tag);
+                        if (foundTextBox != null)
+                        {
+                            foundTextBox.Text = this.GetNameFromId(thisItem.Id, thisItem.PageName);
+                        }
+                    }
+
+                    if (type == "Value")
+                    {
+                        var address = uint.Parse(tag.ToString(), NumberStyles.HexNumber);
+                        int val;
+                        bool parsed = int.TryParse(tb.Text, out val);
+                        if (parsed)
+                        {
+                            this.tcpGecko.poke32(address, Convert.ToUInt32(val));
+                        }
+                    }
+
+                    if (type == "Mod")
+                    {
+                        var address = uint.Parse(tag.ToString(), NumberStyles.HexNumber);
+                        uint val;
+                        bool parsed = uint.TryParse(tb.Text, NumberStyles.HexNumber, CultureInfo.CurrentCulture, out val);
+                        if (parsed)
+                        {
+                            this.tcpGecko.poke32(address, val);
+                        }
+                    }
                 }
 
+                /*
                 var collection = this.items.Where(x => x.Page == page);
                 if (page == 4)
                 {
                     collection = this.items.Where(i => i.Page == 4 || i.Page == 5 || i.Page == 6);
                 }
 
+                
                 foreach (var item in collection)
                 {
                     // Id
@@ -523,6 +550,7 @@
                     this.FindAndPoke(item.Modifier4Address, item.BaseAddress + 0x68);
                     this.FindAndPoke(item.Modifier5Address, item.BaseAddress + 0x6C);
                 }
+                */
             }
             catch (Exception ex)
             {
@@ -660,7 +688,8 @@
                 // Id
                 var id = new TextBox
                 {
-                    Text = item.Id, 
+                    Text = item.Id,
+                    Tag = item.NameStartHex,
                     ToolTip = item.NameStartHex,
                     Margin = new Thickness(0), 
                     Height = 22, 
@@ -679,12 +708,14 @@
 
                 this.RegisterName("Id_" + item.NameStartHex, id);
 
+                // Current item is red
                 if (item.EquippedBool)
                 {
                     id.Foreground = Brushes.Red;
                     name.Foreground = Brushes.Red;
                 }
 
+                // add first 2 fields
                 Grid.SetRow(name, x);
                 Grid.SetColumn(name, 0);
                 grid.Children.Add(name);
@@ -693,35 +724,35 @@
                 Grid.SetColumn(id, 1);
                 grid.Children.Add(id);
 
-                // Value
+                // Value to 0 if its FFFFF etc
                 var value = item.Value;
                 if (value > int.MaxValue)
                 {
                     value = 0;
                 }
 
-                var val = this.GenerateGridTextBox(value.ToString(), item.BaseAddressHex, x, 2, 70);
+                var val = this.GenerateGridTextBox(value.ToString(), item.ValueAddressHex, "Value_", x, 2, 70);
                 val.PreviewTextInput += this.NumberValidationTextBox;
                 grid.Children.Add(val);
 
                 // Mod1
-                var mtb1 = this.GenerateGridTextBox(item.Modifier1Value, item.Modifier1Address, x, 3, 70);
+                var mtb1 = this.GenerateGridTextBox(item.Modifier1Value, item.Modifier1Address, "Mod_", x, 3, 70);
                 grid.Children.Add(mtb1);
 
                 // Mod2
-                var mtb2 = this.GenerateGridTextBox(item.Modifier2Value, item.Modifier2Address, x, 4, 70);
+                var mtb2 = this.GenerateGridTextBox(item.Modifier2Value, item.Modifier2Address, "Mod_", x, 4, 70);
                 grid.Children.Add(mtb2);
 
                 // Mod3s
-                var mtb3 = this.GenerateGridTextBox(item.Modifier3Value, item.Modifier3Address, x, 5, 70);
+                var mtb3 = this.GenerateGridTextBox(item.Modifier3Value, item.Modifier3Address, "Mod_", x, 5, 70);
                 grid.Children.Add(mtb3);
 
                 // Mod4
-                var mtb4 = this.GenerateGridTextBox(item.Modifier4Value, item.Modifier4Address, x, 6, 70);
+                var mtb4 = this.GenerateGridTextBox(item.Modifier4Value, item.Modifier4Address, "Mod_", x, 6, 70);
                 grid.Children.Add(mtb4);
 
                 // Mod5
-                var mtb5 = this.GenerateGridTextBox(item.Modifier5Value, item.Modifier5Address, x, 7, 70);
+                var mtb5 = this.GenerateGridTextBox(item.Modifier5Value, item.Modifier5Address, "Mod_", x, 7, 70);
                 grid.Children.Add(mtb5);
 
                 // dropdown
@@ -1211,16 +1242,17 @@
             return data;
         }
 
-        private TextBox GenerateGridTextBox(string value, string field, int x, int col, int width = 75)
+        private TextBox GenerateGridTextBox(string value, string field, string type, int x, int col, int width = 75)
         {
             var tb = new TextBox
             {
                 Text = value, 
                 ToolTip = field,
+                Tag = field,
                 Width = width, 
                 Height = 22, 
                 Margin = new Thickness(10, 0, 10, 0), 
-                Name = "Item_" + field, 
+                Name = type + field, 
                 IsEnabled = true, 
                 CharacterCasing = CharacterCasing.Upper, 
                 MaxLength = 8
@@ -1228,13 +1260,13 @@
 
             tb.TextChanged += this.TextChanged;
 
-            var check = (TextBox)this.FindName("Item_" + field);
+            var check = (TextBox)this.FindName(type + field);
             if (check != null)
             {
-                this.UnregisterName("Item_" + field);
+                this.UnregisterName(type + field);
             }
 
-            this.RegisterName("Item_" + field, tb);
+            this.RegisterName(type + field, tb);
 
             Grid.SetRow(tb, x);
             Grid.SetColumn(tb, col);
