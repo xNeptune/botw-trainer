@@ -823,6 +823,9 @@
             "Armor_048_Lower": {
                 "Name": "Barbarian Wraps"
             },
+            "Armor_049_Lower": {
+                "Name": "Sand Boots"
+            },
             "Armor_053_Head": {
                 "Name": "Gerudo Veil"
             },
@@ -1285,7 +1288,7 @@
             "Armor_140_Head": {
                 "Name": "Amber Earrings ****"
             },
-            "Armor_140_Lower": {
+            "Armor_141_Lower": {
                 "Name": "Snow Boots"
             },
             "Armor_148_Upper": {
