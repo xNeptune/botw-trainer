@@ -45,7 +45,11 @@
 
         private readonly string version;
 
-        private List<TextBox> changed = new List<TextBox>(); 
+        private List<TextBox> tbChanged = new List<TextBox>();
+
+        private List<ComboBox> ddChanged = new List<ComboBox>();
+
+        private List<CheckBox> cbChanged = new List<CheckBox>();
 
         private int itemsFound;
 
@@ -56,6 +60,8 @@
         public MainWindow()
         {
             this.InitializeComponent();
+
+            this.Loaded += new RoutedEventHandler(MainWindowLoaded);
 
             IpAddress.Text = Settings.Default.IpAddress;
             this.version = Settings.Default.CurrentVersion;
@@ -105,6 +111,14 @@
             ShieldInv = 7,
             Speed = 8,
             Mon = 9
+        }
+
+        private bool HasChanged
+        {
+            get
+            {
+                return this.tbChanged.Any() || this.cbChanged.Any() || this.ddChanged.Any();
+            }
         }
 
         private bool LoadDataAsync()
@@ -240,6 +254,12 @@
                 this.Notification.Content = string.Format("Items found: {0}", this.itemsFound);
 
                 this.ToggleControls("DataLoaded");
+
+                this.cbChanged.Clear();
+                this.tbChanged.Clear();
+                this.ddChanged.Clear();
+
+                this.Save.IsEnabled = this.HasChanged;
             }
         }
 
@@ -313,11 +333,11 @@
             // Grab the values from the relevant tab and poke them back to memory
             var tab = (TabItem)TabControl.SelectedItem;
 
-            if (!this.changed.Any() && !Equals(tab, this.Codes))
+            if (!this.HasChanged)
             {
                 // Nothing to update
-                //MessageBox.Show("No changes have been made");
-                //return;
+                MessageBox.Show("No changes have been made");
+                return;
             }
 
             try
@@ -444,7 +464,7 @@
             try
             {
                 // TODO: Only update what has changed to avoid corruption.
-                foreach (var tb in this.changed)
+                foreach (var tb in this.tbChanged)
                 {
                     // These text boxes have been edited
                     var name = tb.Name.Split('_');
@@ -573,11 +593,15 @@
                     Settings.Default.Save();
                 }
 
-                //this.DebugData();
-                //Debug.UpdateLayout();
+                this.DebugData();
+                Debug.UpdateLayout();
 
                 // clear changed after save
-                this.changed.Clear();
+                this.tbChanged.Clear();
+                this.cbChanged.Clear();
+                this.ddChanged.Clear();
+
+                this.Save.IsEnabled = false;
             }
             catch (Exception ex)
             {
@@ -737,11 +761,6 @@
             tab.Content = scroll;
         }
 
-        private void TextChanged(object sender, TextChangedEventArgs textChangedEventArgs)
-        {
-            this.changed.Add(sender as TextBox);
-        }
-
         private void DebugData()
         { 
             // Debug Grid data
@@ -760,9 +779,10 @@
             }
 
             try
-            { 
-                var health = this.tcpGecko.peek(0x439B6558);
-                this.HealthData.Content = string.Format("0x439B6558 = {0}", health);
+            {
+                var health1 = this.tcpGecko.peek(0x4225B4B0);
+                var health2 = this.tcpGecko.peek(health1 + 0x430);
+                this.HealthData.Content = string.Format("0x{0} = {1}", (health1 + 0430).ToString("x8").ToUpper(), health2);
             }
             catch (Exception ex)
             {
@@ -1057,14 +1077,14 @@
         {
             if (state == "Connected")
             {
-                Load.IsEnabled = this.connected;
-                this.Connect.IsEnabled = !this.connected;
+                this.Load.IsEnabled = true;
+                this.Connect.IsEnabled = false;
                 this.Connect.Visibility = Visibility.Hidden;
 
-                this.Disconnect.IsEnabled = this.connected;
+                this.Disconnect.IsEnabled = true;
                 this.Disconnect.Visibility = Visibility.Visible;
 
-                this.IpAddress.IsEnabled = !this.connected;
+                this.IpAddress.IsEnabled = false;
 
                 if (this.Load.Visibility == Visibility.Hidden)
                 {
@@ -1074,15 +1094,13 @@
 
             if (state == "Disconnected")
             {
-                Load.IsEnabled = !this.connected;
+                this.Load.IsEnabled = false;
                 this.Connect.IsEnabled = true;
                 this.Connect.Visibility = Visibility.Visible;
                 this.Disconnect.IsEnabled = false;
                 this.Disconnect.Visibility = Visibility.Hidden;
-                this.IpAddress.IsEnabled = this.connected;
+                this.IpAddress.IsEnabled = true;
 
-                //TabControl.IsEnabled = false;
-                this.Save.IsEnabled = false;
                 this.Refresh.IsEnabled = false;
             }
 
@@ -1092,7 +1110,6 @@
                 this.Load.IsEnabled = false;
                 this.Load.Visibility = Visibility.Hidden;
 
-                this.Save.IsEnabled = false;
                 this.Refresh.IsEnabled = false;
             }
 
@@ -1100,7 +1117,6 @@
             {
                 TabControl.IsEnabled = true;
                 this.Refresh.IsEnabled = true;
-                this.Save.IsEnabled = true;
             }
         }
 
@@ -1120,11 +1136,10 @@
             if (Debug.IsSelected || Help.IsSelected || Credits.IsSelected)
             {
                 this.Save.IsEnabled = false;
+                return;
             }
-            else
-            {
-                this.Save.IsEnabled = true;
-            }
+
+            this.Save.IsEnabled = this.HasChanged;
         }
 
         private void ClientDownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
@@ -1356,6 +1371,32 @@
             TabControl.IsEnabled = true;
 
             MessageBox.Show("Error caught. Check Error Tab");
+        }
+
+        private void SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            this.ddChanged.Add(sender as ComboBox);
+
+            this.Save.IsEnabled = this.HasChanged;
+        }
+
+        private void TextChanged(object sender, TextChangedEventArgs textChangedEventArgs)
+        {
+            this.tbChanged.Add(sender as TextBox);
+
+            this.Save.IsEnabled = this.HasChanged;
+        }
+
+        private void CheckBoxChanged(object sender, RoutedEventArgs e)
+        {
+            this.cbChanged.Add(sender as CheckBox);
+
+            this.Save.IsEnabled = this.HasChanged;
+        }
+
+        private void MainWindowLoaded(object sender, RoutedEventArgs e)
+        {
+            this.Save.IsEnabled = this.HasChanged;
         }
     }
 }
