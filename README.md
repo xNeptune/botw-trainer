@@ -9,6 +9,10 @@ This is not done yet and is still being improved. If you see an error in the cod
 
 Make sure you use the latest files, https://github.com/BullyWiiPlaza/Gecko-U-Updater is a great tool for this.
 
+The latest version of the compiled trainer can be found [here](https://github.com/joffnerd/botw-trainer/releases).
+
+To avoid crashing and unwanted errors please wait until you have loaded into your save file before using the "connect" feature on the trainer.
+
 ## How To Use
 
 1. Go to Homebrew
