@@ -245,10 +245,14 @@
 
         private void ConnectClick(object sender, RoutedEventArgs e)
         {
-            this.tcpGecko = new TCPGecko(this.IpAddress.Text, 7331);
-
             try
             {
+                // cause error to test
+                //var foundTextBox = (TextBox)this.FindName("Item_123");
+                //foundTextBox.Text = "error";
+
+                this.tcpGecko = new TCPGecko(this.IpAddress.Text, 7331);
+
                 this.connected = this.tcpGecko.Connect();
 
                 if (this.connected)
@@ -306,14 +310,15 @@
 
         private void SaveClick(object sender, RoutedEventArgs e)
         {
-            if (!this.changed.Any())
-            {
-                // Nothing to update
-                // MessageBox.Show("No changes have been made");
-            }
-
             // Grab the values from the relevant tab and poke them back to memory
             var tab = (TabItem)TabControl.SelectedItem;
+
+            if (!this.changed.Any() && !Equals(tab, this.Codes))
+            {
+                // Nothing to update
+                //MessageBox.Show("No changes have been made");
+                //return;
+            }
 
             try
             {
@@ -442,6 +447,7 @@
                 foreach (var tb in this.changed)
                 {
                     // These text boxes have been edited
+                    var name = tb.Name.Split('_');
                 }
 
                 var collection = this.items.Where(x => x.Page == page);
@@ -453,7 +459,7 @@
                 foreach (var item in collection)
                 {
                     // Id
-                    var foundTextBox = (TextBox)this.FindName("Name_" + item.NameStartHex);
+                    var foundTextBox = (TextBox)this.FindName("Id_" + item.NameStartHex);
                     if (foundTextBox != null)
                     {
                         var newName = Encoding.Default.GetBytes(foundTextBox.Text);
@@ -567,8 +573,8 @@
                     Settings.Default.Save();
                 }
 
-                this.DebugData();
-                Debug.UpdateLayout();
+                //this.DebugData();
+                //Debug.UpdateLayout();
 
                 // clear changed after save
                 this.changed.Clear();
@@ -605,7 +611,7 @@
             {
                 grid.RowDefinitions.Add(new RowDefinition());
 
-                // Name
+                // Name - Readonly data
                 var name = new TextBox
                 {
                     Text = item.Name,
@@ -617,6 +623,7 @@
                     Name = "JsonName_" + item.NameStartHex
                 };
 
+                // we register the name so we can update it later without having to refresh
                 var check = (TextBox)this.FindName("JsonName_" + item.NameStartHex);
                 if (check != null)
                 {
@@ -624,6 +631,7 @@
                 }
 
                 this.RegisterName("JsonName_" + item.NameStartHex, name);
+                
 
                 // Id
                 var id = new TextBox
@@ -633,19 +641,19 @@
                     Margin = new Thickness(0), 
                     Height = 22, 
                     Width = 130,
-                    IsReadOnly = false, 
-                    Name = "Name_" + item.NameStartHex
+                    IsReadOnly = false,
+                    Name = "Id_" + item.NameStartHex
                 };
 
                 id.TextChanged += this.TextChanged;
 
-                check = (TextBox)this.FindName("Name_" + item.NameStartHex);
+                check = (TextBox)this.FindName("Id_" + item.NameStartHex);
                 if (check != null)
                 {
-                    this.UnregisterName("Name_" + item.NameStartHex);
+                    this.UnregisterName("Id_" + item.NameStartHex);
                 }
 
-                this.RegisterName("Name_" + item.NameStartHex, id);
+                this.RegisterName("Id_" + item.NameStartHex, id);
 
                 if (item.EquippedBool)
                 {
@@ -735,243 +743,314 @@
         }
 
         private void DebugData()
-        {
+        { 
             // Debug Grid data
             DebugGrid.ItemsSource = this.items;
 
-            // Show extra info in 'Codes' tab to see if our cheats are looking in the correct place
-            var stamina1 = this.tcpGecko.peek(0x42439594).ToString("X");
-            var stamina2 = this.tcpGecko.peek(0x42439598).ToString("X");
-            this.StaminaData.Content = string.Format("[0x42439594 = {0}, 0x42439598 = {1}]", stamina1, stamina2);
+            try
+            {
+                // Show extra info in 'Codes' tab to see if our cheats are looking in the correct place
+                var stamina1 = this.tcpGecko.peek(0x42439594).ToString("X");
+                var stamina2 = this.tcpGecko.peek(0x42439598).ToString("X");
+                this.StaminaData.Content = string.Format("[0x42439594 = {0}, 0x42439598 = {1}]", stamina1, stamina2);
+            }
+            catch (Exception ex)
+            {
+                this.LogError(ex, "Stamina Code");
+            }
 
-            var health = this.tcpGecko.peek(0x439B6558);
-            this.HealthData.Content = string.Format("0x439B6558 = {0}", health);
+            try
+            { 
+                var health = this.tcpGecko.peek(0x439B6558);
+                this.HealthData.Content = string.Format("0x439B6558 = {0}", health);
+            }
+            catch (Exception ex)
+            {
+                this.LogError(ex, "Health Code");
+            }
 
-            var rupee1 = this.tcpGecko.peek(0x3FC92D10);
-            var rupee2 = this.tcpGecko.peek(0x4010AA0C);
-            this.RupeeData.Content = string.Format("[0x3FC92D10 = {0}, 0x4010AA0C = {1}]", rupee1, rupee2);
+            try
+            { 
+                var rupee1 = this.tcpGecko.peek(0x3FC92D10);
+                var rupee2 = this.tcpGecko.peek(0x4010AA0C);
+                this.RupeeData.Content = string.Format("[0x3FC92D10 = {0}, 0x4010AA0C = {1}]", rupee1, rupee2);
+            }
+            catch (Exception ex)
+            {
+                this.LogError(ex, "Rupee Code");
+            }
 
-            var mon1 = this.tcpGecko.peek(0x3FD41158);
-            var mon2 = this.tcpGecko.peek(0x4010B14C);
-            this.MonData.Content = string.Format("[0x3FD41158 = {0}, 0x4010B14C = {1}]", mon1, mon2);
+            try
+            { 
+                var mon1 = this.tcpGecko.peek(0x3FD41158);
+                var mon2 = this.tcpGecko.peek(0x4010B14C);
+                this.MonData.Content = string.Format("[0x3FD41158 = {0}, 0x4010B14C = {1}]", mon1, mon2);
+            }
+            catch (Exception ex)
+            {
+                this.LogError(ex, "Mon Code");
+            }
 
-            var run = this.tcpGecko.peek(0x43A88CC4).ToString("X");
-            this.RunData.Content = string.Format("0x43A88CC4 = {0} (Redundant really due to speed code)", run);
+            try
+            { 
+                var run = this.tcpGecko.peek(0x43A88CC4).ToString("X");
+                this.RunData.Content = string.Format("0x43A88CC4 = {0} (Redundant really due to speed code)", run);
+            }
+            catch (Exception ex)
+            {
+                this.LogError(ex, "Run Code");
+            }
 
-            var speed = this.tcpGecko.peek(0x439BF514).ToString("X");
-            this.SpeedData.Content = string.Format("0x439BF514 = {0}", speed);
+            try
+            { 
+                var speed = this.tcpGecko.peek(0x439BF514).ToString("X");
+                this.SpeedData.Content = string.Format("0x439BF514 = {0}", speed);
+            }
+            catch (Exception ex)
+            {
+                this.LogError(ex, "Speed Code");
+            }
 
-            this.MoonJumpData.Content = "Hold X";
+                this.MoonJumpData.Content = "Hold X";
 
-            var weapon1 = this.tcpGecko.peek(0x3FCFB498);
-            var weapon2 = this.tcpGecko.peek(0x4010B34C);
-            this.WeaponSlotsData.Content = string.Format("[0x3FCFB498 = {0}, 0x4010B34C = {1}]", weapon1, weapon2);
+            try
+            { 
+                var weapon1 = this.tcpGecko.peek(0x3FCFB498);
+                var weapon2 = this.tcpGecko.peek(0x4010B34C);
+                this.WeaponSlotsData.Content = string.Format("[0x3FCFB498 = {0}, 0x4010B34C = {1}]", weapon1, weapon2);
+            }
+            catch (Exception ex)
+            {
+                this.LogError(ex, "Weapon Slot Code");
+            }
 
-            var bow1 = this.tcpGecko.peek(0x3FD4BB50);
-            var bow2 = this.tcpGecko.peek(0x4011126C);
-            this.BowSlotsData.Content = string.Format("[0x3FD4BB50 = {0}, 0x4011126C = {1}]", bow1, bow2);
+            try
+            {
 
-            var shield1 = this.tcpGecko.peek(0x3FCC0B40);
-            var shield2 = this.tcpGecko.peek(0x4011128C);
-            this.ShieldSlotsData.Content = string.Format("[0x3FCC0B40 = {0}, 0x4011128C = {1}]", shield1, shield2);
+                var bow1 = this.tcpGecko.peek(0x3FD4BB50);
+                var bow2 = this.tcpGecko.peek(0x4011126C);
+                this.BowSlotsData.Content = string.Format("[0x3FD4BB50 = {0}, 0x4011126C = {1}]", bow1, bow2);
+            }
+            catch (Exception ex)
+            {
+                this.LogError(ex, "Bow Slot Code");
+            }
+
+            try
+            {
+                var shield1 = this.tcpGecko.peek(0x3FCC0B40);
+                var shield2 = this.tcpGecko.peek(0x4011128C);
+                this.ShieldSlotsData.Content = string.Format("[0x3FCC0B40 = {0}, 0x4011128C = {1}]", shield1, shield2);
+            }
+            catch (Exception ex)
+            {
+                this.LogError(ex, "Shield Slot Code");
+            }
         }
 
         private void SetCheats(ICollection<Cheat> cheats)
         {
-            // Disable codehandler before we modify
-            this.tcpGecko.poke32(CodeHandlerEnabled, 0x00000000);
-
-            // clear current codes
-            var clear = CodeHandlerStart;
-            while (clear <= CodeHandlerEnd)
+            try
             {
-                this.tcpGecko.poke32(clear, 0x0);
-                clear += 0x4;
-            }
+                // Disable codehandler before we modify
+                this.tcpGecko.poke32(CodeHandlerEnabled, 0x00000000);
 
-            var codes = new List<uint>();
-
-            // TODO: Consider moving first and last line of each to loop at the end to avoid duplicating them
-            // Most are 32 bit writes
-            if (cheats.Contains(Cheat.Stamina))
-            {
-                // Max 453B8000
-                var value = uint.Parse(CurrentStamina.Text, NumberStyles.HexNumber);
-
-                codes.Add(0x00020000);
-                codes.Add(0x42439594);
-                codes.Add(value);
-                codes.Add(0x00000000);
-
-                codes.Add(0x00020000);
-                codes.Add(0x42439598);
-                codes.Add(value);
-                codes.Add(0x00000000);
-            }
-
-            if (cheats.Contains(Cheat.Health))
-            {
-                var value = Convert.ToUInt32(CurrentHealth.Text);
-
-                codes.Add(0x30000000);
-                codes.Add(0x4225B4B0);
-                codes.Add(0x43000000);
-                codes.Add(0x46000000);
-                codes.Add(0x00120430);
-                codes.Add(value);
-                codes.Add(0xD0000000);
-                codes.Add(0xDEADCAFE);
-            }
-
-            if (cheats.Contains(Cheat.Run))
-            {
-                codes.Add(0x00020000);
-                codes.Add(0x43A88CC4);
-                codes.Add(0x3FC00000);
-                codes.Add(0x00000000);
-            }
-
-            if (cheats.Contains(Cheat.Speed))
-            {
-                var value = uint.Parse(CbSpeed.SelectedValue.ToString(), NumberStyles.HexNumber);
-
-                //codes.Add(0x09020000);
-                //codes.Add(0x102F48A8);
-                //codes.Add(0x00004000);
-                //codes.Add(0x00000000);
-
-                codes.Add(0x00020000);
-                codes.Add(0x439BF514);
-                codes.Add(value);
-                codes.Add(0x00000000);
-
-                //codes.Add(0xD0000000);
-                //codes.Add(0xDEADCAFE);
-            }
-
-            if (cheats.Contains(Cheat.Rupees))
-            {
-                var value = Convert.ToUInt32(CurrentRupees.Text);
-
-                codes.Add(0x00020000);
-                codes.Add(0x3FC92D10);
-                codes.Add(value);
-                codes.Add(0x00000000);
-
-                codes.Add(0x00020000);
-                codes.Add(0x4010AA0C);
-                codes.Add(value);
-                codes.Add(0x00000000);
-            }
-
-            if (cheats.Contains(Cheat.Mon))
-            {
-                var value = Convert.ToUInt32(CurrentMon.Text);
-
-                codes.Add(0x00020000);
-                codes.Add(0x3FD41158);
-                codes.Add(value);
-                codes.Add(0x00000000);
-
-                codes.Add(0x00020000);
-                codes.Add(0x4010B14C);
-                codes.Add(value);
-                codes.Add(0x00000000);
-            }
-
-            if (cheats.Contains(Cheat.MoonJump))
-            {
-                uint activator;
-                uint button;
-                if (this.Controller.SelectedValue.ToString() == "Pro")
+                // clear current codes
+                var clear = CodeHandlerStart;
+                while (clear <= CodeHandlerEnd)
                 {
-                    activator = 0x112671AB;
-                    button = 0x00000008;
-                }
-                else
-                {
-                    activator = 0x102F48AA;
-                    button = 0x00000020;
+                    this.tcpGecko.poke32(clear, 0x0);
+                    clear += 0x4;
                 }
 
-                codes.Add(0x09000000);
-                codes.Add(activator);
-                codes.Add(button);
-                codes.Add(0x00000000);
-                codes.Add(0x00020000);
-                codes.Add(0x439BF528);
-                codes.Add(0xBE800000);
-                codes.Add(0x00000000);
-                codes.Add(0xD0000000);
-                codes.Add(0xDEADCAFE);
+                var codes = new List<uint>();
 
-                codes.Add(0x06000000);
-                codes.Add(activator);
-                codes.Add(button);
-                codes.Add(0x00000000);
-                codes.Add(0x00020000);
-                codes.Add(0x439BF528);
-                codes.Add(0x3F800000);
-                codes.Add(0x00000000);
-                codes.Add(0xD0000000);
-                codes.Add(0xDEADCAFE);
+                // TODO: Consider moving first and last line of each to loop at the end to avoid duplicating them
+                // Most are 32 bit writes
+                if (cheats.Contains(Cheat.Stamina))
+                {
+                    // Max 453B8000
+                    var value = uint.Parse(CurrentStamina.Text, NumberStyles.HexNumber);
+
+                    codes.Add(0x00020000);
+                    codes.Add(0x42439594);
+                    codes.Add(value);
+                    codes.Add(0x00000000);
+
+                    codes.Add(0x00020000);
+                    codes.Add(0x42439598);
+                    codes.Add(value);
+                    codes.Add(0x00000000);
+                }
+
+                if (cheats.Contains(Cheat.Health))
+                {
+                    var value = Convert.ToUInt32(CurrentHealth.Text);
+
+                    codes.Add(0x30000000);
+                    codes.Add(0x4225B4B0);
+                    codes.Add(0x43000000);
+                    codes.Add(0x46000000);
+                    codes.Add(0x00120430);
+                    codes.Add(value);
+                    codes.Add(0xD0000000);
+                    codes.Add(0xDEADCAFE);
+                }
+
+                if (cheats.Contains(Cheat.Run))
+                {
+                    codes.Add(0x00020000);
+                    codes.Add(0x43A88CC4);
+                    codes.Add(0x3FC00000);
+                    codes.Add(0x00000000);
+                }
+
+                if (cheats.Contains(Cheat.Speed))
+                {
+                    var value = uint.Parse(CbSpeed.SelectedValue.ToString(), NumberStyles.HexNumber);
+
+                    //codes.Add(0x09020000);
+                    //codes.Add(0x102F48A8);
+                    //codes.Add(0x00004000);
+                    //codes.Add(0x00000000);
+
+                    codes.Add(0x00020000);
+                    codes.Add(0x439BF514);
+                    codes.Add(value);
+                    codes.Add(0x00000000);
+
+                    //codes.Add(0xD0000000);
+                    //codes.Add(0xDEADCAFE);
+                }
+
+                if (cheats.Contains(Cheat.Rupees))
+                {
+                    var value = Convert.ToUInt32(CurrentRupees.Text);
+
+                    codes.Add(0x00020000);
+                    codes.Add(0x3FC92D10);
+                    codes.Add(value);
+                    codes.Add(0x00000000);
+
+                    codes.Add(0x00020000);
+                    codes.Add(0x4010AA0C);
+                    codes.Add(value);
+                    codes.Add(0x00000000);
+                }
+
+                if (cheats.Contains(Cheat.Mon))
+                {
+                    var value = Convert.ToUInt32(CurrentMon.Text);
+
+                    codes.Add(0x00020000);
+                    codes.Add(0x3FD41158);
+                    codes.Add(value);
+                    codes.Add(0x00000000);
+
+                    codes.Add(0x00020000);
+                    codes.Add(0x4010B14C);
+                    codes.Add(value);
+                    codes.Add(0x00000000);
+                }
+
+                if (cheats.Contains(Cheat.MoonJump))
+                {
+                    uint activator;
+                    uint button;
+                    if (this.Controller.SelectedValue.ToString() == "Pro")
+                    {
+                        activator = 0x112671AB;
+                        button = 0x00000008;
+                    }
+                    else
+                    {
+                        activator = 0x102F48AA;
+                        button = 0x00000020;
+                    }
+
+                    codes.Add(0x09000000);
+                    codes.Add(activator);
+                    codes.Add(button);
+                    codes.Add(0x00000000);
+                    codes.Add(0x00020000);
+                    codes.Add(0x439BF528);
+                    codes.Add(0xBE800000);
+                    codes.Add(0x00000000);
+                    codes.Add(0xD0000000);
+                    codes.Add(0xDEADCAFE);
+
+                    codes.Add(0x06000000);
+                    codes.Add(activator);
+                    codes.Add(button);
+                    codes.Add(0x00000000);
+                    codes.Add(0x00020000);
+                    codes.Add(0x439BF528);
+                    codes.Add(0x3F800000);
+                    codes.Add(0x00000000);
+                    codes.Add(0xD0000000);
+                    codes.Add(0xDEADCAFE);
+                }
+
+                if (cheats.Contains(Cheat.WeaponInv))
+                {
+                    var value = Convert.ToUInt32(CurrentWeaponSlots.Text);
+
+                    codes.Add(0x00020000);
+                    codes.Add(0x3FCFB498);
+                    codes.Add(value);
+                    codes.Add(0x00000000);
+
+                    codes.Add(0x00020000);
+                    codes.Add(0x4010B34C);
+                    codes.Add(value);
+                    codes.Add(0x00000000);
+                }
+
+                if (cheats.Contains(Cheat.BowInv))
+                {
+                    var value = Convert.ToUInt32(CurrentBowSlots.Text);
+
+                    codes.Add(0x00020000);
+                    codes.Add(0x3FD4BB50);
+                    codes.Add(value);
+                    codes.Add(0x00000000);
+
+                    codes.Add(0x00020000);
+                    codes.Add(0x4011126C);
+                    codes.Add(value);
+                    codes.Add(0x00000000);
+                }
+
+                if (cheats.Contains(Cheat.ShieldInv))
+                {
+                    var value = Convert.ToUInt32(CurrentShieldSlots.Text);
+
+                    codes.Add(0x00020000);
+                    codes.Add(0x3FCC0B40);
+                    codes.Add(value);
+                    codes.Add(0x00000000);
+
+                    codes.Add(0x00020000);
+                    codes.Add(0x4011128C);
+                    codes.Add(value);
+                    codes.Add(0x00000000);
+                }
+
+                // Write our selected codes
+                var address = CodeHandlerStart;
+                foreach (var code in codes)
+                {
+                    this.tcpGecko.poke32(address, code);
+                    address += 0x4;
+                }
+
+                // Re-enable codehandler
+                this.tcpGecko.poke32(CodeHandlerEnabled, 0x00000001);
             }
-
-            if (cheats.Contains(Cheat.WeaponInv))
+            catch (Exception ex)
             {
-                var value = Convert.ToUInt32(CurrentWeaponSlots.Text);
-
-                codes.Add(0x00020000);
-                codes.Add(0x3FCFB498);
-                codes.Add(value);
-                codes.Add(0x00000000);
-
-                codes.Add(0x00020000);
-                codes.Add(0x4010B34C);
-                codes.Add(value);
-                codes.Add(0x00000000);
+                this.LogError(ex, "Set Cheats");
             }
-
-            if (cheats.Contains(Cheat.BowInv))
-            {
-                var value = Convert.ToUInt32(CurrentBowSlots.Text);
-
-                codes.Add(0x00020000);
-                codes.Add(0x3FD4BB50);
-                codes.Add(value);
-                codes.Add(0x00000000);
-
-                codes.Add(0x00020000);
-                codes.Add(0x4011126C);
-                codes.Add(value);
-                codes.Add(0x00000000);
-            }
-
-            if (cheats.Contains(Cheat.ShieldInv))
-            {
-                var value = Convert.ToUInt32(CurrentShieldSlots.Text);
-
-                codes.Add(0x00020000);
-                codes.Add(0x3FCC0B40);
-                codes.Add(value);
-                codes.Add(0x00000000);
-
-                codes.Add(0x00020000);
-                codes.Add(0x4011128C);
-                codes.Add(value);
-                codes.Add(0x00000000);
-            }
-
-            // Write our selected codes
-            var address = CodeHandlerStart;
-            foreach (var code in codes)
-            {
-                this.tcpGecko.poke32(address, code);
-                address += 0x4;
-            }
-
-            // Re-enable codehandler
-            this.tcpGecko.poke32(CodeHandlerEnabled, 0x00000001);
         }
 
         private void ToggleControls(string state)
@@ -1132,6 +1211,8 @@
                 MaxLength = 8
             };
 
+            tb.TextChanged += this.TextChanged;
+
             var check = (TextBox)this.FindName("Item_" + field);
             if (check != null)
             {
@@ -1250,7 +1331,7 @@
             return name;
         }
 
-        private void LogError(Exception ex)
+        private void LogError(Exception ex, string more = null)
         {
             ErrorLog.Document.Blocks.Clear();
 
@@ -1262,8 +1343,13 @@
                 LineHeight = 14
             };
 
+            if (more != null)
+            {
+                paragraph.Inlines.Add(more);
+            }
             paragraph.Inlines.Add(ex.Message);
             paragraph.Inlines.Add(ex.StackTrace);
+            
 
             ErrorLog.Document.Blocks.Add(paragraph);
 
