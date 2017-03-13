@@ -46,11 +46,11 @@
 
         private readonly string version;
 
-        private List<TextBox> tbChanged = new List<TextBox>();
+        private readonly List<TextBox> tbChanged = new List<TextBox>();
 
-        private List<ComboBox> ddChanged = new List<ComboBox>();
+        private readonly List<ComboBox> ddChanged = new List<ComboBox>();
 
-        private List<CheckBox> cbChanged = new List<CheckBox>();
+        private readonly List<CheckBox> cbChanged = new List<CheckBox>();
 
         private TCPGecko tcpGecko;
 
@@ -444,12 +444,12 @@
             }
             catch (Exception ex)
             {
-                this.LogError(ex);
+                this.LogError(ex, "Attempting to save data in 0x3FCE7FF0 region.");
             }
 
             try
             {
-                // TODO: Only update what has changed to avoid corruption.
+                // Only update what has changed to avoid corruption.
                 foreach (var tb in this.tbChanged)
                 {
                     // These text boxes have been edited
@@ -510,67 +510,10 @@
                         }
                     }
                 }
-
-                /*
-                var collection = this.items.Where(x => x.Page == page);
-                if (page == 4)
-                {
-                    collection = this.items.Where(i => i.Page == 4 || i.Page == 5 || i.Page == 6);
-                }
-
-                
-                foreach (var item in collection)
-                {
-                    // Id
-                    var foundTextBox = (TextBox)this.FindName("Id_" + item.NameStartHex);
-                    if (foundTextBox != null)
-                    {
-                        var newName = Encoding.Default.GetBytes(foundTextBox.Text);
-
-                        //clear current name
-                        this.tcpGecko.poke32(item.NameStart, 0x0);
-                        this.tcpGecko.poke32(item.NameStart + 0x4, 0x0);
-                        this.tcpGecko.poke32(item.NameStart + 0x8, 0x0);
-                        this.tcpGecko.poke32(item.NameStart + 0xC, 0x0);
-                        this.tcpGecko.poke32(item.NameStart + 0x10, 0x0);
-                        this.tcpGecko.poke32(item.NameStart + 0x14, 0x0);
-
-                        uint x = 0x0;
-                        foreach (var b in newName)
-                        {
-                            this.tcpGecko.poke08(item.NameStart + x, b);
-                            x = x + 0x1;
-                        }
-
-                        item.Id = foundTextBox.Text;
-                    }
-
-                    // Name
-                    foundTextBox = (TextBox)this.FindName("JsonName_" + item.NameStartHex);
-                    if (foundTextBox != null)
-                    {
-                        foundTextBox.Text = this.GetNameFromId(item.Id, item.PageName);
-                    }
-
-                    // Value
-                    foundTextBox = (TextBox)this.FindName("Item_" + item.BaseAddressHex);
-                    if (foundTextBox != null)
-                    {
-                        this.tcpGecko.poke32(item.BaseAddress + 0x8, Convert.ToUInt32(foundTextBox.Text));
-                    }
-
-                    // Mods
-                    this.FindAndPoke(item.Modifier1Address, item.BaseAddress + 0x5c);
-                    this.FindAndPoke(item.Modifier2Address, item.BaseAddress + 0x60);
-                    this.FindAndPoke(item.Modifier3Address, item.BaseAddress + 0x64);
-                    this.FindAndPoke(item.Modifier4Address, item.BaseAddress + 0x68);
-                    this.FindAndPoke(item.Modifier5Address, item.BaseAddress + 0x6C);
-                }
-                */
             }
             catch (Exception ex)
             {
-                this.LogError(ex);
+                this.LogError(ex, "Attempting to update changed fields");
             }
 
 
@@ -1263,6 +1206,12 @@
                 TabControl.IsEnabled = true;
                 this.Refresh.IsEnabled = true;
             }
+
+            if (state == "ForceRefresh")
+            {
+                TabControl.IsEnabled = false;
+                this.Save.IsEnabled = false;
+            }
         }
 
         private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
@@ -1328,20 +1277,6 @@
             catch (Exception ex)
             {
                 MessageBox.Show(ex.ToString());
-            }
-        }
-
-        private void FindAndPoke(string itemAddress, uint address)
-        {
-            var foundTextBox = (TextBox)this.FindName("Item_" + itemAddress);
-            if (foundTextBox != null)
-            {
-                uint val;
-                bool parsed = uint.TryParse(foundTextBox.Text, NumberStyles.HexNumber, CultureInfo.CurrentCulture, out val);
-                if (parsed)
-                {
-                    this.tcpGecko.poke32(address, val);
-                }
             }
         }
 
@@ -1543,6 +1478,17 @@
         private void MainWindowLoaded(object sender, RoutedEventArgs e)
         {
             this.Save.IsEnabled = this.HasChanged;
+
+            this.timer = new DispatcherTimer();
+            this.timer.Tick += this.TimerTick;
+            this.timer.Interval = new TimeSpan(0, 2, 0);
+            //this.timer.Start();
+        }
+
+        private void TimerTick(object sender, EventArgs e)
+        {
+            this.ToggleControls("ForceRefresh");
+            MessageBox.Show("Refresh time!");
         }
     }
 }
