@@ -54,7 +54,7 @@
 
         private readonly ExceptionHandler exceptionHandling;
 
-        private TCPGecko tcpGecko;
+        private readonly TCPGecko tcpGecko;
 
         private DispatcherTimer timer;
 
@@ -284,6 +284,8 @@
 
         private void ConnectClick(object sender, RoutedEventArgs e)
         {
+            this.tcpGecko.Host = IpAddress.Text;
+
             if (this.connecting)
             {
                 this.connecting = false;
