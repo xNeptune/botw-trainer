@@ -62,7 +62,7 @@
 
         private int itemsFound;
 
-        private bool connecting;
+        private bool connected;
 
         public MainWindow()
         {
@@ -184,6 +184,11 @@
                     }
 
                     var id = builder.ToString();
+
+                    if (string.IsNullOrEmpty(id))
+                    {
+                        throw new Exception("Can't read item at address: 0x" + nameStart.ToString("x8").ToUpper());
+                    }
                     
                     var item = new Item
                                    {
@@ -203,6 +208,7 @@
 
                     // look for name in json
                     var name = this.GetNameFromId(item.Id, item.PageName);
+
                     item.Name = name;
 
                     this.items.Add(item);
@@ -282,78 +288,17 @@
 
         private void ConnectClick(object sender, RoutedEventArgs e)
         {
-            this.tcpGecko = new TCPGecko(IpAddress.Text, 7331);
-
-            if (this.connecting)
-            {
-                this.connecting = false;
-                return;
-            }
-
-            var retry = true;
-            var success = false;
-            var attempt = 0;
-
-            if (this.tcpGecko.connected)
-            {
-                try
-                {
-                    this.tcpGecko.Disconnect();
-                }
-                catch
-                {
-                    //
-                }
-            }
-
-            while (retry && !success)
-            {
-                attempt++;
-                try
-                {
-                    if (!this.tcpGecko.Connect())
-                    {
-                        throw new Exception("!this.tcpGecko.Connect()");
-                    }
-
-                    var failAttempt = 0;
-                    this.connecting = true;
-
-                    IpAddress.IsEnabled = false;
-                    while (this.UnknownStatus())
-                    {
-                        this.tcpGecko.sendfail();
-                        failAttempt++;
-                        if (failAttempt > 10 || !this.connecting)
-                        {
-                            if (!this.connecting)
-                            {
-                                retry = false;
-                            }
-
-                            this.connecting = false;
-                            throw new Exception("Attempt limit reached");
-                        }
-                    }
-
-                    this.connecting = false;
-                    success = true;
-                }
-                catch(Exception ex)
-                {
-                    if (attempt % 3 != 0)
-                    {
-                        continue;
-                    }
-
-                    retry = false;
-                    this.LogError(ex);
-                }
-            }
-
             try
             {
-                if (success)
+                // cause error to test
+                //var foundTextBox = (TextBox)this.FindName("Item_123");
+                //foundTextBox.Text = "error";
+
+                this.tcpGecko = new TCPGecko(this.IpAddress.Text, 7331);
+
+                this.connected = this.tcpGecko.Connect();
+
+                if (this.connected)
                 {
                     // Saved settings stuff
                     var shown = Settings.Default.Warning;
@@ -371,26 +316,23 @@
                     Controller.SelectedValue = Settings.Default.Controller;
 
                     this.ToggleControls("Connected");
-
-                    ValidMemory.SetDataUpper(this.tcpGecko);
                 }
             }
-            catch (ETCPGeckoException exc)
+            catch (ETCPGeckoException ex)
             {
-                this.exceptionHandling.HandleException(exc);
-            }
-        }
+                this.connected = false;
 
-        private bool UnknownStatus()
-        {
-            try
-            {
-                WiiStatus stat = this.tcpGecko.status();
-                return stat == WiiStatus.Unknown;
+                MessageBox.Show(ex.Message);
             }
-            catch
+            catch (System.Net.Sockets.SocketException)
             {
-                return true;
+                this.connected = false;
+
+                MessageBox.Show("Wrong IP");
+            }
+            catch (Exception ex)
+            {
+                this.LogError(ex);
             }
         }
 
@@ -523,6 +465,11 @@
                 // Only update what has changed to avoid corruption.
                 foreach (var tb in this.tbChanged)
                 {
+                    if (string.IsNullOrEmpty(tb.Text))
+                    {
+                        continue;
+                    }
+
                     // These text boxes have been edited
                     var type = tb.Name.Split('_')[0];
                     var tag = tb.Tag;
@@ -1488,20 +1435,27 @@
 
         private string GetNameFromId(string id, string pagename)
         {
-            if (pagename == "Head" || pagename == "Torso" || pagename == "Legs")
+            try
             {
-                pagename = "Armor";
-            }
+                if (pagename == "Head" || pagename == "Torso" || pagename == "Legs")
+                {
+                    pagename = "Armor";
+                }
 
-            var name = "Unknown";
-            var path = string.Format("Items.{0}.{1}.Name", pagename.Replace(" ", string.Empty), id);
-            var obj = this.json.SelectToken(path);
-            if (obj != null)
+                var name = "Unknown";
+                var path = string.Format("Items.{0}.{1}.Name", pagename.Replace(" ", string.Empty), id);
+                var obj = this.json.SelectToken(path);
+                if (obj != null)
+                {
+                    name = obj.ToString();
+                }
+
+                return name;
+            }
+            catch (Exception ex)
             {
-                name = obj.ToString();
+                return "Error";
             }
-
-            return name;
         }
 
         public void LogError(Exception ex, string more = null)

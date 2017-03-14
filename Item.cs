@@ -160,6 +160,9 @@
                     case 9:
                         name = "Key Items";
                         break;
+                    default:
+                        name = "Unknown";
+                        break;
                 }
 
                 return name;
