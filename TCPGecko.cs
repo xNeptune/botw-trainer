@@ -1035,29 +1035,6 @@ namespace BotwTrainer
                 throw new ETCPGeckoException(ETCPErrorCode.FTDICommandSendError);
         }
 
-        // Tries repeatedly to resume the game until it succeeds
-        public void SafeResume()
-        {
-            bool NotRunning = (this.status() != WiiStatus.Running);
-            int failCounter = 0;
-            while (NotRunning && failCounter < 10)
-            {
-                this.Resume();
-                System.Threading.Thread.Sleep(100);
-                // Sometimes, the game doesn't actually resume...
-                // So loop repeatedly until it does!
-                try
-                {
-                    NotRunning = (this.status() != WiiStatus.Running);
-                }
-                catch (ETCPGeckoException ex)
-                {
-                    NotRunning = true;
-                    failCounter++;
-                }
-            }
-        }
-
         //Sends a GCFAIL to the game.. in case the Gecko handler hangs.. sendfail might solve it!
         public void sendfail()
         {

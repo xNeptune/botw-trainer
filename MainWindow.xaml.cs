@@ -52,6 +52,8 @@
 
         private readonly List<CheckBox> cbChanged = new List<CheckBox>();
 
+        private readonly ExceptionHandler exceptionHandling;
+
         private TCPGecko tcpGecko;
 
         private DispatcherTimer timer;
@@ -60,16 +62,20 @@
 
         private int itemsFound;
 
-        private bool connected;
+        private bool connecting;
 
         public MainWindow()
         {
             this.InitializeComponent();
 
+            this.exceptionHandling = new ExceptionHandler(this);
+
             this.Loaded += this.MainWindowLoaded;
 
             IpAddress.Text = Settings.Default.IpAddress;
             this.version = Settings.Default.CurrentVersion;
+
+            this.tcpGecko = new TCPGecko(Settings.Default.IpAddress, 7331);
 
             this.Title = string.Format("{0} v{1}", this.Title, this.version);
 
@@ -278,17 +284,76 @@
 
         private void ConnectClick(object sender, RoutedEventArgs e)
         {
+            if (this.connecting)
+            {
+                this.connecting = false;
+                return;
+            }
+
+            var retry = true;
+            var success = false;
+            var attempt = 0;
+
+            if (this.tcpGecko.connected)
+            {
+                try
+                {
+                    this.tcpGecko.Disconnect();
+                }
+                catch
+                {
+                    //
+                }
+            }
+
+            while (retry && !success)
+            {
+                attempt++;
+                try
+                {
+                    if (!this.tcpGecko.Connect())
+                    {
+                        throw new Exception();
+                    }
+
+                    var failAttempt = 0;
+                    this.connecting = true;
+
+                    IpAddress.IsEnabled = false;
+                    while (this.UnknownStatus())
+                    {
+                        this.tcpGecko.sendfail();
+                        failAttempt++;
+                        if (failAttempt > 10 || !this.connecting)
+                        {
+                            if (!this.connecting)
+                            {
+                                retry = false;
+                            }
+
+                            this.connecting = false;
+                            throw new Exception("Attempt limit reached");
+                        }
+                    }
+
+                    this.connecting = false;
+                    success = true;
+                }
+                catch
+                {
+                    if (attempt % 3 != 0)
+                    {
+                        continue;
+                    }
+
+                    retry = false;
+                    MessageBox.Show("Connection to the TCP Gecko has failed!");
+                }
+            }
+
             try
             {
-                // cause error to test
-                //var foundTextBox = (TextBox)this.FindName("Item_123");
-                //foundTextBox.Text = "error";
-
-                this.tcpGecko = new TCPGecko(this.IpAddress.Text, 7331);
-
-                this.connected = this.tcpGecko.Connect();
-
-                if (this.connected)
+                if (success)
                 {
                     // Saved settings stuff
                     var shown = Settings.Default.Warning;
@@ -306,23 +371,26 @@
                     Controller.SelectedValue = Settings.Default.Controller;
 
                     this.ToggleControls("Connected");
+
+                    ValidMemory.SetDataUpper(this.tcpGecko);
                 }
             }
-            catch (ETCPGeckoException ex)
+            catch (ETCPGeckoException exc)
             {
-                this.connected = false;
-
-                MessageBox.Show(ex.Message);
+                this.exceptionHandling.HandleException(exc);
             }
-            catch (System.Net.Sockets.SocketException)
-            {
-                this.connected = false;
+        }
 
-                MessageBox.Show("Wrong IP");
-            }
-            catch (Exception ex)
+        private bool UnknownStatus()
+        {
+            try
             {
-                this.LogError(ex);
+                WiiStatus stat = this.tcpGecko.status();
+                return stat == WiiStatus.Unknown;
+            }
+            catch
+            {
+                return true;
             }
         }
 
@@ -330,7 +398,6 @@
         {
             try
             {
-                this.connected = false;
                 this.tcpGecko.Disconnect();
 
                 this.ToggleControls("Disconnected");
@@ -442,6 +509,10 @@
                     }
                 }
             }
+            catch (ETCPGeckoException exc)
+            {
+                this.exceptionHandling.HandleException(exc);
+            }
             catch (Exception ex)
             {
                 this.LogError(ex, "Attempting to save data in 0x3FCE7FF0 region.");
@@ -510,6 +581,10 @@
                         }
                     }
                 }
+            }
+            catch (ETCPGeckoException exc)
+            {
+                this.exceptionHandling.HandleException(exc);
             }
             catch (Exception ex)
             {
@@ -604,8 +679,11 @@
                 this.tbChanged.Clear();
                 this.cbChanged.Clear();
                 this.ddChanged.Clear();
-
                 this.Save.IsEnabled = false;
+            }
+            catch (ETCPGeckoException exc)
+            {
+                this.exceptionHandling.HandleException(exc);
             }
             catch (Exception ex)
             {
@@ -1427,7 +1505,7 @@
             return name;
         }
 
-        private void LogError(Exception ex, string more = null)
+        public void LogError(Exception ex, string more = null)
         {
             var paragraph = new Paragraph
             {

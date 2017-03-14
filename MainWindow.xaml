@@ -198,7 +198,7 @@
             <TabItem Header="Credits" x:Name="Credits" Margin="0" Background="SeaGreen">
                 <StackPanel>
                     <Label Content="Bully"></Label>
-                    <Label Content="Cosmo"></Label>
+                    <Label Content="CosmoCortney"></Label>
                     <Label Content="5pmeternal"></Label>
                     <Label Content="AcedArmy"></Label>
                     <Label Content="DarkFlare69"></Label>
