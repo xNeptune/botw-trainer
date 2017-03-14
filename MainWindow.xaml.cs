@@ -54,7 +54,7 @@
 
         private readonly ExceptionHandler exceptionHandling;
 
-        private readonly TCPGecko tcpGecko;
+        private TCPGecko tcpGecko;
 
         private DispatcherTimer timer;
 
@@ -74,8 +74,6 @@
 
             IpAddress.Text = Settings.Default.IpAddress;
             this.version = Settings.Default.CurrentVersion;
-
-            this.tcpGecko = new TCPGecko(Settings.Default.IpAddress, 7331);
 
             this.Title = string.Format("{0} v{1}", this.Title, this.version);
 
@@ -284,7 +282,7 @@
 
         private void ConnectClick(object sender, RoutedEventArgs e)
         {
-            this.tcpGecko.Host = IpAddress.Text;
+            this.tcpGecko = new TCPGecko(IpAddress.Text, 7331);
 
             if (this.connecting)
             {
@@ -593,7 +591,6 @@
                 this.LogError(ex, "Attempting to update changed fields");
             }
 
-
             try
             {
                 // For the 'Codes' tab we mimic JGecko and send cheats to codehandler
@@ -853,6 +850,7 @@
             // Debug Grid data
             DebugGrid.ItemsSource = this.items;
 
+            
             try
             {
                 // Show extra info in 'Codes' tab to see if our cheats are looking in the correct place
