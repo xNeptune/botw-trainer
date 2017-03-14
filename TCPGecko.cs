@@ -4,9 +4,6 @@ namespace BotwTrainer
 {
     using System;
     using System.IO;
-    using System.Windows.Controls;
-    using System.Windows.Media;
-    using System.Windows.Shapes;
 
     public class ByteSwap
     {
@@ -262,7 +259,7 @@ namespace BotwTrainer
 
     public class TCPGecko
     {
-        private tcpconn PTCP;
+        private Tcpconn PTCP;
 
         #region base constants
         private const UInt32    packetsize = 0x400;
@@ -362,19 +359,19 @@ namespace BotwTrainer
             {
                 if (!this.PConnected)
                 {
-                    this.PTCP = new tcpconn(value, this.PTCP.Port);
+                    this.PTCP = new Tcpconn(value, this.PTCP.Port);
                 }
             }
         }
 
         public TCPGecko(string host, int port)
         {
-            this.PTCP = new tcpconn(host, port);
+            this.PTCP = new Tcpconn(host, port);
             this.PConnected = false;
             this.PChunkUpdate = null;
         }
 
-        ~ TCPGecko()
+        ~TCPGecko()
         {
             if (this.PConnected)
                 this.Disconnect();
@@ -388,8 +385,10 @@ namespace BotwTrainer
 
         public bool Connect()
         {
-			if(this.PConnected)
+            if (this.PConnected)
+            {
                 this.Disconnect();
+            }
 
             this.PConnected = false;
 
@@ -403,20 +402,20 @@ namespace BotwTrainer
             }
             catch (IOException)
             {
-				// Don't disconnect if there's nothing connected
+                // Don't disconnect if there's nothing connected
                 this.Disconnect();
-				throw new ETCPGeckoException(ETCPErrorCode.noTCPGeckoFound);
+                throw new ETCPGeckoException(ETCPErrorCode.noTCPGeckoFound);
             }
 
             //Initialise TCP Gecko
            if (this.InitGecko())
-            {
+           {
                System.Threading.Thread.Sleep(150);
-                this.PConnected = true;
-                return true;
+               this.PConnected = true;
+               return true;
             }
-            else
-                return false;
+
+            return false;
         }
 
         public void Disconnect()

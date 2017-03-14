@@ -3,16 +3,19 @@
     using System;
     using System.IO;
     using System.Net.Sockets;
+    using System.Windows;
 
-    class tcpconn
+    public class Tcpconn
     {
-        TcpClient client;
-        NetworkStream stream;
+        private TcpClient client;
+
+        private NetworkStream stream;
 
         public string Host { get; private set; }
+
         public int Port { get; private set; }
 
-        public tcpconn(string host, int port)
+        public Tcpconn(string host, int port)
         {
             this.Host = host;
             this.Port = port;
@@ -26,9 +29,12 @@
             {
                 this.Close();
             }
-            catch (Exception) { }
-            this.client = new TcpClient();
-            this.client.NoDelay = true;
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+
+            this.client = new TcpClient { NoDelay = true };
             IAsyncResult ar = this.client.BeginConnect(this.Host, this.Port, null, null);
             System.Threading.WaitHandle wh = ar.AsyncWaitHandle;
             try
@@ -36,7 +42,7 @@
                 if (!ar.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(5), false))
                 {
                     this.client.Close();
-                    throw new IOException("Connection timoeut.", new TimeoutException());
+                    throw new IOException("Connection timeout.", new TimeoutException());
                 }
 
                 this.client.EndConnect(ar);
@@ -45,6 +51,7 @@
             {
                 wh.Close();
             } 
+
             this.stream = this.client.GetStream();
             this.stream.ReadTimeout = 10000;
             this.stream.WriteTimeout = 10000;
@@ -58,26 +65,20 @@
                 {
                     throw new IOException("Not connected.", new NullReferenceException());
                 }
-                this.client.Close();
 
+                this.client.Close();
             }
-            catch (Exception) { }
+            catch (Exception ex)
+            {
+                //MessageBox.Show(ex.Message);
+            }
             finally
             {
                 this.client = null;
             }
         }
 
-        public void Purge()
-        {
-            if (this.stream == null)
-            {
-                throw new IOException("Not connected.", new NullReferenceException());
-            }
-            this.stream.Flush();
-        }
-
-        public void Read(Byte[] buffer, UInt32 nobytes, ref UInt32 bytes_read)
+        public void Read(byte[] buffer, uint nobytes, ref uint bytesRead)
         {
             try
             {
@@ -86,13 +87,14 @@
                 {
                     throw new IOException("Not connected.", new NullReferenceException());
                 }
-                bytes_read = 0;
+
+                bytesRead = 0;
                 while (nobytes > 0)
                 {
                     int read = this.stream.Read(buffer, offset, (int)nobytes);
                     if (read >= 0)
                     {
-                        bytes_read += (uint)read;
+                        bytesRead += (uint)read;
                         offset += read;
                         nobytes -= (uint)read;
                     }
@@ -108,7 +110,7 @@
             }
         }
 
-        public void Write(Byte[] buffer, Int32 nobytes, ref UInt32 bytes_written)
+        public void Write(byte[] buffer, int nobytes, ref uint bytesWritten)
         {
             try
             {
@@ -118,9 +120,14 @@
                 }
                 this.stream.Write(buffer, 0, nobytes);
                 if (nobytes >= 0)
-                    bytes_written = (uint)nobytes;
+                {
+                    bytesWritten = (uint)nobytes;
+                }
                 else
-                    bytes_written = 0;
+                {
+                    bytesWritten = 0;
+                }
+
                 this.stream.Flush();
             }
             catch (ObjectDisposedException e)

@@ -61,7 +61,7 @@
 
                     <Label Content="Health (Max 0x78)" Height="26" Margin="0" Canvas.Left="50" Canvas.Top="124"/>
                     <CheckBox x:Name="Health" Margin="0" Canvas.Left="160" Canvas.Top="130" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
-                    <TextBox x:Name="CurrentHealth" Height="25" Width="30" Margin="0" Canvas.Left="200" Canvas.Top="124" TextChanged="TextChanged"/>
+                    <TextBox x:Name="CurrentHealth" Height="25" Width="90" Margin="0" Canvas.Left="200" Canvas.Top="124" TextChanged="TextChanged"/>
                     <Label x:Name="HealthData" Content="HealthData" Height="25" Margin="0" Canvas.Left="315" Canvas.Top="124"/>
 
                     <Label Content="Rupees" Height="26" Margin="0" Canvas.Left="50" Canvas.Top="154"></Label>

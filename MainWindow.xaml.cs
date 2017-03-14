@@ -255,7 +255,7 @@
                 // Code Tab Values
                 CurrentStamina.Text = this.tcpGecko.peek(0x42439598).ToString("x8").ToUpper();
                 var healthPointer = this.tcpGecko.peek(0x4225B4B0);
-                CurrentHealth.Text = this.tcpGecko.peek(healthPointer + 0x430).ToString(CultureInfo.InvariantCulture);
+                CurrentHealth.Text = this.tcpGecko.peek(healthPointer + 0x430).ToString("x8").ToUpper();
                 CurrentRupees.Text = this.tcpGecko.peek(0x4010AA0C).ToString(CultureInfo.InvariantCulture);
                 CurrentMon.Text = this.tcpGecko.peek(0x4010B14C).ToString(CultureInfo.InvariantCulture);
                 CbSpeed.SelectedValue = this.tcpGecko.peek(0x439BF514).ToString("X").ToUpper();
@@ -313,7 +313,7 @@
                 {
                     if (!this.tcpGecko.Connect())
                     {
-                        throw new Exception();
+                        throw new Exception("!this.tcpGecko.Connect()");
                     }
 
                     var failAttempt = 0;
@@ -339,7 +339,7 @@
                     this.connecting = false;
                     success = true;
                 }
-                catch
+                catch(Exception ex)
                 {
                     if (attempt % 3 != 0)
                     {
@@ -347,7 +347,7 @@
                     }
 
                     retry = false;
-                    MessageBox.Show("Connection to the TCP Gecko has failed!");
+                    this.LogError(ex);
                 }
             }
 
@@ -849,7 +849,6 @@
         { 
             // Debug Grid data
             DebugGrid.ItemsSource = this.items;
-
             
             try
             {
@@ -866,7 +865,7 @@
             try
             {
                 var health1 = this.tcpGecko.peek(0x4225B4B0);
-                var health2 = this.tcpGecko.peek(health1 + 0x430);
+                var health2 = this.tcpGecko.peek(health1 + 0x430).ToString("x8").ToUpper();
                 this.HealthData.Content = string.Format("0x{0} = {1}", (health1 + 0430).ToString("x8").ToUpper(), health2);
             }
             catch (Exception ex)

@@ -17,8 +17,8 @@
         private void HandleExceptionInternally(ETCPGeckoException exc)
         {
             // If the result has no (, then it we failed, so be loud
-            ETCPErrorCode error = exc.ErrorCode;
-            string msg = string.Empty;
+            var error = exc.ErrorCode;
+            string msg;
             switch (error)
             {
                 case ETCPErrorCode.CheatStreamSizeInvalid:
