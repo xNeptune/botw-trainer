@@ -1288,9 +1288,6 @@
             "Armor_140_Head": {
                 "Name": "Amber Earrings ****"
             },
-            "Armor_140_Lower": {
-                "Name": "Snow Boots"
-            },
             "Armor_141_Lower": {
                 "Name": "Snow Boots"
             },
@@ -1688,61 +1685,121 @@
             "Item_Mushroom_A": {
                 "Name": "Stamella Mushroom"
             },
+            "Item_MushroomGet_A": {
+                "Name": "Stamella Mushroom"
+            },
             "Item_Mushroom_B": {
+                "Name": "Chillshroom"
+            },
+            "Item_MushroomGet_B": {
                 "Name": "Chillshroom"
             },
             "Item_Mushroom_C": {
                 "Name": "Sunshroom"
             },
+            "Item_MushroomGet_C": {
+                "Name": "Sunshroom"
+            },
             "Item_Mushroom_D": {
+                "Name": "Rushroom"
+            },
+            "Item_MushroomGet_D": {
                 "Name": "Rushroom"
             },
             "Item_Mushroom_E": {
                 "Name": "Hylian Mushroom"
             },
+            "Item_MushroomGet_E": {
+                "Name": "Hylian Mushroom"
+            },
             "Item_Mushroom_F": {
+                "Name": "Hearty Truffle"
+            },
+            "Item_MushroomGet_F": {
                 "Name": "Hearty Truffle"
             },
             "Item_Mushroom_H": {
                 "Name": "Zapshroom"
             },
+            "Item_MushroomGet_H": {
+                "Name": "Zapshroom"
+            },
             "Item_Mushroom_J": {
+                "Name": "Silent Shroom"
+            },
+            "Item_MushroomGet_J": {
                 "Name": "Silent Shroom"
             },
             "Item_Mushroom_L": {
                 "Name": "Razorshroom"
             },
+            "Item_MushroomGet_L": {
+                "Name": "Razorshroom"
+            },
             "Item_Mushroom_M": {
+                "Name": "Ironshroom"
+            },
+            "Item_MushroomGet_M": {
                 "Name": "Ironshroom"
             },
             "Item_Mushroom_N": {
                 "Name": "Big Hearty Truffle"
             },
+            "Item_MushroomGet_N": {
+                "Name": "Big Hearty Truffle"
+            },
             "Item_Mushroom_O": {
+                "Name": "Endura Shroom"
+            },
+            "Item_MushroomGet_O": {
                 "Name": "Endura Shroom"
             },
             "Item_Plant_A": {
                 "Name": "Hyrule Herb"
             },
+            "Item_PlantGet_A": {
+                "Name": "Hyrule Herb"
+            },
             "Item_Plant_B": {
+                "Name": "Hearty Radish"
+            },
+            "Item_PlantGet_B": {
                 "Name": "Hearty Radish"
             },
             "Item_Plant_C": {
                 "Name": "Big Hearty Radish"
             },
+            "Item_PlantGet_C": {
+                "Name": "Big Hearty Radish"
+            },
             "Item_Plant_E": {
+                "Name": "Cool Safflina"
+            },
+            "Item_PlantGet_E": {
                 "Name": "Cool Safflina"
             },
             "Item_Plant_F": {
                 "Name": "Warm Safflina"
             },
+            "Item_PlantGet_F": {
+                "Name": "Warm Safflina"
+            },
             "Item_Plant_G": {
+                "Name": "Mighty Thistle"
+            },
+            "Item_PlantGet_G": {
                 "Name": "Mighty Thistle"
             },
             "Item_Plant_H": {
                 "Name": "Armoranth"
             },
+            "Item_PlantGet_H": {
+                "Name": "Armoranth"
+            },
             "Item_Plant_I": {
+                "Name": "Blue Nightshade"
+            },
+            "Item_PlantGet_I": {
                 "Name": "Blue Nightshade"
             },
             "Item_Plant_J": {
@@ -1754,10 +1811,19 @@
             "Item_Plant_L": {
                 "Name": "Electric Safflina"
             },
+            "Item_PlantGet_L": {
+                "Name": "Electric Safflina"
+            },
             "Item_Plant_M": {
                 "Name": "Swift Carrot"
             },
+            "Item_PlantGet_M": {
+                "Name": "Swift Carrot"
+            },
             "Item_Plant_O": {
+                "Name": "Swift Violet"
+            },
+            "Item_PlantGet_O": {
                 "Name": "Swift Violet"
             },
             "Item_Plant_Q": {
@@ -1832,64 +1898,127 @@
             "Animal_Insect_A": {
                 "Name": "Hot-Footed Frog"
             },
+            "Item_InsectGet_A": {
+                "Name": "Hot-Footed Frog"
+            },
             "Animal_Insect_B": {
+                "Name": "Tireless Frog"
+            },
+            "Item_InsectGet_B": {
                 "Name": "Tireless Frog"
             },
             "Animal_Insect_C": {
                 "Name": "Cold Darner"
             },
+            "Item_InsectGet_C": {
+                "Name": "Cold Darner"
+            },
             "Animal_Insect_E": {
+                "Name": "Sunset Firefly"
+            },
+            "Item_InsectGet_E": {
                 "Name": "Sunset Firefly"
             },
             "Animal_Insect_F": {
                 "Name": "Fairy"
             },
+            "Item_InsectGet_F": {
+                "Name": "Fairy"
+            },
             "Animal_Insect_G": {
+                "Name": "Bladed Rhino Beetle"
+            },
+            "Item_InsectGet_G": {
                 "Name": "Bladed Rhino Beetle"
             },
             "Animal_Insect_H": {
                 "Name": "Restless Cricket"
             },
+            "Item_InsectGet_H": {
+                "Name": "Restless Cricket"
+            },        
             "Animal_Insect_I": {
+                "Name": "Electric Darner"
+            },
+            "Item_InsectGet_I": {
                 "Name": "Electric Darner"
             },
             "Animal_Insect_K": {
                 "Name": "Razorclaw Crab"
             },
+            "Item_InsectGet_K": {
+                "Name": "Razorclaw Crab"
+            },
             "Animal_Insect_M": {
+                "Name": "Hearty Lizard"
+            },
+            "Item_InsectGet_M": {
                 "Name": "Hearty Lizard"
             },
             "Animal_Insect_N": {
                 "Name": "Winterwing Butterfly"
             },
+            "Item_InsectGet_N": {
+                "Name": "Winterwing Butterfly"
+            },
             "Animal_Insect_O": {
+                "Name": "Ironshell Crab"
+            },
+            "Item_InsectGet_O": {
                 "Name": "Ironshell Crab"
             },
             "Animal_Insect_P": {
                 "Name": "Rugged Rhino Beetle"
             },
+            "Item_InsectGet_P": {
+                "Name": "Rugged Rhino Beetle"
+            },
             "Animal_Insect_Q": {
+                "Name": "Summerwing Butterfly"
+            },
+            "Item_InsectGet_Q": {
                 "Name": "Summerwing Butterfly"
             },
             "Animal_Insect_R": {
                 "Name": "Thunderwing Butterfly"
             },
+            "Item_InsectGet_R": {
+                "Name": "Thunderwing Butterfly"
+            },
             "Animal_Insect_S": {
+                "Name": "Hightail Lizard"
+            },
+            "Item_InsectGet_S": {
                 "Name": "Hightail Lizard"
             },
             "Animal_Insect_T": {
                 "Name": "Warm Darner"
             },
+            "Item_InsectGet_T": {
+                "Name": "Warm Darner"
+            },
             "Animal_Insect_X": {
+                "Name": "Fireproof Lizard"
+            },
+            "Item_InsectGet_X": {
                 "Name": "Fireproof Lizard"
             },
             "Animal_Insect_Z": {
                 "Name": "Bright-Eyed Crab"
             },
+            "Item_InsectGet_Z": {
+                "Name": "Bright-Eyed Crab"
+            },
             "Animal_Insect_AA": {
                 "Name": "Energetic Rhino Beetle"
             },
+            "Item_InsectGet_AA": {
+                "Name": "Energetic Rhino Beetle"
+            },
             "Animal_Insect_AB": {
+                "Name": "Smotherwing Butterfly"
+            },
+            "Item_InsectGet_AB": {
                 "Name": "Smotherwing Butterfly"
             },
             "BeeHome": {
