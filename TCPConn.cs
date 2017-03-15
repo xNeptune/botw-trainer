@@ -35,8 +35,8 @@
             }
 
             this.client = new TcpClient { NoDelay = true };
-            IAsyncResult ar = this.client.BeginConnect(this.Host, this.Port, null, null);
-            System.Threading.WaitHandle wh = ar.AsyncWaitHandle;
+            var ar = this.client.BeginConnect(this.Host, this.Port, null, null);
+            var wh = ar.AsyncWaitHandle;
             try
             {
                 if (!ar.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(5), false))

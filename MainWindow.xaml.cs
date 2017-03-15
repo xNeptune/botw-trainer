@@ -71,11 +71,12 @@
             this.exceptionHandling = new ExceptionHandler(this);
 
             this.Loaded += this.MainWindowLoaded;
-
-            IpAddress.Text = Settings.Default.IpAddress;
+            
             this.version = Settings.Default.CurrentVersion;
 
             this.Title = string.Format("{0} v{1}", this.Title, this.version);
+
+            this.items = new List<Item>();
 
             var client = new WebClient
                              {
@@ -89,10 +90,17 @@
             client.Headers.Add("Cache-Control", "no-cache");
             client.DownloadStringCompleted += this.ClientDownloadStringCompleted;
 
-            client.DownloadStringAsync(new Uri(string.Format("{0}{1}", client.BaseAddress, "version.txt")));
+            // try to get current version
+            try
+            {
+                client.DownloadStringAsync(new Uri(string.Format("{0}{1}", client.BaseAddress, "version.txt")));
+            }
+            catch (Exception ex)
+            {
+                this.LogError(ex, "Error loading current version.");
+            }
 
-            this.items = new List<Item>();
-
+            // try to load json data
             try
             {
                 var file = Assembly.GetExecutingAssembly().GetManifestResourceStream("BotwTrainer.items.json");
@@ -102,10 +110,12 @@
                     this.json = JObject.Parse(data);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                MessageBox.Show("Error loading json");
+                this.LogError(ex, "Error loading json.");
             }
+
+            IpAddress.Text = Settings.Default.IpAddress;
         }
 
         private enum Cheat
