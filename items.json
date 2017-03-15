@@ -1288,10 +1288,10 @@
             "Armor_140_Head": {
                 "Name": "Amber Earrings ****"
             },
-            "Armor_141_Lower": {
+            "Armor_140_Lower": {
                 "Name": "Snow Boots"
             },
-            "Armor_140_Lower": {
+            "Armor_141_Lower": {
                 "Name": "Snow Boots"
             },
             "Armor_148_Upper": {
@@ -2807,6 +2807,15 @@
             },
             "Obj_Maracas": {
                 "Name": "Hestu's Maracas"
+            },
+            "Obj_ProofSandwormKiller": {
+                "Name": "Medal of Honor: Molduga"
+            },
+            "Obj_ProofGiantKiller": {
+                "Name": "Medal of Honor: Hinox"
+            },
+            "Obj_ProofGolemKiller": {
+                "Name": "Medal of Honor: Talus"
             },
             "GameRomHorseReins_00": {
                 "name": "Stable Bridle"
