@@ -52,9 +52,9 @@
 
         private readonly List<CheckBox> cbChanged = new List<CheckBox>();
 
-        private readonly ExceptionHandler exceptionHandling;
+        private TcpConn tcpConn;
 
-        private TCPGecko tcpGecko;
+        private Gecko gecko;
 
         private DispatcherTimer timer;
 
@@ -68,7 +68,7 @@
         {
             this.InitializeComponent();
 
-            this.exceptionHandling = new ExceptionHandler(this);
+            //this.exceptionHandling = new ExceptionHandler(this);
 
             this.Loaded += this.MainWindowLoaded;
             
@@ -109,6 +109,8 @@
                     var data = reader.ReadToEnd();
                     this.json = JObject.Parse(data);
                 }
+
+                //MessageBox.Show(this.json.SelectToken("Items").Children().Count().ToString());
             }
             catch (Exception ex)
             {
@@ -116,6 +118,8 @@
             }
 
             IpAddress.Text = Settings.Default.IpAddress;
+
+            TabControl.IsEnabled = true;
         }
 
         private enum Cheat
@@ -153,9 +157,11 @@
 
                 while (currentItemAddress >= ItemStart)
                 {
-                    // Skip FFFFFFFF invalild items. Usuauly end of the list
-                    var page = this.tcpGecko.peek(currentItemAddress);
-                    if (page > 9)
+                    var itemData = this.gecko.ReadBytes(currentItemAddress, 0x70);
+
+                    var page = BitConverter.ToInt32(itemData.Take(4).Skip(0).Reverse().ToArray(), 0);
+
+                    if (page > 9 || page < 0)
                     {
                         var percent = (100m / 418m) * x;
                         Dispatcher.Invoke(
@@ -171,20 +177,15 @@
                         continue;
                     }
 
-                    // Dump each item memory block
-                    var stream = new MemoryStream();
-                    this.tcpGecko.Dump(currentItemAddress, currentItemAddress + 0x70, stream);
+                    int unknown = BitConverter.ToInt32(itemData.Skip(4).Take(4).Reverse().ToArray(), 0);
+                    var value = BitConverter.ToUInt32(itemData.Skip(8).Take(4).Reverse().ToArray(), 0);
+                    var equipped = BitConverter.ToUInt32(itemData.Skip(12).Take(4).ToArray(), 0);
+                    uint nameStart = currentItemAddress + 0x1C;
 
-                    var unknown = this.ReadStream(stream, 4);
-                    var value = this.ReadStream(stream, 8);
-                    var equipped = this.ReadStream(stream, 12);
-                    var nameStart = currentItemAddress + 0x1C;
-
-                    stream.Seek(28, SeekOrigin.Begin);
                     var builder = new StringBuilder();
                     for (var i = 0; i < 36; i++)
                     {
-                        var data = stream.ReadByte();
+                        var data = itemData.Skip(i + 28).Take(1).ToArray()[0];
                         if (data == 0)
                         {
                             break;
@@ -203,22 +204,21 @@
                     var item = new Item
                                    {
                                        BaseAddress = currentItemAddress,
-                                       Page = Convert.ToInt32(page),
-                                       Unknown = Convert.ToInt32(unknown),
+                                       Page = (int)page,
+                                       Unknown = unknown,
                                        Value = value,
                                        Equipped = equipped,
                                        NameStart = nameStart,
                                        Id = id,
-                                       Modifier1Value = this.ReadStream(stream, 92).ToString("x8").ToUpper(),
-                                       Modifier2Value = this.ReadStream(stream, 96).ToString("x8").ToUpper(),
-                                       Modifier3Value = this.ReadStream(stream, 100).ToString("x8").ToUpper(),
-                                       Modifier4Value = this.ReadStream(stream, 104).ToString("x8").ToUpper(),
-                                       Modifier5Value = this.ReadStream(stream, 108).ToString("x8").ToUpper()
+                                       Modifier1Value = Gecko.ByteToHexBitFiddle(itemData.Skip(92).Take(4).ToArray()),
+                                       Modifier2Value = Gecko.ByteToHexBitFiddle(itemData.Skip(96).Take(4).ToArray()),
+                                       Modifier3Value = Gecko.ByteToHexBitFiddle(itemData.Skip(100).Take(4).ToArray()),
+                                       Modifier4Value = Gecko.ByteToHexBitFiddle(itemData.Skip(104).Take(4).ToArray()),
+                                       Modifier5Value = Gecko.ByteToHexBitFiddle(itemData.Skip(108).Take(4).ToArray())
                                    };
 
                     // look for name in json
                     var name = this.GetNameFromId(item.Id, item.PageName);
-
                     item.Name = name;
 
                     this.items.Add(item);
@@ -252,47 +252,54 @@
 
             this.items.Clear();
 
-            // talk to wii u and get mem dump of data
-            var result = await Task.Run(() => this.LoadDataAsync());
-
-            if (result)
+            try
             {
-                this.DebugData();
+                // talk to wii u and get mem dump of data
+                var result = await Task.Run(() => this.LoadDataAsync());
 
-                this.LoadTab(this.Weapons, 0);
-                this.LoadTab(this.Bows, 1);
-                this.LoadTab(this.Arrows, 2);
-                this.LoadTab(this.Shields, 3);
-                this.LoadTab(this.Armor, 4);
-                this.LoadTab(this.Materials, 7);
-                this.LoadTab(this.Food, 8);
-                this.LoadTab(this.KeyItems, 9);
+                if (result)
+                {
+                    this.DebugData();
 
-                // Code Tab Values
-                CurrentStamina.Text = this.tcpGecko.peek(0x42439598).ToString("x8").ToUpper();
-                var healthPointer = this.tcpGecko.peek(0x4225B4B0);
-                CurrentHealth.Text = this.tcpGecko.peek(healthPointer + 0x430).ToString("x8").ToUpper();
-                CurrentRupees.Text = this.tcpGecko.peek(0x4010AA0C).ToString(CultureInfo.InvariantCulture);
-                CurrentMon.Text = this.tcpGecko.peek(0x4010B14C).ToString(CultureInfo.InvariantCulture);
-                CbSpeed.SelectedValue = this.tcpGecko.peek(0x439BF514).ToString("X").ToUpper();
-                CurrentWeaponSlots.Text = this.tcpGecko.peek(0x3FCFB498).ToString(CultureInfo.InvariantCulture);
-                CurrentBowSlots.Text = this.tcpGecko.peek(0x3FD4BB50).ToString(CultureInfo.InvariantCulture);
-                CurrentShieldSlots.Text = this.tcpGecko.peek(0x3FCC0B40).ToString(CultureInfo.InvariantCulture);
-                /*
-                CurrentUrbosa.Text = this.tcpGecko.peek(0x3FCFFA80).ToString(CultureInfo.InvariantCulture);
-                CurrentRevali.Text = this.tcpGecko.peek(0x3FD5ED90).ToString(CultureInfo.InvariantCulture);
-                CurrentDaruk.Text = this.tcpGecko.peek(0x3FD50088).ToString(CultureInfo.InvariantCulture);
-                 */
+                    this.LoadTab(this.Weapons, 0);
+                    this.LoadTab(this.Bows, 1);
+                    this.LoadTab(this.Arrows, 2);
+                    this.LoadTab(this.Shields, 3);
+                    this.LoadTab(this.Armor, 4);
+                    this.LoadTab(this.Materials, 7);
+                    this.LoadTab(this.Food, 8);
+                    this.LoadTab(this.KeyItems, 9);
 
-                this.Notification.Content = string.Format("Items found: {0}", this.itemsFound);
+                    // Code Tab Values
+                    CurrentStamina.Text = this.gecko.GetString(0x42439598);
+                    var healthPointer = this.gecko.GetUInt(0x4225B4B0);
+                    CurrentHealth.Text = this.gecko.GetInt(healthPointer + 0x430).ToString();
+                    CurrentRupees.Text = this.gecko.GetInt(0x4010AA0C).ToString();
+                    CurrentMon.Text = this.gecko.GetInt(0x4010B14C).ToString();
+                    CbSpeed.SelectedValue = this.gecko.GetString(0x439BF514);
+                    CurrentWeaponSlots.Text = this.gecko.GetInt(0x3FCFB498).ToString();
+                    CurrentBowSlots.Text = this.gecko.GetInt(0x3FD4BB50).ToString();
+                    CurrentShieldSlots.Text = this.gecko.GetInt(0x3FCC0B40).ToString();
+                    /*
+                    CurrentUrbosa.Text = this.tcpGecko.peek(0x3FCFFA80).ToString(CultureInfo.InvariantCulture);
+                    CurrentRevali.Text = this.tcpGecko.peek(0x3FD5ED90).ToString(CultureInfo.InvariantCulture);
+                    CurrentDaruk.Text = this.tcpGecko.peek(0x3FD50088).ToString(CultureInfo.InvariantCulture);
+                     */
 
-                this.ToggleControls("DataLoaded");
+                    this.Notification.Content = string.Format("Items found: {0}", this.itemsFound);
 
-                this.cbChanged.Clear();
-                this.tbChanged.Clear();
-                this.ddChanged.Clear();
+                    this.ToggleControls("DataLoaded");
 
-                this.Save.IsEnabled = this.HasChanged;
+                    this.cbChanged.Clear();
+                    this.tbChanged.Clear();
+                    this.ddChanged.Clear();
+
+                    this.Save.IsEnabled = this.HasChanged;
+                }
+            }
+            catch (Exception ex)
+            {
+                this.LogError(ex, "Load Data");
             }
         }
 
@@ -300,16 +307,26 @@
         {
             try
             {
-                // cause error to test
-                //var foundTextBox = (TextBox)this.FindName("Item_123");
-                //foundTextBox.Text = "error";
+                this.tcpConn = new TcpConn(this.IpAddress.Text, 7331);
+                this.connected = this.tcpConn.Connect();
 
-                this.tcpGecko = new TCPGecko(this.IpAddress.Text, 7331);
+                if (!this.connected)
+                {
+                    this.LogError(new Exception("Failed to connect"));
+                    return;
+                }
 
-                this.connected = this.tcpGecko.Connect();
+                // init gecko
+                this.gecko = new Gecko(this.tcpConn);
 
                 if (this.connected)
                 {
+                    var status = this.gecko.GetServerStatus();
+                    if (status == 0)
+                    {
+                        return;
+                    }
+
                     // Saved settings stuff
                     var shown = Settings.Default.Warning;
 
@@ -328,12 +345,6 @@
                     this.ToggleControls("Connected");
                 }
             }
-            catch (ETCPGeckoException ex)
-            {
-                this.connected = false;
-
-                MessageBox.Show(ex.Message);
-            }
             catch (System.Net.Sockets.SocketException)
             {
                 this.connected = false;
@@ -350,7 +361,7 @@
         {
             try
             {
-                this.tcpGecko.Disconnect();
+                this.tcpConn.Close();
 
                 this.ToggleControls("Disconnected");
             }
@@ -396,7 +407,7 @@
                             if (foundTextBox != null)
                             {
                                 var offset = (uint)(SaveItemStart + (y * 0x8));
-                                this.tcpGecko.poke32(offset, Convert.ToUInt32(foundTextBox.Text));
+                                this.gecko.WriteUInt(offset, Convert.ToUInt32(foundTextBox.Text));
                             }
 
                             y++;
@@ -415,7 +426,7 @@
                             {
                                 var offset = (uint)(SaveItemStart + (y * 0x8));
 
-                                this.tcpGecko.poke32(offset, Convert.ToUInt32(foundTextBox.Text));
+                                this.gecko.WriteUInt(offset, Convert.ToUInt32(foundTextBox.Text));
                             }
 
                             y++;
@@ -434,7 +445,7 @@
                             {
                                 var offset = (uint)(SaveItemStart + (y * 0x8));
 
-                                this.tcpGecko.poke32(offset, Convert.ToUInt32(foundTextBox.Text));
+                                this.gecko.WriteUInt(offset, Convert.ToUInt32(foundTextBox.Text));
                             }
 
                             y++;
@@ -453,17 +464,13 @@
                             var foundTextBox = (TextBox)this.FindName("Value_" + item.ValueAddressHex);
                             if (foundTextBox != null)
                             {
-                                this.tcpGecko.poke32(offset, Convert.ToUInt32(foundTextBox.Text));
+                                this.gecko.WriteUInt(offset, Convert.ToUInt32(foundTextBox.Text));
                             }
 
                             y++;
                         }
                     }
                 }
-            }
-            catch (ETCPGeckoException exc)
-            {
-                this.exceptionHandling.HandleException(exc);
             }
             catch (Exception ex)
             {
@@ -492,17 +499,18 @@
                         var thisItem = this.items.Single(i => i.NameStart == add);
 
                         //clear current name
-                        this.tcpGecko.poke32(add, 0x0);
-                        this.tcpGecko.poke32(add + 0x4, 0x0);
-                        this.tcpGecko.poke32(add + 0x8, 0x0);
-                        this.tcpGecko.poke32(add + 0xC, 0x0);
-                        this.tcpGecko.poke32(add + 0x10, 0x0);
-                        this.tcpGecko.poke32(add + 0x14, 0x0);
+                        var zeros = new byte[36];
+                        for (var i = 0; i < zeros.Length; i++)
+                        {
+                            zeros[i] = 0x0;
+                        }
+
+                        this.gecko.WriteBytes(add, zeros);
 
                         uint x = 0x0;
                         foreach (var b in newName)
                         {
-                            this.tcpGecko.poke08(add + x, b);
+                            this.gecko.WriteBytes(add + x, new[] { b });
                             x = x + 0x1;
                         }
 
@@ -523,7 +531,7 @@
                         bool parsed = int.TryParse(tb.Text, out val);
                         if (parsed)
                         {
-                            this.tcpGecko.poke32(address, Convert.ToUInt32(val));
+                            this.gecko.WriteUInt(address, Convert.ToUInt32(val));
                         }
                     }
 
@@ -534,14 +542,10 @@
                         bool parsed = uint.TryParse(tb.Text, NumberStyles.HexNumber, CultureInfo.CurrentCulture, out val);
                         if (parsed)
                         {
-                            this.tcpGecko.poke32(address, val);
+                            this.gecko.WriteUInt(address, val);
                         }
                     }
                 }
-            }
-            catch (ETCPGeckoException exc)
-            {
-                this.exceptionHandling.HandleException(exc);
             }
             catch (Exception ex)
             {
@@ -637,10 +641,6 @@
                 this.ddChanged.Clear();
                 this.Save.IsEnabled = false;
             }
-            catch (ETCPGeckoException exc)
-            {
-                this.exceptionHandling.HandleException(exc);
-            }
             catch (Exception ex)
             {
                 this.LogError(ex);
@@ -650,6 +650,14 @@
         private void ExportClick(object sender, RoutedEventArgs e)
         {
             this.ExportToExcel();
+        }
+
+        private void TestClick(object sender, RoutedEventArgs e)
+        {
+            var server = this.gecko.GetServerVersion();
+            var os = this.gecko.GetOsVersion();
+
+            MessageBox.Show(string.Format("Server: {0}\nOs: {1}", server, os));
         }
 
         private void LoadTab(ContentControl tab, int page)
@@ -810,8 +818,8 @@
             try
             {
                 // Show extra info in 'Codes' tab to see if our cheats are looking in the correct place
-                var stamina1 = this.tcpGecko.peek(0x42439594).ToString("x8");
-                var stamina2 = this.tcpGecko.peek(0x42439598).ToString("x8");
+                var stamina1 = this.gecko.GetString(0x42439594);
+                var stamina2 = this.gecko.GetString(0x42439598);
                 this.StaminaData.Content = string.Format("[0x42439594 = {0}, 0x42439598 = {1}]", stamina1, stamina2);
             }
             catch (Exception ex)
@@ -821,8 +829,8 @@
 
             try
             {
-                var health1 = this.tcpGecko.peek(0x4225B4B0);
-                var health2 = this.tcpGecko.peek(health1 + 0x430).ToString("x8").ToUpper();
+                var health1 = this.gecko.GetUInt(0x4225B4B0);
+                var health2 = this.gecko.GetString(health1 + 0x430);
                 this.HealthData.Content = string.Format("0x{0} = {1}", (health1 + 0430).ToString("x8").ToUpper(), health2);
             }
             catch (Exception ex)
@@ -831,9 +839,9 @@
             }
 
             try
-            { 
-                var rupee1 = this.tcpGecko.peek(0x3FC92D10);
-                var rupee2 = this.tcpGecko.peek(0x4010AA0C);
+            {
+                var rupee1 = this.gecko.GetString(0x3FC92D10);
+                var rupee2 = this.gecko.GetString(0x4010AA0C);
                 this.RupeeData.Content = string.Format("[0x3FC92D10 = {0}, 0x4010AA0C = {1}]", rupee1, rupee2);
             }
             catch (Exception ex)
@@ -842,9 +850,9 @@
             }
 
             try
-            { 
-                var mon1 = this.tcpGecko.peek(0x3FD41158);
-                var mon2 = this.tcpGecko.peek(0x4010B14C);
+            {
+                var mon1 = this.gecko.GetString(0x3FD41158);
+                var mon2 = this.gecko.GetString(0x4010B14C);
                 this.MonData.Content = string.Format("[0x3FD41158 = {0}, 0x4010B14C = {1}]", mon1, mon2);
             }
             catch (Exception ex)
@@ -853,8 +861,8 @@
             }
 
             try
-            { 
-                var run = this.tcpGecko.peek(0x43A88CC4).ToString("X");
+            {
+                var run = this.gecko.GetString(0x43A88CC4);
                 this.RunData.Content = string.Format("0x43A88CC4 = {0} (Redundant really due to speed code)", run);
             }
             catch (Exception ex)
@@ -863,8 +871,8 @@
             }
 
             try
-            { 
-                var speed = this.tcpGecko.peek(0x439BF514).ToString("X");
+            {
+                var speed = this.gecko.GetString(0x439BF514);
                 this.SpeedData.Content = string.Format("0x439BF514 = {0}", speed);
             }
             catch (Exception ex)
@@ -875,9 +883,9 @@
                 this.MoonJumpData.Content = "Hold X";
 
             try
-            { 
-                var weapon1 = this.tcpGecko.peek(0x3FCFB498);
-                var weapon2 = this.tcpGecko.peek(0x4010B34C);
+            {
+                var weapon1 = this.gecko.GetString(0x3FCFB498);
+                var weapon2 = this.gecko.GetString(0x4010B34C);
                 this.WeaponSlotsData.Content = string.Format("[0x3FCFB498 = {0}, 0x4010B34C = {1}]", weapon1, weapon2);
             }
             catch (Exception ex)
@@ -887,8 +895,8 @@
 
             try
             {
-                var bow1 = this.tcpGecko.peek(0x3FD4BB50);
-                var bow2 = this.tcpGecko.peek(0x4011126C);
+                var bow1 = this.gecko.GetString(0x3FD4BB50);
+                var bow2 = this.gecko.GetString(0x4011126C);
                 this.BowSlotsData.Content = string.Format("[0x3FD4BB50 = {0}, 0x4011126C = {1}]", bow1, bow2);
             }
             catch (Exception ex)
@@ -898,8 +906,8 @@
 
             try
             {
-                var shield1 = this.tcpGecko.peek(0x3FCC0B40);
-                var shield2 = this.tcpGecko.peek(0x4011128C);
+                var shield1 = this.gecko.GetString(0x3FCC0B40);
+                var shield2 = this.gecko.GetString(0x4011128C);
                 this.ShieldSlotsData.Content = string.Format("[0x3FCC0B40 = {0}, 0x4011128C = {1}]", shield1, shield2);
             }
             catch (Exception ex)
@@ -940,7 +948,7 @@
             {
                 this.LogError(ex, "Urbosa Code");
             }
-             * */
+            */
         }
 
         private void SetCheats(ICollection<Cheat> cheats)
@@ -948,13 +956,13 @@
             try
             {
                 // Disable codehandler before we modify
-                this.tcpGecko.poke32(CodeHandlerEnabled, 0x00000000);
+                this.gecko.WriteUInt(CodeHandlerEnabled, 0x00000000);
 
                 // clear current codes
                 var clear = CodeHandlerStart;
                 while (clear <= CodeHandlerEnd)
                 {
-                    this.tcpGecko.poke32(clear, 0x0);
+                    this.gecko.WriteUInt(clear, 0x0);
                     clear += 0x4;
                 }
 
@@ -1182,12 +1190,12 @@
                 var address = CodeHandlerStart;
                 foreach (var code in codes)
                 {
-                    this.tcpGecko.poke32(address, code);
+                    this.gecko.WriteUInt(address, code);
                     address += 0x4;
                 }
 
                 // Re-enable codehandler
-                this.tcpGecko.poke32(CodeHandlerEnabled, 0x00000001);
+                this.gecko.WriteUInt(CodeHandlerEnabled, 0x00000001);
             }
             catch (Exception ex)
             {
@@ -1312,17 +1320,6 @@
             {
                 MessageBox.Show(ex.ToString());
             }
-        }
-
-        private uint ReadStream(Stream stream, long offset)
-        {
-            var buffer = new byte[4];
-
-            stream.Seek(offset, SeekOrigin.Begin);
-            stream.Read(buffer, 0, 4);
-            var data = ByteSwap.Swap(BitConverter.ToUInt32(buffer, 0));
-
-            return data;
         }
 
         private TextBox GenerateGridTextBox(string value, string field, string type, int x, int col, int width = 75)
@@ -1468,7 +1465,7 @@
             }
         }
 
-        public void LogError(Exception ex, string more = null)
+        private void LogError(Exception ex, string more = null)
         {
             var paragraph = new Paragraph
             {
@@ -1504,7 +1501,16 @@
 
         private void TextChanged(object sender, TextChangedEventArgs textChangedEventArgs)
         {
-            this.tbChanged.Add(sender as TextBox);
+            var thisTb = sender as TextBox;
+
+            var exists = this.tbChanged.Where(x => x.Tag == thisTb.Tag);
+
+            if (exists.Any())
+            {
+                return;
+            }
+
+            this.tbChanged.Add(thisTb);
 
             this.Save.IsEnabled = this.HasChanged;
         }

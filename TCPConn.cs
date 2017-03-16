@@ -5,7 +5,7 @@
     using System.Net.Sockets;
     using System.Windows;
 
-    public class Tcpconn
+    public class TcpConn
     {
         private TcpClient client;
 
@@ -15,7 +15,7 @@
 
         public int Port { get; private set; }
 
-        public Tcpconn(string host, int port)
+        public TcpConn(string host, int port)
         {
             this.Host = host;
             this.Port = port;
@@ -23,7 +23,7 @@
             this.stream = null;
         }
 
-        public void Connect()
+        public bool Connect()
         {
             try
             {
@@ -35,26 +35,28 @@
             }
 
             this.client = new TcpClient { NoDelay = true };
-            var ar = this.client.BeginConnect(this.Host, this.Port, null, null);
-            var wh = ar.AsyncWaitHandle;
+            var asyncResult = this.client.BeginConnect(this.Host, this.Port, null, null);
+            var waitHandle = asyncResult.AsyncWaitHandle;
             try
             {
-                if (!ar.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(5), false))
+                if (!asyncResult.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(5), false))
                 {
                     this.client.Close();
-                    throw new IOException("Connection timeout.", new TimeoutException());
+                    return false;
                 }
 
-                this.client.EndConnect(ar);
+                this.client.EndConnect(asyncResult);
             }
             finally
             {
-                wh.Close();
-            } 
+                waitHandle.Close();
+            }
 
             this.stream = this.client.GetStream();
             this.stream.ReadTimeout = 10000;
             this.stream.WriteTimeout = 10000;
+
+            return true;
         }
 
         public void Close()
@@ -67,6 +69,7 @@
                 }
 
                 this.client.Close();
+                this.client.Dispose();
             }
             catch (Exception ex)
             {

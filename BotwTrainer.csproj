@@ -89,12 +89,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Command.cs" />
-    <Compile Include="ExceptionHandler.cs" />
+    <Compile Include="ByteSwap.cs" />
+    <Compile Include="Gecko.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="MemAreas.cs" />
-    <Compile Include="TCPConn.cs" />
-    <Compile Include="TCPGecko.cs" />
+    <Compile Include="TcpConn.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

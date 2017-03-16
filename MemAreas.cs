@@ -102,39 +102,5 @@
         {
             return ValidRange(low, high, AddressDebug);
         }
-
-        public static void SetDataUpper(TCPGecko upper)
-        {
-            uint mem;
-            switch (upper.OsVersionRequest())
-            {
-                case 400:
-                case 410:
-                    mem = upper.peek_kern(0xffe8619c);
-                    break;
-                case 500:
-                case 510:
-                    return;
-                // TODO: This doesn't work for some reason - crashes on connection?
-                //mem = upper.peek_kern(0xffe8591c);
-                //break;
-                default:
-                    return;
-            }
-
-            var tbl = upper.peek_kern(mem + 4);
-            var lst = upper.peek_kern(tbl + 20);
-
-            var initStart = upper.peek_kern(lst + 0 + 0x00);
-            var initLen = upper.peek_kern(lst + 4 + 0x00);
-            var codeStart = upper.peek_kern(lst + 0 + 0x10);
-            var codeLen = upper.peek_kern(lst + 4 + 0x10);
-            var dataStart = upper.peek_kern(lst + 0 + 0x20);
-            var dataLen = upper.peek_kern(lst + 4 + 0x20);
-
-            ValidAreas[0] = new AddressRange(AddressType.Ex, initStart, initStart + initLen);
-            ValidAreas[1] = new AddressRange(AddressType.Ex, codeStart, codeStart + codeLen);
-            ValidAreas[2] = new AddressRange(AddressType.Rw, dataStart, dataStart + dataLen);
-        }
     }
 }

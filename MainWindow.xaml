@@ -46,7 +46,7 @@
 
             <TabItem Header="Codes" x:Name="Codes" Margin="0,0,0,0" Background="PaleVioletRed">
                 <Canvas>
-                    <Label Content="To enable these codes check the box and click save. Current address/values printed to the right." Height="30" Margin="0" Canvas.Left="50" Canvas.Top="24" FontSize="14" Width="642"/>
+                    <Label Content="To enable these codes check the box and click save. Current address/values printed to the right in HEX." Height="30" Margin="0" Canvas.Left="50" Canvas.Top="24" FontSize="14" Width="642"/>
 
                     <Label Content="Controller Type" Height="26" Margin="0" Canvas.Left="50" Canvas.Top="64"/>
                     <ComboBox x:Name="Controller" Canvas.Left="200" Canvas.Top="67" Width="80" SelectedValuePath="Content">
@@ -59,7 +59,7 @@
                     <TextBox x:Name="CurrentStamina" Height="25" Width="90" Margin="0" Canvas.Left="200" Canvas.Top="94" CharacterCasing="Upper" MaxLength="8" TextChanged="TextChanged"/>
                     <Label x:Name="StaminaData" Content="StaminaData" Height="25" Margin="0" Canvas.Left="315" Canvas.Top="94"/>
 
-                    <Label Content="Health (Max 0x78)" Height="26" Margin="0" Canvas.Left="50" Canvas.Top="124"/>
+                    <Label Content="Health (Max 120)" Height="26" Margin="0" Canvas.Left="50" Canvas.Top="124"/>
                     <CheckBox x:Name="Health" Margin="0" Canvas.Left="160" Canvas.Top="130" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
                     <TextBox x:Name="CurrentHealth" Height="25" Width="90" Margin="0" Canvas.Left="200" Canvas.Top="124" TextChanged="TextChanged"/>
                     <Label x:Name="HealthData" Content="HealthData" Height="25" Margin="0" Canvas.Left="315" Canvas.Top="124"/>
@@ -113,6 +113,18 @@
 
 
                 </Canvas>
+            </TabItem>
+
+            <TabItem Header="Item Tree" Margin="0" Visibility="Hidden">
+                <Grid>
+                    <TreeView Margin="0" Name="JsonTree">
+                        <TreeView.ItemContainerStyle>
+                            <Style TargetType="{x:Type TreeViewItem}">
+                                <Setter Property="IsExpanded" Value="True" />
+                            </Style>
+                        </TreeView.ItemContainerStyle>
+                    </TreeView>
+                </Grid>
             </TabItem>
 
             <TabItem Header="Debug" x:Name="Debug" Margin="0,0,0,0" Background="SeaGreen">
@@ -230,6 +242,8 @@
             <Button x:Name="Save" Content="Save Data" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="75" Click="SaveClick" Canvas.Left="109" Canvas.Top="10" IsEnabled="False" />
 
             <Label x:Name="Notification" Content="You can only save if a value has been changed." Canvas.Right="10" Canvas.Top="7" Width="770" Canvas.Left="200"/>
+
+            <Button x:Name="Test" Content="Test" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="75" Click="TestClick" Canvas.Left="743" Canvas.Top="10" />
 
         </Canvas>
 
