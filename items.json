@@ -154,6 +154,9 @@
             "Weapon_Sword_073": {
                 "Name": "Demon Carver"
             },
+            "Weapon_Sword_500": {
+                "Name": "Lantern"
+            },
             "Weapon_Lsword_001": {
                 "Name": "Traveler's Claymore"
             },
@@ -1626,7 +1629,19 @@
             },
             "Armor_234_Lower": {
                 "Name": "Trousers of the Hero ****"
-            }
+            },
+            "Armor_500_Upper": {
+                "Name": "Mini?"
+            },
+            "Armor_501_Lower": {
+                "Name": "Mini?"
+            },
+            "Armor_501_Upper": {
+                "Name": "Mini?"
+            },
+            "Armor_502_Upper": {
+                "Name": "Mini?"
+            },
         },
         "Arrows": {
             "NormalArrow": {
@@ -1664,6 +1679,9 @@
             "Item_Fruit_E": {
                 "Name": "Fleet-Lotus Seeds"
             },
+            "Item_Fruit_E_00": {
+                "Name": "Fleet-Lotus Seeds x0"
+
             "Item_Fruit_F": {
                 "Name": "Hydromelon"
             },
@@ -1718,6 +1736,9 @@
             "Item_Mushroom_F": {
                 "Name": "Hearty Truffle"
             },
+            "Item_Mushroom_F_00": {
+                "Name": "Hearty Truffle x0"
+            },
             "Item_MushroomGet_F": {
                 "Name": "Hearty Truffle"
             },
@@ -1750,6 +1771,9 @@
             },
             "Item_MushroomGet_N": {
                 "Name": "Big Hearty Truffle"
+            },
+            "Item_Mushroom_N_00": {
+                "Name": "Big Hearty Truffle x0"
             },
             "Item_Mushroom_O": {
                 "Name": "Endura Shroom"
@@ -2180,6 +2204,9 @@
             "Item_Enemy_57": {
                 "Name": "Octo Balloon"
             },
+            "Item_Enemy_Put_57": {
+                "Name": "Octo Balloon"
+            },
             "Item_Material_01": {
                 "Name": "Cane Sugar"
             },
@@ -2206,6 +2233,9 @@
             },
             "Item_Ore_A": {
                 "Name": "Diamond"
+            },
+            "Item_Ore_A_00": {
+                "Name": "Diamant x0"
             },
             "Item_Ore_B": {
                 "Name": "Ruby"
@@ -2725,6 +2755,9 @@
             "Item_Cook_K_09": {
                 "Name": "Milk"
             },
+            "Item_Material_05_00": {
+                "Name": "Milk x0"
+            },
             "Item_Cook_L_01": {
                 "Name": "Monster Stew"
             },
@@ -2808,6 +2841,12 @@
             "Obj_Maracas": {
                 "Name": "Hestu's Maracas"
             },
+<<<<<<< HEAD
+=======
+            "Obj_ProofKorok": {
+                "Name": "Hestu's Gift"
+            },
+>>>>>>> 1e30d0392d407aca8f24ad854a7f7966f7028cf6
             "Obj_ProofSandwormKiller": {
                 "Name": "Medal of Honor: Molduga"
             },
@@ -2817,6 +2856,15 @@
             "Obj_ProofGolemKiller": {
                 "Name": "Medal of Honor: Talus"
             },
+<<<<<<< HEAD
+=======
+            "KeySmall": {
+                "Name": "Small Key"
+            },
+            "Obj_Armor_115_Head": {
+                "Name": "Thunder Helm"
+            },
+>>>>>>> 1e30d0392d407aca8f24ad854a7f7966f7028cf6
             "GameRomHorseReins_00": {
                 "name": "Stable Bridle"
             },

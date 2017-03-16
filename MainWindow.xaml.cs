@@ -1220,6 +1220,8 @@
                 {
                     this.Refresh.IsEnabled = true;
                 }
+
+                this.Test.IsEnabled = true;
             }
 
             if (state == "Disconnected")
