@@ -2820,6 +2820,12 @@
             "Obj_ProofGolemKiller": {
                 "Name": "Medal of Honor: Talus"
             },
+            "KeySmall": {
+                "Name": "Small Key"
+            },
+            "Obj_Armor_115_Head": {
+                "Name": "Thunder Helm"
+            },
             "GameRomHorseReins_00": {
                 "name": "Stable Bridle"
             },
