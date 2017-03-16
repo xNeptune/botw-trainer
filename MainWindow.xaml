@@ -243,7 +243,7 @@
 
             <Label x:Name="Notification" Content="You can only save if a value has been changed." Canvas.Right="10" Canvas.Top="7" Width="770" Canvas.Left="200"/>
 
-            <Button x:Name="Test" Content="Test" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="75" Click="TestClick" Canvas.Left="743" Canvas.Top="10" />
+            <Button x:Name="Test" Content="Test" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="75" Click="TestClick" Canvas.Left="895" Canvas.Top="10" RenderTransformOrigin="2.867,0.4" IsEnabled="False" />
 
         </Canvas>
 
