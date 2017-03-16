@@ -118,8 +118,6 @@
             }
 
             IpAddress.Text = Settings.Default.IpAddress;
-
-            TabControl.IsEnabled = true;
         }
 
         private enum Cheat
@@ -273,18 +271,16 @@
                     // Code Tab Values
                     CurrentStamina.Text = this.gecko.GetString(0x42439598);
                     var healthPointer = this.gecko.GetUInt(0x4225B4B0);
-                    CurrentHealth.Text = this.gecko.GetInt(healthPointer + 0x430).ToString();
-                    CurrentRupees.Text = this.gecko.GetInt(0x4010AA0C).ToString();
-                    CurrentMon.Text = this.gecko.GetInt(0x4010B14C).ToString();
+                    CurrentHealth.Text = this.gecko.GetInt(healthPointer + 0x430).ToString(CultureInfo.InvariantCulture);
+                    CurrentRupees.Text = this.gecko.GetInt(0x4010AA0C).ToString(CultureInfo.InvariantCulture);
+                    CurrentMon.Text = this.gecko.GetInt(0x4010B14C).ToString(CultureInfo.InvariantCulture);
                     CbSpeed.SelectedValue = this.gecko.GetString(0x439BF514);
-                    CurrentWeaponSlots.Text = this.gecko.GetInt(0x3FCFB498).ToString();
-                    CurrentBowSlots.Text = this.gecko.GetInt(0x3FD4BB50).ToString();
-                    CurrentShieldSlots.Text = this.gecko.GetInt(0x3FCC0B40).ToString();
-                    /*
-                    CurrentUrbosa.Text = this.tcpGecko.peek(0x3FCFFA80).ToString(CultureInfo.InvariantCulture);
-                    CurrentRevali.Text = this.tcpGecko.peek(0x3FD5ED90).ToString(CultureInfo.InvariantCulture);
-                    CurrentDaruk.Text = this.tcpGecko.peek(0x3FD50088).ToString(CultureInfo.InvariantCulture);
-                     */
+                    CurrentWeaponSlots.Text = this.gecko.GetInt(0x3FCFB498).ToString(CultureInfo.InvariantCulture);
+                    CurrentBowSlots.Text = this.gecko.GetInt(0x3FD4BB50).ToString(CultureInfo.InvariantCulture);
+                    CurrentShieldSlots.Text = this.gecko.GetInt(0x3FCC0B40).ToString(CultureInfo.InvariantCulture);
+                    CurrentUrbosa.Text = this.gecko.GetInt(0x3FCFFA80).ToString(CultureInfo.InvariantCulture);
+                    CurrentRevali.Text = this.gecko.GetInt(0x3FD5ED90).ToString(CultureInfo.InvariantCulture);
+                    CurrentDaruk.Text = this.gecko.GetInt(0x3FD50088).ToString(CultureInfo.InvariantCulture);
 
                     this.Notification.Content = string.Format("Items found: {0}", this.itemsFound);
 
@@ -609,7 +605,6 @@
                         selected.Add(Cheat.ShieldInv);
                     }
 
-                    /*
                     if (Urbosa.IsChecked == true)
                     {
                         selected.Add(Cheat.Urbosa);
@@ -624,7 +619,6 @@
                     {
                         selected.Add(Cheat.Daruk);
                     }
-                    */
 
                     this.SetCheats(selected);
 
@@ -915,11 +909,10 @@
                 this.LogError(ex, "Shield Slot Code");
             }
 
-            /*
             try
             {
-                var urbosa1 = this.tcpGecko.peek(0x3FCFFA80);
-                var urbosa2 = this.tcpGecko.peek(0x4011BA2C);
+                var urbosa1 = this.gecko.GetString(0x3FCFFA80);
+                var urbosa2 = this.gecko.GetString(0x4011BA2C);
                 this.UrbosaData.Content = string.Format("[0x3FCFFA80 = {0}, 0x4011BA2C = {1}]", urbosa1, urbosa2);
             }
             catch (Exception ex)
@@ -929,8 +922,8 @@
 
             try
             {
-                var revali1 = this.tcpGecko.peek(0x3FD5ED90);
-                var revali2 = this.tcpGecko.peek(0x4011BA0C);
+                var revali1 = this.gecko.GetString(0x3FD5ED90);
+                var revali2 = this.gecko.GetString(0x4011BA0C);
                 this.RevaliData.Content = string.Format("[0x3FD5ED90 = {0}, 0x4011BA0C = {1}]", revali1, revali2);
             }
             catch (Exception ex)
@@ -940,15 +933,14 @@
 
             try
             {
-                var daruk1 = this.tcpGecko.peek(0x3FD50088);
-                var daruk2 = this.tcpGecko.peek(0x4011B9EC);
+                var daruk1 = this.gecko.GetString(0x3FD50088);
+                var daruk2 = this.gecko.GetString(0x4011B9EC);
                 this.DarukData.Content = string.Format("[0x3FD50088 = {0}, 0x4011B9EC = {1}]", daruk1, daruk2);
             }
             catch (Exception ex)
             {
                 this.LogError(ex, "Urbosa Code");
             }
-            */
         }
 
         private void SetCheats(ICollection<Cheat> cheats)
@@ -1139,7 +1131,6 @@
                     codes.Add(0x00000000);
                 }
 
-                /*
                 if (cheats.Contains(Cheat.Urbosa))
                 {
                     var value = Convert.ToUInt32(CurrentUrbosa.Text);
@@ -1184,7 +1175,6 @@
                     codes.Add(value);
                     codes.Add(0x00000000);
                 }
-                */
 
                 // Write our selected codes
                 var address = CodeHandlerStart;
@@ -1234,6 +1224,7 @@
                 this.IpAddress.IsEnabled = true;
 
                 this.Refresh.IsEnabled = false;
+                this.Test.IsEnabled = false;
             }
 
             if (state == "Load")
