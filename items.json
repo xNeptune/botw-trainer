@@ -1641,7 +1641,7 @@
             },
             "Armor_502_Upper": {
                 "Name": "Mini?"
-            },
+            }
         },
         "Arrows": {
             "NormalArrow": {
@@ -1659,8 +1659,8 @@
             "BombArrow_A": {
                 "Name": "Bomb Arrow"
             },
-            "AncientArrow": { 
-                "Name":  "Ancient Arrow"
+            "AncientArrow": {
+                "Name": "Ancient Arrow"
             }
         },
         "Materials": {
@@ -1681,7 +1681,7 @@
             },
             "Item_Fruit_E_00": {
                 "Name": "Fleet-Lotus Seeds x0"
-
+            },
             "Item_Fruit_F": {
                 "Name": "Hydromelon"
             },
@@ -1963,7 +1963,7 @@
             },
             "Item_InsectGet_H": {
                 "Name": "Restless Cricket"
-            },        
+            },
             "Animal_Insect_I": {
                 "Name": "Electric Darner"
             },
@@ -2841,12 +2841,9 @@
             "Obj_Maracas": {
                 "Name": "Hestu's Maracas"
             },
-<<<<<<< HEAD
-=======
             "Obj_ProofKorok": {
                 "Name": "Hestu's Gift"
             },
->>>>>>> 1e30d0392d407aca8f24ad854a7f7966f7028cf6
             "Obj_ProofSandwormKiller": {
                 "Name": "Medal of Honor: Molduga"
             },
@@ -2856,15 +2853,12 @@
             "Obj_ProofGolemKiller": {
                 "Name": "Medal of Honor: Talus"
             },
-<<<<<<< HEAD
-=======
             "KeySmall": {
                 "Name": "Small Key"
             },
             "Obj_Armor_115_Head": {
                 "Name": "Thunder Helm"
             },
->>>>>>> 1e30d0392d407aca8f24ad854a7f7966f7028cf6
             "GameRomHorseReins_00": {
                 "name": "Stable Bridle"
             },
