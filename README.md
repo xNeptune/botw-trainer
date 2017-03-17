@@ -30,7 +30,7 @@ To avoid crashing and unwanted errors please wait until you have loaded into you
 6. Edit what you want
 
 ## Contributors
-Program and Codes: [PandaOnSmack](http://gbatemp.net/members/pandaonsmack.374906/)
+Program / Codes: [PandaOnSmack](http://gbatemp.net/members/pandaonsmack.374906/) / GBA Temp Users
 
 ReadMe: [AecdArmy](http://gbatemp.net/members/aecdarmy.378662/) / totesadorbs
 
