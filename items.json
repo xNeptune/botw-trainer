@@ -2896,5 +2896,19 @@
                 "Name": "Extravagant Saddle"
             }
         }
+    },
+    "Shrines": {
+        "Monya_Toma_Shrine": {
+            "Name": "Monya Toma Shrine",
+            "LocX": -1494,
+            "Locy": 275,
+            "LocZ": -1480
+        },
+        "Other_Shrine": {
+            "Name": "Blah Blah Shrine",
+            "LocX": -50,
+            "Locy": 100,
+            "LocZ": -200
+        }
     }
 }
