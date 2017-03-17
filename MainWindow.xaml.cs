@@ -9,6 +9,7 @@
     using System.Reflection;
     using System.Text;
     using System.Text.RegularExpressions;
+    using System.Threading;
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Controls;
@@ -40,25 +41,19 @@
 
         private const uint CodeHandlerEnabled = 0x10014CFC;
 
-        private readonly List<Item> items;
-
-        private readonly JToken json;
-
-        private readonly string version;
-
         private readonly List<TextBox> tbChanged = new List<TextBox>();
 
         private readonly List<ComboBox> ddChanged = new List<ComboBox>();
 
         private readonly List<CheckBox> cbChanged = new List<CheckBox>();
 
+        private List<Item> items;
+
+        private JToken json;
+
         private TcpConn tcpConn;
 
         private Gecko gecko;
-
-        private DispatcherTimer timer;
-
-        private TimeSpan time;
 
         private int itemsFound;
 
@@ -68,27 +63,52 @@
         {
             this.InitializeComponent();
 
-            //this.exceptionHandling = new ExceptionHandler(this);
-
             this.Loaded += this.MainWindowLoaded;
-            
-            this.version = Settings.Default.CurrentVersion;
+        }
 
-            this.Title = string.Format("{0} v{1}", this.Title, this.version);
+        private enum Cheat
+        {
+            Stamina = 0,
+            Health = 1,
+            Run = 2,
+            Rupees = 3,
+            MoonJump = 4,
+            WeaponInv = 5,
+            BowInv = 6,
+            ShieldInv = 7,
+            Speed = 8,
+            Mon = 9,
+            Urbosa = 10,
+            Revali = 11,
+            Daruk = 12,
+            Keys = 13
+        }
+
+        private bool HasChanged
+        {
+            get
+            {
+                return this.tbChanged.Any() || this.cbChanged.Any() || this.ddChanged.Any();
+            }
+        }
+
+        private void MainWindowLoaded(object sender, RoutedEventArgs e)
+        {
+            this.Title = string.Format("{0} v{1}", this.Title, Settings.Default.CurrentVersion);
 
             this.items = new List<Item>();
 
             var client = new WebClient
-                             {
-                                 BaseAddress = Settings.Default.VersionUrl,
-                                 Encoding = Encoding.UTF8,
-                                 CachePolicy =
-                                     new System.Net.Cache.RequestCachePolicy(
-                                     System.Net.Cache.RequestCacheLevel.BypassCache)
-                             };
+            {
+                BaseAddress = Settings.Default.VersionUrl,
+                Encoding = Encoding.UTF8,
+                CachePolicy =
+                    new System.Net.Cache.RequestCachePolicy(
+                    System.Net.Cache.RequestCacheLevel.BypassCache)
+            };
 
             client.Headers.Add("Cache-Control", "no-cache");
-            client.DownloadStringCompleted += this.ClientDownloadStringCompleted;
+            client.DownloadStringCompleted += ClientDownloadStringCompleted;
 
             // try to get current version
             try
@@ -118,31 +138,8 @@
             }
 
             IpAddress.Text = Settings.Default.IpAddress;
-        }
 
-        private enum Cheat
-        {
-            Stamina = 0,
-            Health = 1,
-            Run = 2,
-            Rupees = 3,
-            MoonJump = 4,
-            WeaponInv = 5,
-            BowInv = 6,
-            ShieldInv = 7,
-            Speed = 8,
-            Mon = 9,
-            Urbosa = 10,
-            Revali = 11,
-            Daruk = 12
-        }
-
-        private bool HasChanged
-        {
-            get
-            {
-                return this.tbChanged.Any() || this.cbChanged.Any() || this.ddChanged.Any();
-            }
+            this.Save.IsEnabled = this.HasChanged;
         }
 
         private bool LoadDataAsync()
@@ -244,6 +241,39 @@
             }
         }
 
+        private void LoadCoordsAsync()
+        {
+            uint val;
+            bool parsed = uint.TryParse(CoordsAddress.Text, NumberStyles.HexNumber, CultureInfo.CurrentCulture, out val);
+            if (parsed)
+            {
+                return;
+            }
+
+            while (this.connected && EnableCoords.IsChecked == true)
+            {
+                var coords = this.gecko.ReadBytes(val, 0xC);
+
+                var x = coords.Take(4).Reverse().ToArray();
+                var y = coords.Skip(4).Take(4).Reverse().ToArray();
+                var z = coords.Skip(8).Take(4).Reverse().ToArray();
+
+                var xFloat = BitConverter.ToSingle(x, 0);
+                var yFloat = BitConverter.ToSingle(y, 0);
+                var zFloat = BitConverter.ToSingle(z, 0);
+
+                Dispatcher.Invoke(
+                    () =>
+                    {
+                        CoordsX.Content = xFloat;
+                        CoordsY.Content = yFloat;
+                        CoordsZ.Content = zFloat;
+                    });
+
+                Thread.Sleep(500);
+            }
+        }
+
         private async void LoadClick(object sender, RoutedEventArgs e)
         {
             this.ToggleControls("Load");
@@ -278,6 +308,7 @@
                     CurrentWeaponSlots.Text = this.gecko.GetInt(0x3FCFB498).ToString(CultureInfo.InvariantCulture);
                     CurrentBowSlots.Text = this.gecko.GetInt(0x3FD4BB50).ToString(CultureInfo.InvariantCulture);
                     CurrentShieldSlots.Text = this.gecko.GetInt(0x3FCC0B40).ToString(CultureInfo.InvariantCulture);
+                    CurrentSmallKeys.Text = this.gecko.GetInt(0x3FCC0B40).ToString(CultureInfo.InvariantCulture);
                     CurrentUrbosa.Text = this.gecko.GetInt(0x3FCFFA80).ToString(CultureInfo.InvariantCulture);
                     CurrentRevali.Text = this.gecko.GetInt(0x3FD5ED90).ToString(CultureInfo.InvariantCulture);
                     CurrentDaruk.Text = this.gecko.GetInt(0x3FD50088).ToString(CultureInfo.InvariantCulture);
@@ -494,7 +525,7 @@
                         var add = uint.Parse(tag.ToString(), NumberStyles.HexNumber);
                         var thisItem = this.items.Single(i => i.NameStart == add);
 
-                        //clear current name
+                        // clear current name
                         var zeros = new byte[36];
                         for (var i = 0; i < zeros.Length; i++)
                         {
@@ -603,6 +634,11 @@
                     if (ShieldSlots.IsChecked == true)
                     {
                         selected.Add(Cheat.ShieldInv);
+                    }
+
+                    if (SmallKeys.IsChecked == true)
+                    {
+                        selected.Add(Cheat.Keys);
                     }
 
                     if (Urbosa.IsChecked == true)
@@ -815,131 +851,56 @@
                 var stamina1 = this.gecko.GetString(0x42439594);
                 var stamina2 = this.gecko.GetString(0x42439598);
                 this.StaminaData.Content = string.Format("[0x42439594 = {0}, 0x42439598 = {1}]", stamina1, stamina2);
-            }
-            catch (Exception ex)
-            {
-                this.LogError(ex, "Stamina Code");
-            }
 
-            try
-            {
                 var health1 = this.gecko.GetUInt(0x4225B4B0);
                 var health2 = this.gecko.GetString(health1 + 0x430);
                 this.HealthData.Content = string.Format("0x{0} = {1}", (health1 + 0430).ToString("x8").ToUpper(), health2);
-            }
-            catch (Exception ex)
-            {
-                this.LogError(ex, "Health Code");
-            }
 
-            try
-            {
                 var rupee1 = this.gecko.GetString(0x3FC92D10);
                 var rupee2 = this.gecko.GetString(0x4010AA0C);
                 this.RupeeData.Content = string.Format("[0x3FC92D10 = {0}, 0x4010AA0C = {1}]", rupee1, rupee2);
-            }
-            catch (Exception ex)
-            {
-                this.LogError(ex, "Rupee Code");
-            }
 
-            try
-            {
                 var mon1 = this.gecko.GetString(0x3FD41158);
                 var mon2 = this.gecko.GetString(0x4010B14C);
                 this.MonData.Content = string.Format("[0x3FD41158 = {0}, 0x4010B14C = {1}]", mon1, mon2);
-            }
-            catch (Exception ex)
-            {
-                this.LogError(ex, "Mon Code");
-            }
 
-            try
-            {
                 var run = this.gecko.GetString(0x43A88CC4);
                 this.RunData.Content = string.Format("0x43A88CC4 = {0} (Redundant really due to speed code)", run);
-            }
-            catch (Exception ex)
-            {
-                this.LogError(ex, "Run Code");
-            }
 
-            try
-            {
                 var speed = this.gecko.GetString(0x439BF514);
                 this.SpeedData.Content = string.Format("0x439BF514 = {0}", speed);
-            }
-            catch (Exception ex)
-            {
-                this.LogError(ex, "Speed Code");
-            }
 
-                this.MoonJumpData.Content = "Hold X";
-
-            try
-            {
                 var weapon1 = this.gecko.GetString(0x3FCFB498);
                 var weapon2 = this.gecko.GetString(0x4010B34C);
                 this.WeaponSlotsData.Content = string.Format("[0x3FCFB498 = {0}, 0x4010B34C = {1}]", weapon1, weapon2);
-            }
-            catch (Exception ex)
-            {
-                this.LogError(ex, "Weapon Slot Code");
-            }
 
-            try
-            {
                 var bow1 = this.gecko.GetString(0x3FD4BB50);
                 var bow2 = this.gecko.GetString(0x4011126C);
                 this.BowSlotsData.Content = string.Format("[0x3FD4BB50 = {0}, 0x4011126C = {1}]", bow1, bow2);
-            }
-            catch (Exception ex)
-            {
-                this.LogError(ex, "Bow Slot Code");
-            }
 
-            try
-            {
                 var shield1 = this.gecko.GetString(0x3FCC0B40);
                 var shield2 = this.gecko.GetString(0x4011128C);
                 this.ShieldSlotsData.Content = string.Format("[0x3FCC0B40 = {0}, 0x4011128C = {1}]", shield1, shield2);
-            }
-            catch (Exception ex)
-            {
-                this.LogError(ex, "Shield Slot Code");
-            }
 
-            try
-            {
+                var key1 = this.gecko.GetString(0x3FD5CB48);
+                var key2 = this.gecko.GetString(0x3FF6EA00);
+                this.SmallKeysData.Content = string.Format("[0x3FD5CB48 = {0}, 0x3FF6EA00 = {1}]", key1, key2);
+
                 var urbosa1 = this.gecko.GetString(0x3FCFFA80);
                 var urbosa2 = this.gecko.GetString(0x4011BA2C);
                 this.UrbosaData.Content = string.Format("[0x3FCFFA80 = {0}, 0x4011BA2C = {1}]", urbosa1, urbosa2);
-            }
-            catch (Exception ex)
-            {
-                this.LogError(ex, "Urbosa Code");
-            }
 
-            try
-            {
                 var revali1 = this.gecko.GetString(0x3FD5ED90);
                 var revali2 = this.gecko.GetString(0x4011BA0C);
                 this.RevaliData.Content = string.Format("[0x3FD5ED90 = {0}, 0x4011BA0C = {1}]", revali1, revali2);
-            }
-            catch (Exception ex)
-            {
-                this.LogError(ex, "Urbosa Code");
-            }
 
-            try
-            {
                 var daruk1 = this.gecko.GetString(0x3FD50088);
                 var daruk2 = this.gecko.GetString(0x4011B9EC);
                 this.DarukData.Content = string.Format("[0x3FD50088 = {0}, 0x4011B9EC = {1}]", daruk1, daruk2);
             }
             catch (Exception ex)
             {
-                this.LogError(ex, "Urbosa Code");
+                this.LogError(ex, "Code");
             }
         }
 
@@ -1131,6 +1092,21 @@
                     codes.Add(0x00000000);
                 }
 
+                if (cheats.Contains(Cheat.Keys))
+                {
+                    var value = Convert.ToUInt32(CurrentSmallKeys.Text);
+
+                    codes.Add(0x00020000);
+                    codes.Add(0x3FD5CB48);
+                    codes.Add(value);
+                    codes.Add(0x00000000);
+
+                    codes.Add(0x00020000);
+                    codes.Add(0x3FF6EA00);
+                    codes.Add(value);
+                    codes.Add(0x00000000);
+                }
+
                 if (cheats.Contains(Cheat.Urbosa))
                 {
                     var value = Convert.ToUInt32(CurrentUrbosa.Text);
@@ -1212,6 +1188,8 @@
                 }
 
                 this.Test.IsEnabled = true;
+
+                this.TabControl.IsEnabled = true;
             }
 
             if (state == "Disconnected")
@@ -1276,7 +1254,7 @@
             try
             {
                 var result = e.Result;
-                if (result != this.version)
+                if (result != Settings.Default.CurrentVersion)
                 {
                     MessageBox.Show(string.Format("An update is available: {0}", result));
                 }
@@ -1452,7 +1430,7 @@
 
                 return name;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return "Error";
             }
@@ -1515,20 +1493,9 @@
             this.Save.IsEnabled = this.HasChanged;
         }
 
-        private void MainWindowLoaded(object sender, RoutedEventArgs e)
+        private void EnableCoordsOnChecked(object sender, RoutedEventArgs e)
         {
-            this.Save.IsEnabled = this.HasChanged;
-
-            this.timer = new DispatcherTimer();
-            this.timer.Tick += this.TimerTick;
-            this.timer.Interval = new TimeSpan(0, 2, 0);
-            //this.timer.Start();
-        }
-
-        private void TimerTick(object sender, EventArgs e)
-        {
-            this.ToggleControls("ForceRefresh");
-            MessageBox.Show("Refresh time!");
+            Task.Run(() => this.LoadCoordsAsync());
         }
     }
 }

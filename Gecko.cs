@@ -152,24 +152,6 @@
             return !bytes.Any() ? string.Empty : BitConverter.ToString(bytes).Replace("-", string.Empty);
         }
 
-        private void RequestBytes(uint address, uint length)
-        {
-            try
-            {
-                this.SendCommand(Command.COMMAND_READ_MEMORY);
-
-                uint bytesRead = 0;
-                var bytes = BitConverter.GetBytes(ByteSwap.Swap(address));
-                var bytes2 = BitConverter.GetBytes(ByteSwap.Swap(address + length));
-                this.tcpConn.Write(bytes, 4, ref bytesRead);
-                this.tcpConn.Write(bytes2, 4, ref bytesRead);
-            }
-            catch (Exception)
-            {
-                throw new IOException();
-            }
-        }
-
         public byte[] ReadBytes(uint address, uint length)
         {
             try
@@ -209,6 +191,24 @@
                 }
 
                 return ms.ToArray();
+            }
+            catch (Exception)
+            {
+                throw new IOException();
+            }
+        }
+
+        private void RequestBytes(uint address, uint length)
+        {
+            try
+            {
+                this.SendCommand(Command.COMMAND_READ_MEMORY);
+
+                uint bytesRead = 0;
+                var bytes = BitConverter.GetBytes(ByteSwap.Swap(address));
+                var bytes2 = BitConverter.GetBytes(ByteSwap.Swap(address + length));
+                this.tcpConn.Write(bytes, 4, ref bytesRead);
+                this.tcpConn.Write(bytes2, 4, ref bytesRead);
             }
             catch (Exception)
             {
