@@ -92,8 +92,22 @@
     <Compile Include="ByteSwap.cs" />
     <Compile Include="Gecko.cs" />
     <Compile Include="Item.cs" />
+    <Compile Include="JsonViewer\JsonViewer.xaml.cs">
+      <DependentUpon>JsonViewer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MemAreas.cs" />
     <Compile Include="TcpConn.cs" />
+    <Compile Include="TemplateSelectors\JPropertyDataTemplateSelector.cs" />
+    <Compile Include="ValueConverters\ComplexPropertyMethodToValueConverter.cs" />
+    <Compile Include="ValueConverters\JArrayLengthConverter.cs" />
+    <Compile Include="ValueConverters\JPropertyTypeToColorConverter.cs" />
+    <Compile Include="ValueConverters\JValueConverter.cs" />
+    <Compile Include="ValueConverters\JValueTypeToColorConverter.cs" />
+    <Compile Include="ValueConverters\MethodToValueConverter.cs" />
+    <Page Include="JsonViewer\JsonViewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -161,6 +175,10 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="notes.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\expand28.png" />
+    <Resource Include="Resources\two326.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

@@ -2,6 +2,7 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Globalization;
     using System.IO;
     using System.Linq;
@@ -16,6 +17,7 @@
     using System.Windows.Documents;
     using System.Windows.Input;
     using System.Windows.Media;
+    using System.Windows.Navigation;
     using System.Windows.Threading;
 
     using BotwTrainer.Properties;
@@ -128,6 +130,8 @@
                 {
                     var data = reader.ReadToEnd();
                     this.json = JObject.Parse(data);
+
+                    JsonViewer.Load(data);
                 }
 
                 //MessageBox.Show(this.json.SelectToken("Items").Children().Count().ToString());
@@ -142,7 +146,7 @@
             this.Save.IsEnabled = this.HasChanged;
         }
 
-        private bool LoadDataAsync()
+        private bool LoadData()
         {
             try
             {
@@ -241,176 +245,15 @@
             }
         }
 
-        private void LoadCoordsAsync()
-        {
-            uint val;
-            bool parsed = uint.TryParse(CoordsAddress.Text, NumberStyles.HexNumber, CultureInfo.CurrentCulture, out val);
-            if (parsed)
-            {
-                return;
-            }
-
-            while (this.connected && EnableCoords.IsChecked == true)
-            {
-                var coords = this.gecko.ReadBytes(val, 0xC);
-
-                var x = coords.Take(4).Reverse().ToArray();
-                var y = coords.Skip(4).Take(4).Reverse().ToArray();
-                var z = coords.Skip(8).Take(4).Reverse().ToArray();
-
-                var xFloat = BitConverter.ToSingle(x, 0);
-                var yFloat = BitConverter.ToSingle(y, 0);
-                var zFloat = BitConverter.ToSingle(z, 0);
-
-                Dispatcher.Invoke(
-                    () =>
-                    {
-                        CoordsX.Content = xFloat;
-                        CoordsY.Content = yFloat;
-                        CoordsZ.Content = zFloat;
-                    });
-
-                Thread.Sleep(500);
-            }
-        }
-
-        private async void LoadClick(object sender, RoutedEventArgs e)
-        {
-            this.ToggleControls("Load");
-
-            this.items.Clear();
-
-            try
-            {
-                // talk to wii u and get mem dump of data
-                var result = await Task.Run(() => this.LoadDataAsync());
-
-                if (result)
-                {
-                    this.DebugData();
-
-                    this.LoadTab(this.Weapons, 0);
-                    this.LoadTab(this.Bows, 1);
-                    this.LoadTab(this.Arrows, 2);
-                    this.LoadTab(this.Shields, 3);
-                    this.LoadTab(this.Armor, 4);
-                    this.LoadTab(this.Materials, 7);
-                    this.LoadTab(this.Food, 8);
-                    this.LoadTab(this.KeyItems, 9);
-
-                    // Code Tab Values
-                    CurrentStamina.Text = this.gecko.GetString(0x42439598);
-                    var healthPointer = this.gecko.GetUInt(0x4225B4B0);
-                    CurrentHealth.Text = this.gecko.GetInt(healthPointer + 0x430).ToString(CultureInfo.InvariantCulture);
-                    CurrentRupees.Text = this.gecko.GetInt(0x4010AA0C).ToString(CultureInfo.InvariantCulture);
-                    CurrentMon.Text = this.gecko.GetInt(0x4010B14C).ToString(CultureInfo.InvariantCulture);
-                    CbSpeed.SelectedValue = this.gecko.GetString(0x439BF514);
-                    CurrentWeaponSlots.Text = this.gecko.GetInt(0x3FCFB498).ToString(CultureInfo.InvariantCulture);
-                    CurrentBowSlots.Text = this.gecko.GetInt(0x3FD4BB50).ToString(CultureInfo.InvariantCulture);
-                    CurrentShieldSlots.Text = this.gecko.GetInt(0x3FCC0B40).ToString(CultureInfo.InvariantCulture);
-                    CurrentSmallKeys.Text = this.gecko.GetInt(0x3FCC0B40).ToString(CultureInfo.InvariantCulture);
-                    CurrentUrbosa.Text = this.gecko.GetInt(0x3FCFFA80).ToString(CultureInfo.InvariantCulture);
-                    CurrentRevali.Text = this.gecko.GetInt(0x3FD5ED90).ToString(CultureInfo.InvariantCulture);
-                    CurrentDaruk.Text = this.gecko.GetInt(0x3FD50088).ToString(CultureInfo.InvariantCulture);
-
-                    this.Notification.Content = string.Format("Items found: {0}", this.itemsFound);
-
-                    this.ToggleControls("DataLoaded");
-
-                    this.cbChanged.Clear();
-                    this.tbChanged.Clear();
-                    this.ddChanged.Clear();
-
-                    this.Save.IsEnabled = this.HasChanged;
-                }
-            }
-            catch (Exception ex)
-            {
-                this.LogError(ex, "Load Data");
-            }
-        }
-
-        private void ConnectClick(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                this.tcpConn = new TcpConn(this.IpAddress.Text, 7331);
-                this.connected = this.tcpConn.Connect();
-
-                if (!this.connected)
-                {
-                    this.LogError(new Exception("Failed to connect"));
-                    return;
-                }
-
-                // init gecko
-                this.gecko = new Gecko(this.tcpConn);
-
-                if (this.connected)
-                {
-                    var status = this.gecko.GetServerStatus();
-                    if (status == 0)
-                    {
-                        return;
-                    }
-
-                    // Saved settings stuff
-                    var shown = Settings.Default.Warning;
-
-                    if (shown < 3)
-                    {
-                        Settings.Default.Warning++;
-
-                        //MessageBox.Show("WARNING: Item names are now editable. Using bad data may mess up your game so use with care.");
-                    }
-
-                    Settings.Default.IpAddress = IpAddress.Text;
-                    Settings.Default.Save();
-
-                    Controller.SelectedValue = Settings.Default.Controller;
-
-                    this.ToggleControls("Connected");
-                }
-            }
-            catch (System.Net.Sockets.SocketException)
-            {
-                this.connected = false;
-
-                MessageBox.Show("Wrong IP");
-            }
-            catch (Exception ex)
-            {
-                this.LogError(ex);
-            }
-        }
-
-        private void DisconnectClick(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                this.tcpConn.Close();
-
-                this.ToggleControls("Disconnected");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private void SaveClick(object sender, RoutedEventArgs e)
+        private bool SaveData(TabItem tab)
         {
             // Clear old errors
             ErrorLog.Document.Blocks.Clear();
 
-            // Grab the values from the relevant tab and poke them back to memory
-            var tab = (TabItem)TabControl.SelectedItem;
-
             if (!this.HasChanged)
             {
                 // Nothing to update
-                MessageBox.Show("No changes have been made");
-                return;
+                return false;
             }
 
             try
@@ -675,11 +518,220 @@
             {
                 this.LogError(ex);
             }
+
+            return true;
+        }
+
+        private async void LoadClick(object sender, RoutedEventArgs e)
+        {
+            this.ToggleControls("Load");
+
+            this.items.Clear();
+
+            try
+            {
+                // talk to wii u and get mem dump of data
+                var result = await Task.Run(() => this.LoadData());
+
+                if (result)
+                {
+                    this.DebugData();
+
+                    this.LoadTab(this.Weapons, 0);
+                    this.LoadTab(this.Bows, 1);
+                    this.LoadTab(this.Arrows, 2);
+                    this.LoadTab(this.Shields, 3);
+                    this.LoadTab(this.Armor, 4);
+                    this.LoadTab(this.Materials, 7);
+                    this.LoadTab(this.Food, 8);
+                    this.LoadTab(this.KeyItems, 9);
+
+                    // Code Tab Values
+                    CurrentStamina.Text = this.gecko.GetString(0x42439598);
+                    var healthPointer = this.gecko.GetUInt(0x4225B4B0);
+                    CurrentHealth.Text = this.gecko.GetInt(healthPointer + 0x430).ToString(CultureInfo.InvariantCulture);
+                    CurrentRupees.Text = this.gecko.GetInt(0x4010AA0C).ToString(CultureInfo.InvariantCulture);
+                    CurrentMon.Text = this.gecko.GetInt(0x4010B14C).ToString(CultureInfo.InvariantCulture);
+                    CbSpeed.SelectedValue = this.gecko.GetString(0x439BF514);
+                    CurrentWeaponSlots.Text = this.gecko.GetInt(0x3FCFB498).ToString(CultureInfo.InvariantCulture);
+                    CurrentBowSlots.Text = this.gecko.GetInt(0x3FD4BB50).ToString(CultureInfo.InvariantCulture);
+                    CurrentShieldSlots.Text = this.gecko.GetInt(0x3FCC0B40).ToString(CultureInfo.InvariantCulture);
+                    CurrentSmallKeys.Text = this.gecko.GetInt(0x3FCC0B40).ToString(CultureInfo.InvariantCulture);
+                    CurrentUrbosa.Text = this.gecko.GetInt(0x3FCFFA80).ToString(CultureInfo.InvariantCulture);
+                    CurrentRevali.Text = this.gecko.GetInt(0x3FD5ED90).ToString(CultureInfo.InvariantCulture);
+                    CurrentDaruk.Text = this.gecko.GetInt(0x3FD50088).ToString(CultureInfo.InvariantCulture);
+
+                    this.Notification.Content = string.Format("Items found: {0}", this.itemsFound);
+
+                    this.ToggleControls("DataLoaded");
+
+                    this.cbChanged.Clear();
+                    this.tbChanged.Clear();
+                    this.ddChanged.Clear();
+
+                    this.Save.IsEnabled = this.HasChanged;
+                }
+            }
+            catch (Exception ex)
+            {
+                this.LogError(ex, "Load Data");
+            }
+        }
+
+        private void SaveClick(object sender, RoutedEventArgs e)
+        {
+            //var result = await Task.Run(() => this.SaveData((TabItem)TabControl.SelectedItem));
+
+            var result = this.SaveData((TabItem)TabControl.SelectedItem);
+
+            if (!result)
+            {
+                MessageBox.Show("No changes have been made");
+            }
+        }
+
+        private void LoadCoords()
+        {
+            var run = false;
+
+            try
+            {
+                uint pointer = this.gecko.GetUInt(0x439BF794);
+                uint address = pointer + 0x140;
+
+                Dispatcher.Invoke(
+                    () =>
+                    {
+                        run = this.connected && EnableCoords.IsChecked == true;
+                        CoordsAddress.Content = address.ToString("x8").ToUpper();
+                    });
+
+                while (run)
+                {
+                    var coords = this.gecko.ReadBytes(address, 0xC);
+
+                    if (!coords.Any())
+                    {
+                        MessageBox.Show("No data found");
+                        break;
+                    }
+
+                    var x = coords.Take(4).Reverse().ToArray();
+                    var y = coords.Skip(4).Take(4).Reverse().ToArray();
+                    var z = coords.Skip(8).Take(4).Reverse().ToArray();
+
+                    var xFloat = BitConverter.ToSingle(x, 0);
+                    var yFloat = BitConverter.ToSingle(y, 0);
+                    var zFloat = BitConverter.ToSingle(z, 0);
+
+                    Dispatcher.Invoke(
+                        () =>
+                        {
+                            CoordsX.Content = string.Format("X: {0}", xFloat);
+                            CoordsY.Content = string.Format("Y: {0}", yFloat);
+                            CoordsZ.Content = string.Format("Z: {0}", zFloat);
+                            run = this.connected && EnableCoords.IsChecked == true;
+                        });
+
+                    Thread.Sleep(500);
+                }
+            }
+            catch (Exception ex)
+            {
+                Dispatcher.Invoke(
+                    () => this.LogError(ex, "Coords Tab"));
+            }
+        }
+
+        private void ConnectClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                this.tcpConn = new TcpConn(this.IpAddress.Text, 7331);
+                this.connected = this.tcpConn.Connect();
+
+                if (!this.connected)
+                {
+                    this.LogError(new Exception("Failed to connect"));
+                    return;
+                }
+
+                // init gecko
+                this.gecko = new Gecko(this.tcpConn);
+
+                if (this.connected)
+                {
+                    var status = this.gecko.GetServerStatus();
+                    if (status == 0)
+                    {
+                        return;
+                    }
+
+                    // Saved settings stuff
+                    var shown = Settings.Default.Warning;
+
+                    if (shown < 3)
+                    {
+                        Settings.Default.Warning++;
+
+                        //MessageBox.Show("WARNING: Item names are now editable. Using bad data may mess up your game so use with care.");
+                    }
+
+                    Settings.Default.IpAddress = IpAddress.Text;
+                    Settings.Default.Save();
+
+                    Controller.SelectedValue = Settings.Default.Controller;
+
+                    this.ToggleControls("Connected");
+                }
+            }
+            catch (System.Net.Sockets.SocketException)
+            {
+                this.connected = false;
+
+                MessageBox.Show("Wrong IP");
+            }
+            catch (Exception ex)
+            {
+                this.LogError(ex);
+            }
+        }
+
+        private void DisconnectClick(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                this.tcpConn.Close();
+
+                this.ToggleControls("Disconnected");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void ExportClick(object sender, RoutedEventArgs e)
         {
-            this.ExportToExcel();
+            try
+            {
+                DebugGrid.SelectAllCells();
+                DebugGrid.ClipboardCopyMode = DataGridClipboardCopyMode.IncludeHeader;
+                ApplicationCommands.Copy.Execute(null, DebugGrid);
+                var result = (string)Clipboard.GetData(DataFormats.CommaSeparatedValue);
+                DebugGrid.UnselectAllCells();
+
+                var path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+                var excelFile = new StreamWriter(path + @"\debug.csv");
+                excelFile.WriteLine(result);
+                excelFile.Close();
+
+                MessageBox.Show("File exported to " + path);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "Excel Export");
+            }
         }
 
         private void TestClick(object sender, RoutedEventArgs e)
@@ -849,54 +901,54 @@
             {
                 // Show extra info in 'Codes' tab to see if our cheats are looking in the correct place
                 var stamina1 = this.gecko.GetString(0x42439594);
-                var stamina2 = this.gecko.GetString(0x42439598);
-                this.StaminaData.Content = string.Format("[0x42439594 = {0}, 0x42439598 = {1}]", stamina1, stamina2);
+                //var stamina2 = this.gecko.GetString(0x42439598);
+                this.StaminaData.Content = stamina1; //string.Format("[0x42439594 = {0}, 0x42439598 = {1}]", stamina1, stamina2);
 
                 var health1 = this.gecko.GetUInt(0x4225B4B0);
                 var health2 = this.gecko.GetString(health1 + 0x430);
-                this.HealthData.Content = string.Format("0x{0} = {1}", (health1 + 0430).ToString("x8").ToUpper(), health2);
+                this.HealthData.Content = health2; //string.Format("0x{0} = {1}", (health1 + 0430).ToString("x8").ToUpper(), health2);
 
                 var rupee1 = this.gecko.GetString(0x3FC92D10);
-                var rupee2 = this.gecko.GetString(0x4010AA0C);
-                this.RupeeData.Content = string.Format("[0x3FC92D10 = {0}, 0x4010AA0C = {1}]", rupee1, rupee2);
+                //var rupee2 = this.gecko.GetString(0x4010AA0C);
+                this.RupeeData.Content = rupee1; //string.Format("[0x3FC92D10 = {0}, 0x4010AA0C = {1}]", rupee1, rupee2);
 
                 var mon1 = this.gecko.GetString(0x3FD41158);
-                var mon2 = this.gecko.GetString(0x4010B14C);
-                this.MonData.Content = string.Format("[0x3FD41158 = {0}, 0x4010B14C = {1}]", mon1, mon2);
+                //var mon2 = this.gecko.GetString(0x4010B14C);
+                this.MonData.Content = mon1; //string.Format("[0x3FD41158 = {0}, 0x4010B14C = {1}]", mon1, mon2);
 
                 var run = this.gecko.GetString(0x43A88CC4);
-                this.RunData.Content = string.Format("0x43A88CC4 = {0} (Redundant really due to speed code)", run);
+                this.RunData.Content = run; //string.Format("0x43A88CC4 = {0} (Redundant really due to speed code)", run);
 
                 var speed = this.gecko.GetString(0x439BF514);
-                this.SpeedData.Content = string.Format("0x439BF514 = {0}", speed);
+                this.SpeedData.Content = speed; //string.Format("0x439BF514 = {0}", speed);
 
                 var weapon1 = this.gecko.GetString(0x3FCFB498);
-                var weapon2 = this.gecko.GetString(0x4010B34C);
-                this.WeaponSlotsData.Content = string.Format("[0x3FCFB498 = {0}, 0x4010B34C = {1}]", weapon1, weapon2);
+                //var weapon2 = this.gecko.GetString(0x4010B34C);
+                this.WeaponSlotsData.Content = weapon1; //string.Format("[0x3FCFB498 = {0}, 0x4010B34C = {1}]", weapon1, weapon2);
 
                 var bow1 = this.gecko.GetString(0x3FD4BB50);
-                var bow2 = this.gecko.GetString(0x4011126C);
-                this.BowSlotsData.Content = string.Format("[0x3FD4BB50 = {0}, 0x4011126C = {1}]", bow1, bow2);
+                //var bow2 = this.gecko.GetString(0x4011126C);
+                this.BowSlotsData.Content = bow1; //string.Format("[0x3FD4BB50 = {0}, 0x4011126C = {1}]", bow1, bow2);
 
                 var shield1 = this.gecko.GetString(0x3FCC0B40);
-                var shield2 = this.gecko.GetString(0x4011128C);
-                this.ShieldSlotsData.Content = string.Format("[0x3FCC0B40 = {0}, 0x4011128C = {1}]", shield1, shield2);
+                //var shield2 = this.gecko.GetString(0x4011128C);
+                this.ShieldSlotsData.Content = shield1; //string.Format("[0x3FCC0B40 = {0}, 0x4011128C = {1}]", shield1, shield2);
 
                 var key1 = this.gecko.GetString(0x3FD5CB48);
-                var key2 = this.gecko.GetString(0x3FF6EA00);
-                this.SmallKeysData.Content = string.Format("[0x3FD5CB48 = {0}, 0x3FF6EA00 = {1}]", key1, key2);
+                //var key2 = this.gecko.GetString(0x3FF6EA00);
+                this.SmallKeysData.Content = key1; //string.Format("[0x3FD5CB48 = {0}, 0x3FF6EA00 = {1}]", key1, key2);
 
                 var urbosa1 = this.gecko.GetString(0x3FCFFA80);
-                var urbosa2 = this.gecko.GetString(0x4011BA2C);
-                this.UrbosaData.Content = string.Format("[0x3FCFFA80 = {0}, 0x4011BA2C = {1}]", urbosa1, urbosa2);
+                //var urbosa2 = this.gecko.GetString(0x4011BA2C);
+                this.UrbosaData.Content = urbosa1; //string.Format("[0x3FCFFA80 = {0}, 0x4011BA2C = {1}]", urbosa1, urbosa2);
 
                 var revali1 = this.gecko.GetString(0x3FD5ED90);
-                var revali2 = this.gecko.GetString(0x4011BA0C);
-                this.RevaliData.Content = string.Format("[0x3FD5ED90 = {0}, 0x4011BA0C = {1}]", revali1, revali2);
+                //var revali2 = this.gecko.GetString(0x4011BA0C);
+                this.RevaliData.Content = revali1; //string.Format("[0x3FD5ED90 = {0}, 0x4011BA0C = {1}]", revali1, revali2);
 
                 var daruk1 = this.gecko.GetString(0x3FD50088);
-                var daruk2 = this.gecko.GetString(0x4011B9EC);
-                this.DarukData.Content = string.Format("[0x3FD50088 = {0}, 0x4011B9EC = {1}]", daruk1, daruk2);
+                //var daruk2 = this.gecko.GetString(0x4011B9EC);
+                this.DarukData.Content = daruk1; //string.Format("[0x3FD50088 = {0}, 0x4011B9EC = {1}]", daruk1, daruk2);
             }
             catch (Exception ex)
             {
@@ -1189,7 +1241,8 @@
 
                 this.Test.IsEnabled = true;
 
-                this.TabControl.IsEnabled = true;
+                // Enable tabs on connect to allow testing
+                // this.TabControl.IsEnabled = true;
             }
 
             if (state == "Disconnected")
@@ -1203,6 +1256,7 @@
 
                 this.Refresh.IsEnabled = false;
                 this.Test.IsEnabled = false;
+                this.TabControl.IsEnabled = false;
             }
 
             if (state == "Load")
@@ -1212,12 +1266,14 @@
                 this.Load.Visibility = Visibility.Hidden;
 
                 this.Refresh.IsEnabled = false;
+                this.Test.IsEnabled = false;
             }
 
             if (state == "DataLoaded")
             {
                 TabControl.IsEnabled = true;
                 this.Refresh.IsEnabled = true;
+                this.Test.IsEnabled = true;
             }
 
             if (state == "ForceRefresh")
@@ -1231,22 +1287,6 @@
         {
             var regex = new Regex("[^0-9]+");
             e.Handled = regex.IsMatch(e.Text);
-        }
-
-        private void TabControlSelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (this.Save == null)
-            {
-                return;
-            }
-
-            if (Debug.IsSelected || Help.IsSelected || Credits.IsSelected)
-            {
-                this.Save.IsEnabled = false;
-                return;
-            }
-
-            this.Save.IsEnabled = this.HasChanged;
         }
 
         private void ClientDownloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
@@ -1270,42 +1310,103 @@
             Progress.Value = percent;
         }
 
-        private void ExportToExcel()
+        private void LogError(Exception ex, string more = null)
         {
-            try
+            var paragraph = new Paragraph
             {
-                DebugGrid.SelectAllCells();
-                DebugGrid.ClipboardCopyMode = DataGridClipboardCopyMode.IncludeHeader;
-                ApplicationCommands.Copy.Execute(null, DebugGrid);
-                var result = (string)Clipboard.GetData(DataFormats.CommaSeparatedValue);
-                DebugGrid.UnselectAllCells();
+                FontSize = 14,
+                Margin = new Thickness(0),
+                Padding = new Thickness(0),
+                LineHeight = 14
+            };
 
-                var path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                var excelFile = new StreamWriter(path + @"\debug.csv");
-                excelFile.WriteLine(result);
-                excelFile.Close();
-
-                MessageBox.Show("File exported to " + path);
-            }
-            catch (Exception ex)
+            if (more != null)
             {
-                MessageBox.Show(ex.ToString());
+                paragraph.Inlines.Add(more + Environment.NewLine);
             }
+
+            paragraph.Inlines.Add(ex.Message);
+            paragraph.Inlines.Add(ex.StackTrace);
+
+            ErrorLog.Document.Blocks.Add(paragraph);
+
+            ErrorLog.Document.Blocks.Add(new Paragraph());
+
+            TabControl.IsEnabled = true;
+
+            MessageBox.Show("Error caught. Check Error Tab");
+        }
+
+        private void TabControlSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (this.Save == null)
+            {
+                return;
+            }
+
+            if (Debug.IsSelected || Help.IsSelected || Credits.IsSelected)
+            {
+                this.Save.IsEnabled = false;
+                return;
+            }
+
+            this.Save.IsEnabled = this.HasChanged;
+
+            if (!Codes.IsSelected)
+            {
+                EnableCoords.IsChecked = false;
+            }
+        }
+
+        private void SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            this.ddChanged.Add(sender as ComboBox);
+
+            this.Save.IsEnabled = this.HasChanged;
+        }
+
+        private void TextChanged(object sender, TextChangedEventArgs textChangedEventArgs)
+        {
+            var thisTb = sender as TextBox;
+
+            var exists = this.tbChanged.Where(x => x.Tag == thisTb.Tag);
+
+            if (exists.Any())
+            {
+                return;
+            }
+
+            this.tbChanged.Add(thisTb);
+
+            this.Save.IsEnabled = this.HasChanged;
+        }
+
+        private void CheckBoxChanged(object sender, RoutedEventArgs e)
+        {
+            this.cbChanged.Add(sender as CheckBox);
+
+            this.Save.IsEnabled = this.HasChanged;
+        }
+
+        private void HyperlinkRequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            e.Handled = true;
         }
 
         private TextBox GenerateGridTextBox(string value, string field, string type, int x, int col, int width = 75)
         {
             var tb = new TextBox
             {
-                Text = value, 
+                Text = value,
                 ToolTip = field,
                 Tag = field,
-                Width = width, 
-                Height = 22, 
-                Margin = new Thickness(10, 0, 10, 0), 
-                Name = type + field, 
-                IsEnabled = true, 
-                CharacterCasing = CharacterCasing.Upper, 
+                Width = width,
+                Height = 22,
+                Margin = new Thickness(10, 0, 10, 0),
+                Name = type + field,
+                IsEnabled = true,
+                CharacterCasing = CharacterCasing.Upper,
                 MaxLength = 8
             };
 
@@ -1436,66 +1537,9 @@
             }
         }
 
-        private void LogError(Exception ex, string more = null)
+        private async void EnableCoordsOnChecked(object sender, RoutedEventArgs e)
         {
-            var paragraph = new Paragraph
-            {
-                FontSize = 14,
-                Margin = new Thickness(0),
-                Padding = new Thickness(0),
-                LineHeight = 14
-            };
-
-            if (more != null)
-            {
-                paragraph.Inlines.Add(more + Environment.NewLine);
-            }
-
-            paragraph.Inlines.Add(ex.Message);
-            paragraph.Inlines.Add(ex.StackTrace);
-
-            ErrorLog.Document.Blocks.Add(paragraph);
-
-            ErrorLog.Document.Blocks.Add(new Paragraph());
-
-            TabControl.IsEnabled = true;
-
-            MessageBox.Show("Error caught. Check Error Tab");
-        }
-
-        private void SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            this.ddChanged.Add(sender as ComboBox);
-
-            this.Save.IsEnabled = this.HasChanged;
-        }
-
-        private void TextChanged(object sender, TextChangedEventArgs textChangedEventArgs)
-        {
-            var thisTb = sender as TextBox;
-
-            var exists = this.tbChanged.Where(x => x.Tag == thisTb.Tag);
-
-            if (exists.Any())
-            {
-                return;
-            }
-
-            this.tbChanged.Add(thisTb);
-
-            this.Save.IsEnabled = this.HasChanged;
-        }
-
-        private void CheckBoxChanged(object sender, RoutedEventArgs e)
-        {
-            this.cbChanged.Add(sender as CheckBox);
-
-            this.Save.IsEnabled = this.HasChanged;
-        }
-
-        private void EnableCoordsOnChecked(object sender, RoutedEventArgs e)
-        {
-            Task.Run(() => this.LoadCoordsAsync());
+            await Task.Run(() => this.LoadCoords());
         }
     }
 }

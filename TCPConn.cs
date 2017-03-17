@@ -71,7 +71,7 @@
                 this.client.Close();
                 this.client.Dispose();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 //MessageBox.Show(ex.Message);
             }
