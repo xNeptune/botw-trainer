@@ -32,7 +32,7 @@ To avoid crashing and unwanted errors please wait until you have loaded into you
 ## Contributors
 Program and Codes: [PandaOnSmack](http://gbatemp.net/members/pandaonsmack.374906/)
 
-ReadMe: [AecdArmy](http://gbatemp.net/members/aecdarmy.378662/)
+ReadMe: [AecdArmy](http://gbatemp.net/members/aecdarmy.378662/) / totesadorbs
 
 See Credits Tab for full list
 
