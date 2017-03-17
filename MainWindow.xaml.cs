@@ -590,6 +590,29 @@
             }
         }
 
+        private void CoordsGoClick(object sender, RoutedEventArgs e)
+        {
+            var x = Convert.ToSingle(CoordsXValue.Text);
+            var y = Convert.ToSingle(CoordsYValue.Text);
+            var z = Convert.ToSingle(CoordsZValue.Text);
+
+            var xByte = BitConverter.GetBytes(x).Reverse().ToArray();
+            var yByte = BitConverter.GetBytes(y).Reverse().ToArray();
+            var zByte = BitConverter.GetBytes(z).Reverse().ToArray();
+
+            var ms = new MemoryStream();
+            ms.Write(xByte, 0, xByte.Length);
+            ms.Write(yByte, 0, yByte.Length);
+            ms.Write(zByte, 0, zByte.Length);
+
+            var bytes = ms.ToArray();
+
+            uint pointer = this.gecko.GetUInt(0x439BF794);
+            uint address = pointer + 0x140;
+
+            this.gecko.WriteBytes(address, bytes);
+        }
+
         private void LoadCoords()
         {
             var run = false;

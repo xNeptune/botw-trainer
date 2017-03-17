@@ -141,23 +141,38 @@
             </TabItem>
 
             <TabItem Header="Coords" Margin="0">
-                <Grid Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
+                <StackPanel>
 
-                    <Label Content="Experimental: Check the box below to track your coordinates." Margin="0" Grid.Row="0" />
-                    <Label x:Name="CoordsAddress" Content="-" Margin="0" Grid.Row="1" />
-                    <CheckBox x:Name="EnableCoords" Grid.Row="2" Checked="EnableCoordsOnChecked" Width="20" HorizontalAlignment="Left" />
-                    <Label x:Name="CoordsX" Content="x" Grid.Row="3" />
-                    <Label x:Name="CoordsY" Content="y" Grid.Row="4" />
-                    <Label x:Name="CoordsZ" Content="z" Grid.Row="5" />
-                </Grid>
+                    <Grid Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                    
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="350"></ColumnDefinition>
+                            <ColumnDefinition Width="250"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="Experimental: Check the box below to track your coordinates." Margin="0" Grid.Row="0" Grid.Column="0" />
+                        <Label x:Name="CoordsAddress" Content="-" Margin="0" Grid.Row="1" Grid.Column="0" />
+                        <CheckBox x:Name="EnableCoords" Grid.Row="2" Grid.Column="0" Checked="EnableCoordsOnChecked" Width="20" HorizontalAlignment="Left" />
+                        <Label x:Name="CoordsX" Content="x" Grid.Row="3" Grid.Column="0"/>
+                        <Label x:Name="CoordsY" Content="y" Grid.Row="4" Grid.Column="0"/>
+                        <Label x:Name="CoordsZ" Content="z" Grid.Row="5" Grid.Column="0"/>
+
+                        <Label Content="Enter coordinates and click GO to teleport." Margin="0" Grid.Row="0" Grid.Column="1" />
+                        <Label Content="Default values are Great Plateu Tower" Margin="0" Grid.Row="1" Grid.Column="1"></Label>
+                        <Button x:Name="CoordsGo" Content="Go" Grid.Row="2" Grid.Column="1" Width="50" Click="CoordsGoClick" HorizontalAlignment="Left"></Button>
+                        <TextBox x:Name="CoordsXValue" Text="-568" Grid.Row="3" Grid.Column="1" Width="75" HorizontalAlignment="Left"/>
+                        <TextBox x:Name="CoordsYValue" Text="246" Grid.Row="4" Grid.Column="1" Width="75" HorizontalAlignment="Left"/>
+                        <TextBox x:Name="CoordsZValue" Text="1697" Grid.Row="5" Grid.Column="1" Width="75" HorizontalAlignment="Left"/>
+                    </Grid>
+                </StackPanel>
             </TabItem>
 
             <TabItem Header="Item List" x:Name="ItemTree" Margin="0">
