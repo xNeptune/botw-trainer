@@ -2904,11 +2904,91 @@
             "Locy": 275,
             "LocZ": -1480
         },
-        "Other_Shrine": {
-            "Name": "Blah Blah Shrine",
-            "LocX": -50,
-            "Locy": 100,
-            "LocZ": -200
+        "Myahm_Agana_Shrine": {
+            "Name": "Myahm Agana Shrine",
+            "LocX": 3380,
+            "Locy": 240,
+            "LocZ": 2205
+        }
+    }
+    "Towers": {
+        "Great_Plateau_Tower": {
+            "Name": "Great Plateau Tower",
+            "LocX": -568,
+            "Locy": 246,
+            "LocZ": 1694
+        },
+        "Lanayru_Tower": {
+            "Name": "Lanayru Tower",
+            "LocX": 2258,
+            "Locy": 310,
+            "LocZ": -100
+        },
+        "Eldin_Tower": {
+            "Name": "Eldin Tower",
+            "LocX": 2181,
+            "Locy": 508,
+            "LocZ": -1552
+        },
+        "Akkala_Tower": {
+            "Name": "Akkala Tower",
+            "LocX": 3300,
+            "Locy": 593,
+            "LocZ": -1506
+        },
+        "Woodland_Tower": {
+            "Name": "Woodland Tower",
+            "LocX": 883,
+            "Locy": 350,
+            "LocZ": -1596
+        },
+        "Hebra_Tower": {
+            "Name": "Hebra Tower",
+            "LocX": -2168,
+            "Locy": 529,
+            "LocZ": -2031
+        },
+        "Ridgeline_Tower": {
+            "Name": "Ridgeline Tower",
+            "LocX": -1758,
+            "Locy": 328,
+            "LocZ": -782
+        },
+        "Tabantha_Tower": {
+            "Name": "Tabantha Tower",
+            "LocX": -3613,
+            "Locy": 445,
+            "LocZ": -980
+        },
+        "Central_Tower": {
+            "Name": "Central Tower",
+            "LocX": -792,
+            "Locy": 197,
+            "LocZ": 444
+        },
+        "Gerudo_Tower": {
+            "Name": "Gerudo Tower",
+            "LocX": -3664,
+            "Locy": 470,
+            "LocZ": 1823
+        },
+        "Wasteland_Tower": {
+            "Name": "Wasteland Tower",
+            "LocX": -2307,
+            "Locy": 530,
+            "LocZ": 2430
+        },
+        "Lake_Tower": {
+            "Name": "Lake Tower",
+            "LocX": -39,
+            "Locy": 280,
+            "LocZ": 2956
+        },
+        "Faron_Tower": {
+            "Name": "Faron Tower",
+            "LocX": 1338,
+            "Locy": 270,
+            "LocZ": 3269
         }
     }
 }
