@@ -2898,13 +2898,13 @@
         }
     },
     "Shrines": {
-        "Monya_Toma_Shrine": {
+        "Monya_Toma": {
             "Name": "Monya Toma Shrine",
             "LocX": -1494,
             "Locy": 275,
             "LocZ": -1480
         },
-	"Whago_Katta": {
+        "Whago_Katta": {
             "Name": "Whago Katta Shrine",
             "LocX": 351,
             "Locy": 123,
@@ -2927,14 +2927,14 @@
             "LocX": 1253,
             "Locy": 443,
             "LocZ": 1851
-	},
-        "Myahm_Agana_Shrine": {
+        },
+        "Myahm_Agana": {
             "Name": "Myahm Agana Shrine",
             "LocX": 3380,
             "Locy": 240,
             "LocZ": 2205
         }
-    }
+    },
     "Towers": {
         "Great_Plateau_Tower": {
             "Name": "Great Plateau Tower",
