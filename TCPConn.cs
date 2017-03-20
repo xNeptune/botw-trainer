@@ -63,17 +63,16 @@
         {
             try
             {
-                if (this.client == null)
+                if (this.client != null)
                 {
-                    throw new IOException("Not connected.", new NullReferenceException());
-                }
 
-                this.client.Close();
-                this.client.Dispose();
+                    this.client.Close();
+                    this.client.Dispose();
+                }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message, "Tcp Close");
             }
             finally
             {

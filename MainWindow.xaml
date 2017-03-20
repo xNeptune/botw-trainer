@@ -151,28 +151,39 @@
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                     
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="350"></ColumnDefinition>
-                            <ColumnDefinition Width="250"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
+                            <ColumnDefinition Width="*"></ColumnDefinition>
                         </Grid.ColumnDefinitions>
 
-                        <Label Content="Experimental: Check the box below to track your coordinates." Margin="0" Grid.Row="0" Grid.Column="0" />
+                        <Label Content="Track your coordinates:" Margin="0" Grid.Row="0" Grid.Column="0" />
+                        
                         <Label x:Name="CoordsAddress" Content="-" Margin="0" Grid.Row="1" Grid.Column="0" />
                         <CheckBox x:Name="EnableCoords" Grid.Row="2" Grid.Column="0" Checked="EnableCoordsOnChecked" Width="20" HorizontalAlignment="Left" />
+                        
                         <Label x:Name="CoordsX" Content="x" Grid.Row="3" Grid.Column="0"/>
                         <Label x:Name="CoordsY" Content="y" Grid.Row="4" Grid.Column="0"/>
                         <Label x:Name="CoordsZ" Content="z" Grid.Row="5" Grid.Column="0"/>
 
-                        <Label Content="Enter coordinates and click GO to teleport." Margin="0" Grid.Row="0" Grid.Column="1" />
-                        <Label Content="Default values are Great Plateu Tower" Margin="0" Grid.Row="1" Grid.Column="1"></Label>
-                        <Button x:Name="CoordsGo" Content="Go" Grid.Row="2" Grid.Column="1" Width="50" Click="CoordsGoClick" HorizontalAlignment="Left"></Button>
+                        <Label Content="Enter coordinates or select a destination and click GO." Margin="0" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" />
+
+                        <Label Content="Some destinations may lock your game if they are too far." Margin="0" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" />
+
+                        <ComboBox x:Name="ShrineList" Margin="0" Grid.Row="2" Grid.Column="1" Width="150" SelectionChanged="ShrineListChanged" SelectedValuePath="Tag" HorizontalAlignment="Left" Text="Select Shrine..." IsEditable="True" IsReadOnly="True"/>
+
+                        <ComboBox x:Name="TowerList" Margin="0" Grid.Row="2" Grid.Column="2" Width="150" SelectionChanged="TowerListChanged" SelectedValuePath="Tag" HorizontalAlignment="Left" Text="Select Tower..." IsEditable="True" IsReadOnly="True"/>
+
                         <TextBox x:Name="CoordsXValue" Text="-568" Grid.Row="3" Grid.Column="1" Width="75" HorizontalAlignment="Left"/>
                         <TextBox x:Name="CoordsYValue" Text="246" Grid.Row="4" Grid.Column="1" Width="75" HorizontalAlignment="Left"/>
                         <TextBox x:Name="CoordsZValue" Text="1697" Grid.Row="5" Grid.Column="1" Width="75" HorizontalAlignment="Left"/>
+                        <Button x:Name="CoordsGo" Content="Go" Grid.Row="6" Grid.Column="1" Width="50" Click="CoordsGoClick" HorizontalAlignment="Left"></Button>
                         
-                        <ComboBox x:Name="ShrineList"></ComboBox>
+                        
                     </Grid>
                 </StackPanel>
             </TabItem>
@@ -278,6 +289,7 @@
                     <Label Content="Saber"></Label>
                     <Label Content="TheWord21"></Label>
                     <Label Content="Deathwolf1000"></Label>
+                    <Label Content="awideen"></Label>
                 </StackPanel>
             </TabItem>
 

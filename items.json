@@ -2901,37 +2901,37 @@
         "Monya_Toma": {
             "Name": "Monya Toma Shrine",
             "LocX": -1494,
-            "Locy": 275,
+            "LocY": 275,
             "LocZ": -1480
         },
         "Whago_Katta": {
             "Name": "Whago Katta Shrine",
             "LocX": 351,
-            "Locy": 123,
+            "LocY": 123,
             "LocZ": 1014
         },
         "Ree_Dahee": {
             "Name": "Ree Dahee Shrine",
             "LocX": 1280,
-            "Locy": 137,
+            "LocY": 137,
             "LocZ": 1845
         },
         "Shee_Vaneer": {
             "Name": "Shee Vaneer Shrine",
             "LocX": 1274,
-            "Locy": 525,
+            "LocY": 525,
             "LocZ": 1938
         },
         "Shee_Vaneth": {
             "Name": "Shee Venath Shrine",
             "LocX": 1253,
-            "Locy": 443,
+            "LocY": 443,
             "LocZ": 1851
         },
         "Myahm_Agana": {
             "Name": "Myahm Agana Shrine",
             "LocX": 3380,
-            "Locy": 240,
+            "LocY": 240,
             "LocZ": 2205
         }
     },
@@ -2939,80 +2939,86 @@
         "Great_Plateau_Tower": {
             "Name": "Great Plateau Tower",
             "LocX": -568,
-            "Locy": 246,
+            "LocY": 246,
             "LocZ": 1694
         },
         "Lanayru_Tower": {
             "Name": "Lanayru Tower",
             "LocX": 2258,
-            "Locy": 310,
+            "LocY": 310,
             "LocZ": -100
         },
         "Eldin_Tower": {
             "Name": "Eldin Tower",
             "LocX": 2181,
-            "Locy": 508,
+            "LocY": 508,
             "LocZ": -1552
         },
         "Akkala_Tower": {
             "Name": "Akkala Tower",
             "LocX": 3300,
-            "Locy": 593,
+            "LocY": 593,
             "LocZ": -1506
         },
         "Woodland_Tower": {
             "Name": "Woodland Tower",
             "LocX": 883,
-            "Locy": 350,
+            "LocY": 350,
             "LocZ": -1596
         },
         "Hebra_Tower": {
             "Name": "Hebra Tower",
             "LocX": -2168,
-            "Locy": 529,
+            "LocY": 529,
             "LocZ": -2031
         },
         "Ridgeline_Tower": {
             "Name": "Ridgeline Tower",
             "LocX": -1758,
-            "Locy": 328,
+            "LocY": 328,
             "LocZ": -782
         },
         "Tabantha_Tower": {
             "Name": "Tabantha Tower",
             "LocX": -3613,
-            "Locy": 445,
+            "LocY": 445,
             "LocZ": -980
         },
         "Central_Tower": {
             "Name": "Central Tower",
             "LocX": -792,
-            "Locy": 197,
+            "LocY": 197,
             "LocZ": 444
         },
         "Gerudo_Tower": {
             "Name": "Gerudo Tower",
             "LocX": -3664,
-            "Locy": 470,
+            "LocY": 470,
             "LocZ": 1823
         },
         "Wasteland_Tower": {
             "Name": "Wasteland Tower",
             "LocX": -2307,
-            "Locy": 530,
+            "LocY": 530,
             "LocZ": 2430
         },
         "Lake_Tower": {
             "Name": "Lake Tower",
             "LocX": -39,
-            "Locy": 280,
+            "LocY": 280,
             "LocZ": 2956
         },
         "Faron_Tower": {
             "Name": "Faron Tower",
             "LocX": 1338,
-            "Locy": 270,
+            "LocY": 270,
             "LocZ": 3269
+        },
+        "Dueling_Peaks_Tower": {
+            "Name": "Dueling Peaks Tower",
+            "LocX": 1016,
+            "LocY": 184,
+            "LocZ": 1723
         }
     }
 }

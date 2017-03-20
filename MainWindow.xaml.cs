@@ -24,6 +24,7 @@
 
     using Microsoft.Win32;
 
+    using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
     /// <summary>
@@ -136,14 +137,17 @@
                     JsonViewer.Load(data);
 
                     // Shrine data
-                    var path = string.Format("Shrines");
-                    var obj = this.json.SelectToken(path).Children();
-                    var x = 0;
-                    foreach (var o in obj)
+                    var shrines = this.json.SelectToken("Shrines").Value<JObject>().Properties().ToList().OrderBy(x => x.Name);
+                    foreach (var shrine in shrines)
                     {
-                        var test = o;
-                        ShrineList.Items.Add(new ComboBoxItem { Content = test.SelectToken("Name") });
-                        x++;
+                        ShrineList.Items.Add(new ComboBoxItem { Content = shrine.Value["Name"], Tag = shrine.Name });
+                    }
+
+                    // Tower data
+                    var towers = this.json.SelectToken("Towers").Value<JObject>().Properties().ToList().OrderBy(x => x.Name);
+                    foreach (var tower in towers)
+                    {
+                        TowerList.Items.Add(new ComboBoxItem { Content = tower.Value["Name"], Tag = tower.Name });
                     }
                 }
 
@@ -645,7 +649,7 @@
                     () =>
                     {
                         run = this.connected && EnableCoords.IsChecked == true;
-                        CoordsAddress.Content = "0x" + address.ToString("x8").ToUpper() + " <- Location in Memory for JGecko U";
+                        CoordsAddress.Content = "0x" + address.ToString("x8").ToUpper() + " <- Memory Address";
                     });
 
                 while (run)
@@ -1288,7 +1292,7 @@
                 this.Test.IsEnabled = true;
 
                 // Enable tabs on connect to allow testing
-                // this.TabControl.IsEnabled = true;
+                this.TabControl.IsEnabled = true;
             }
 
             if (state == "Disconnected")
@@ -1402,6 +1406,30 @@
             {
                 EnableCoords.IsChecked = false;
             }
+        }
+
+        private void ShrineListChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var shrine = (ComboBoxItem)ShrineList.SelectedItem;
+            var tag = shrine.Tag.ToString();
+
+            var data = (JObject)this.json.SelectToken("Shrines");
+
+            CoordsXValue.Text = data[tag]["LocX"].ToString();
+            CoordsYValue.Text = data[tag]["LocY"].ToString();
+            CoordsZValue.Text = data[tag]["LocZ"].ToString();
+        }
+
+        private void TowerListChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var tower = (ComboBoxItem)TowerList.SelectedItem;
+            var tag = tower.Tag.ToString();
+
+            var data = (JObject)this.json.SelectToken("Towers");
+
+            CoordsXValue.Text = data[tag]["LocX"].ToString();
+            CoordsYValue.Text = data[tag]["LocY"].ToString();
+            CoordsZValue.Text = data[tag]["LocZ"].ToString();
         }
 
         private void SelectionChanged(object sender, SelectionChangedEventArgs e)
