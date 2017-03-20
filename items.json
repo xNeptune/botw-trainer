@@ -2933,6 +2933,12 @@
             "LocX": 3380,
             "LocY": 240,
             "LocZ": 2205
+        },
+        "Shae_Loya": {
+            "Name": "Shae Loya Shrine",
+            "LocX": -2929,
+            "LocY": 306,
+            "LocZ": -441
         }
     },
     "Towers": {

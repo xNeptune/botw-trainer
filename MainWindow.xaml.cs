@@ -86,7 +86,8 @@
             Urbosa = 10,
             Revali = 11,
             Daruk = 12,
-            Keys = 13
+            Keys = 13,
+            Bombs = 14
         }
 
         private bool HasChanged
@@ -521,6 +522,11 @@
                         selected.Add(Cheat.Daruk);
                     }
 
+                    if (BombTime.IsChecked == true)
+                    {
+                        selected.Add(Cheat.Bombs);
+                    }
+
                     this.SetCheats(selected);
 
                     Settings.Default.Controller = Controller.SelectedValue.ToString();
@@ -672,14 +678,18 @@
 
                     Dispatcher.Invoke(
                         () =>
-                        {
-                            CoordsX.Content = string.Format("X: {0}", xFloat);
-                            CoordsY.Content = string.Format("Y: {0}", yFloat);
-                            CoordsZ.Content = string.Format("Z: {0}", zFloat);
-                            run = this.connected && EnableCoords.IsChecked == true;
-                        });
+                            {
+                                // previous float
+                                var prevX = Convert.ToSingle(CoordsX.Content.ToString());
+                                var prevZ = Convert.ToSingle(CoordsZ.Content.ToString());
 
-                    Thread.Sleep(500);
+                                CoordsX.Content = string.Format("{0}", Math.Round(xFloat, 2));
+                                CoordsY.Content = string.Format("{0}", Math.Round(yFloat, 2));
+                                CoordsZ.Content = string.Format("{0}", Math.Round(zFloat, 2));
+                                run = this.connected && EnableCoords.IsChecked == true;
+                            });
+
+                    Thread.Sleep(1000);
                 }
             }
             catch (Exception ex)
@@ -1251,6 +1261,19 @@
                     codes.Add(0x00000000);
                 }
 
+                if (cheats.Contains(Cheat.Bombs))
+                {
+                    codes.Add(0x00020000);
+                    codes.Add(0x4383DA34);
+                    codes.Add(0x42B70000);
+                    codes.Add(0x00000000);
+
+                    codes.Add(0x00020000);
+                    codes.Add(0x4383DA4C);
+                    codes.Add(0x42B70000);
+                    codes.Add(0x00000000);
+                }
+
                 // Write our selected codes
                 var ms = new MemoryStream();
                 foreach (var code in codes)
@@ -1292,7 +1315,7 @@
                 this.Test.IsEnabled = true;
 
                 // Enable tabs on connect to allow testing
-                this.TabControl.IsEnabled = true;
+                // this.TabControl.IsEnabled = true;
             }
 
             if (state == "Disconnected")

@@ -101,6 +101,9 @@
                     <CheckBox x:Name="MoonJump" Margin="0" Canvas.Left="120" Canvas.Top="274" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
                     <Label x:Name="MoonJumpData" Content="Hold X" Height="25" Margin="0" Canvas.Left="275" Canvas.Top="268"/>
 
+                    <Label Content="Bomb Time" Height="26" Canvas.Left="10" Canvas.Top="298"></Label>
+                    <CheckBox x:Name="BombTime" Margin="0" Canvas.Left="120" Canvas.Top="304" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+
                     <Label Content="Weapon Slots" Height="26" Margin="0" Canvas.Left="451" Canvas.Top="178"></Label>
                     <CheckBox x:Name="WeaponSlots" Margin="0" Canvas.Left="561" Canvas.Top="184" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
                     <TextBox x:Name="CurrentWeaponSlots" Height="25" Width="30" Margin="0" Canvas.Left="601" Canvas.Top="179" PreviewTextInput="NumberValidationTextBox" TextChanged="TextChanged"/>
@@ -166,9 +169,10 @@
                         <Label x:Name="CoordsAddress" Content="-" Margin="0" Grid.Row="1" Grid.Column="0" />
                         <CheckBox x:Name="EnableCoords" Grid.Row="2" Grid.Column="0" Checked="EnableCoordsOnChecked" Width="20" HorizontalAlignment="Left" />
                         
-                        <Label x:Name="CoordsX" Content="x" Grid.Row="3" Grid.Column="0"/>
-                        <Label x:Name="CoordsY" Content="y" Grid.Row="4" Grid.Column="0"/>
-                        <Label x:Name="CoordsZ" Content="z" Grid.Row="5" Grid.Column="0"/>
+                        <Label x:Name="CoordsX" Content="0.0" Grid.Row="3" Grid.Column="0"/>
+                        <Label x:Name="CoordsY" Content="0.0" Grid.Row="4" Grid.Column="0"/>
+                        <Label x:Name="CoordsZ" Content="0.0" Grid.Row="5" Grid.Column="0"/>
+                        <Label x:Name="Angle" Content="0.0" Grid.Row="6" Grid.Column="0" Visibility="Hidden"/>
 
                         <Label Content="Enter coordinates or select a destination and click GO." Margin="0" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" />
 
