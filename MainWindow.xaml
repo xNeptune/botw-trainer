@@ -171,6 +171,8 @@
                         <TextBox x:Name="CoordsXValue" Text="-568" Grid.Row="3" Grid.Column="1" Width="75" HorizontalAlignment="Left"/>
                         <TextBox x:Name="CoordsYValue" Text="246" Grid.Row="4" Grid.Column="1" Width="75" HorizontalAlignment="Left"/>
                         <TextBox x:Name="CoordsZValue" Text="1697" Grid.Row="5" Grid.Column="1" Width="75" HorizontalAlignment="Left"/>
+                        
+                        <ComboBox x:Name="ShrineList"></ComboBox>
                     </Grid>
                 </StackPanel>
             </TabItem>

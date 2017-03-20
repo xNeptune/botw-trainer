@@ -22,6 +22,8 @@
 
     using BotwTrainer.Properties;
 
+    using Microsoft.Win32;
+
     using Newtonsoft.Json.Linq;
 
     /// <summary>
@@ -110,7 +112,7 @@
             };
 
             client.Headers.Add("Cache-Control", "no-cache");
-            client.DownloadStringCompleted += ClientDownloadStringCompleted;
+            client.DownloadStringCompleted += this.ClientDownloadStringCompleted;
 
             // try to get current version
             try
@@ -132,6 +134,17 @@
                     this.json = JObject.Parse(data);
 
                     JsonViewer.Load(data);
+
+                    // Shrine data
+                    var path = string.Format("Shrines");
+                    var obj = this.json.SelectToken(path).Children();
+                    var x = 0;
+                    foreach (var o in obj)
+                    {
+                        var test = o;
+                        ShrineList.Items.Add(new ComboBoxItem { Content = test.SelectToken("Name") });
+                        x++;
+                    }
                 }
 
                 //MessageBox.Show(this.json.SelectToken("Items").Children().Count().ToString());
@@ -256,6 +269,7 @@
                 return false;
             }
 
+            #region SaveLoad
             try
             {
                 // For these we amend the 0x3FCE7FF0 area which requires save/load
@@ -346,7 +360,9 @@
             {
                 this.LogError(ex, "Attempting to save data in 0x3FCE7FF0 region.");
             }
+            #endregion
 
+            #region Modified
             try
             {
                 // Only update what has changed to avoid corruption.
@@ -421,7 +437,9 @@
             {
                 this.LogError(ex, "Attempting to update changed fields");
             }
+#endregion
 
+            #region Codes
             try
             {
                 // For the 'Codes' tab we mimic JGecko and send cheats to codehandler
@@ -512,12 +530,12 @@
                 this.tbChanged.Clear();
                 this.cbChanged.Clear();
                 this.ddChanged.Clear();
-                this.Save.IsEnabled = false;
             }
             catch (Exception ex)
             {
                 this.LogError(ex);
             }
+            #endregion
 
             return true;
         }
@@ -556,7 +574,7 @@
                     CurrentWeaponSlots.Text = this.gecko.GetInt(0x3FCFB498).ToString(CultureInfo.InvariantCulture);
                     CurrentBowSlots.Text = this.gecko.GetInt(0x3FD4BB50).ToString(CultureInfo.InvariantCulture);
                     CurrentShieldSlots.Text = this.gecko.GetInt(0x3FCC0B40).ToString(CultureInfo.InvariantCulture);
-                    CurrentSmallKeys.Text = this.gecko.GetInt(0x3FCC0B40).ToString(CultureInfo.InvariantCulture);
+                    CurrentSmallKeys.Text = this.gecko.GetInt(0x3FD5CB48).ToString(CultureInfo.InvariantCulture);
                     CurrentUrbosa.Text = this.gecko.GetInt(0x3FCFFA80).ToString(CultureInfo.InvariantCulture);
                     CurrentRevali.Text = this.gecko.GetInt(0x3FD5ED90).ToString(CultureInfo.InvariantCulture);
                     CurrentDaruk.Text = this.gecko.GetInt(0x3FD50088).ToString(CultureInfo.InvariantCulture);
@@ -581,6 +599,7 @@
         private void SaveClick(object sender, RoutedEventArgs e)
         {
             //var result = await Task.Run(() => this.SaveData((TabItem)TabControl.SelectedItem));
+            this.Save.IsEnabled = false;
 
             var result = this.SaveData((TabItem)TabControl.SelectedItem);
 
@@ -626,7 +645,7 @@
                     () =>
                     {
                         run = this.connected && EnableCoords.IsChecked == true;
-                        CoordsAddress.Content = address.ToString("x8").ToUpper();
+                        CoordsAddress.Content = "0x" + address.ToString("x8").ToUpper() + " <- Location in Memory for JGecko U";
                     });
 
                 while (run)
@@ -981,6 +1000,7 @@
 
         private void SetCheats(ICollection<Cheat> cheats)
         {
+            // TODO: Write this to memory in 1 chunk
             try
             {
                 // Disable codehandler before we modify
@@ -1016,7 +1036,7 @@
 
                 if (cheats.Contains(Cheat.Health))
                 {
-                    var value = uint.Parse(CurrentHealth.Text, NumberStyles.HexNumber);
+                    var value = Convert.ToUInt32(CurrentHealth.Text);
 
                     codes.Add(0x30000000);
                     codes.Add(0x4225B4B0);
@@ -1228,12 +1248,15 @@
                 }
 
                 // Write our selected codes
-                var address = CodeHandlerStart;
+                var ms = new MemoryStream();
                 foreach (var code in codes)
                 {
-                    this.gecko.WriteUInt(address, code);
-                    address += 0x4;
+                    var b = BitConverter.GetBytes(code);
+                    ms.Write(b.Reverse().ToArray(), 0, 4);
                 }
+
+                var bytes = ms.ToArray();
+                this.gecko.WriteBytes(CodeHandlerStart, bytes);
 
                 // Re-enable codehandler
                 this.gecko.WriteUInt(CodeHandlerEnabled, 0x00000001);

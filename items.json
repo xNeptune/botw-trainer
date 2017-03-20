@@ -2904,6 +2904,30 @@
             "Locy": 275,
             "LocZ": -1480
         },
+	"Whago_Katta": {
+            "Name": "Whago Katta Shrine",
+            "LocX": 351,
+            "Locy": 123,
+            "LocZ": 1014
+        },
+        "Ree_Dahee": {
+            "Name": "Ree Dahee Shrine",
+            "LocX": 1280,
+            "Locy": 137,
+            "LocZ": 1845
+        },
+        "Shee_Vaneer": {
+            "Name": "Shee Vaneer Shrine",
+            "LocX": 1274,
+            "Locy": 525,
+            "LocZ": 1938
+        },
+        "Shee_Vaneth": {
+            "Name": "Shee Venath Shrine",
+            "LocX": 1253,
+            "Locy": 443,
+            "LocZ": 1851
+	},
         "Myahm_Agana_Shrine": {
             "Name": "Myahm Agana Shrine",
             "LocX": 3380,
