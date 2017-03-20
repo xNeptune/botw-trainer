@@ -72,9 +72,12 @@
 
         private readonly TcpConn tcpConn;
 
-        public Gecko(TcpConn tcpConn)
+        private readonly MainWindow mainWindow;
+
+        public Gecko(TcpConn tcpConn, MainWindow mainWindow)
         {
             this.tcpConn = tcpConn;
+            this.mainWindow = mainWindow;
         }
 
         private void SendCommand(Command command)
@@ -192,10 +195,12 @@
 
                 return ms.ToArray();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new IOException();
+                this.mainWindow.LogError(ex);
             }
+
+            return null;
         }
 
         private void RequestBytes(uint address, uint length)
@@ -210,9 +215,9 @@
                 this.tcpConn.Write(bytes, 4, ref bytesRead);
                 this.tcpConn.Write(bytes2, 4, ref bytesRead);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw new IOException();
+                this.mainWindow.LogError(ex);
             }
         }
 
@@ -258,7 +263,7 @@
             }
             catch (Exception ex)
             {
-                throw new Exception(ex.Message);
+                this.mainWindow.LogError(ex);
             }
         }
         

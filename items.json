@@ -2939,6 +2939,12 @@
             "LocX": -2929,
             "LocY": 306,
             "LocZ": -441
+        },
+        "Tena_Kosah": {
+            "Name": "Tena Ko'sah Shrine",
+            "LocX": -3473,
+            "LocY": 384,
+            "LocZ": 442
         }
     },
     "Towers": {

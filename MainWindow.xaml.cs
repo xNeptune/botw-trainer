@@ -54,6 +54,8 @@
 
         private List<Item> items;
 
+        private List<uint> codes;
+
         private JToken json;
 
         private TcpConn tcpConn;
@@ -75,7 +77,7 @@
         {
             Stamina = 0,
             Health = 1,
-            Run = 2,
+            //Run = 2,
             Rupees = 3,
             MoonJump = 4,
             WeaponInv = 5,
@@ -103,6 +105,8 @@
             this.Title = string.Format("{0} v{1}", this.Title, Settings.Default.CurrentVersion);
 
             this.items = new List<Item>();
+
+            this.codes = new List<uint>();
 
             var client = new WebClient
             {
@@ -472,11 +476,6 @@
                         selected.Add(Cheat.Mon);
                     }
 
-                    if (Run.IsChecked == true)
-                    {
-                        selected.Add(Cheat.Run);
-                    }
-
                     if (Speed.IsChecked == true)
                     {
                         selected.Add(Cheat.Speed);
@@ -713,7 +712,7 @@
                 }
 
                 // init gecko
-                this.gecko = new Gecko(this.tcpConn);
+                this.gecko = new Gecko(this.tcpConn, this);
 
                 if (this.connected)
                 {
@@ -952,7 +951,7 @@
         { 
             // Debug Grid data
             DebugGrid.ItemsSource = this.items;
-            
+            /*
             try
             {
                 // Show extra info in 'Codes' tab to see if our cheats are looking in the correct place
@@ -1010,268 +1009,273 @@
             {
                 this.LogError(ex, "Code");
             }
+             */
         }
 
         private void SetCheats(ICollection<Cheat> cheats)
         {
-            // TODO: Write this to memory in 1 chunk
             try
             {
+                uint activator;
+                if (this.Controller.SelectedValue.ToString() == "Pro")
+                {
+                    activator = 0x112671AB;
+                }
+                else
+                {
+                    activator = 0x102F48AA;
+                }
+
                 // Disable codehandler before we modify
                 this.gecko.WriteUInt(CodeHandlerEnabled, 0x00000000);
 
                 // clear current codes
-                var clear = CodeHandlerStart;
-                while (clear <= CodeHandlerEnd)
-                {
-                    this.gecko.WriteUInt(clear, 0x0);
-                    clear += 0x4;
-                }
+                var currentCodeSize = this.codes.Count * 4;
+                var array = new byte[4864];
+                Array.Clear(array, 0, array.Length);
+                this.gecko.WriteBytes(CodeHandlerStart, array);
+                this.codes.Clear();
 
-                var codes = new List<uint>();
-
-                // TODO: Consider moving first and last line of each to loop at the end to avoid duplicating them
-                // Most are 32 bit writes
                 if (cheats.Contains(Cheat.Stamina))
                 {
                     // Max 453B8000
                     var value = uint.Parse(CurrentStamina.Text, NumberStyles.HexNumber);
 
-                    codes.Add(0x00020000);
-                    codes.Add(0x42439594);
-                    codes.Add(value);
-                    codes.Add(0x00000000);
+                    this.codes.Add(0x00020000);
+                    this.codes.Add(0x42439594);
+                    this.codes.Add(value);
+                    this.codes.Add(0x00000000);
 
-                    codes.Add(0x00020000);
-                    codes.Add(0x42439598);
-                    codes.Add(value);
-                    codes.Add(0x00000000);
+                    this.codes.Add(0x00020000);
+                    this.codes.Add(0x42439598);
+                    this.codes.Add(value);
+                    this.codes.Add(0x00000000);
                 }
 
                 if (cheats.Contains(Cheat.Health))
                 {
                     var value = Convert.ToUInt32(CurrentHealth.Text);
 
-                    codes.Add(0x30000000);
-                    codes.Add(0x4225B4B0);
-                    codes.Add(0x43000000);
-                    codes.Add(0x46000000);
-                    codes.Add(0x00120430);
-                    codes.Add(value);
-                    codes.Add(0xD0000000);
-                    codes.Add(0xDEADCAFE);
-                }
-
-                if (cheats.Contains(Cheat.Run))
-                {
-                    codes.Add(0x00020000);
-                    codes.Add(0x43A88CC4);
-                    codes.Add(0x3FC00000);
-                    codes.Add(0x00000000);
+                    this.codes.Add(0x30000000);
+                    this.codes.Add(0x4225B4B0);
+                    this.codes.Add(0x43000000);
+                    this.codes.Add(0x46000000);
+                    this.codes.Add(0x00120430);
+                    this.codes.Add(value);
+                    this.codes.Add(0xD0000000);
+                    this.codes.Add(0xDEADCAFE);
                 }
 
                 if (cheats.Contains(Cheat.Speed))
                 {
                     var value = uint.Parse(CbSpeed.SelectedValue.ToString(), NumberStyles.HexNumber);
 
-                    //codes.Add(0x09020000);
-                    //codes.Add(0x102F48A8);
-                    //codes.Add(0x00004000);
-                    //codes.Add(0x00000000);
+                    this.codes.Add(0x09000000);
+                    this.codes.Add(activator);
+                    this.codes.Add(0x00000040);
+                    this.codes.Add(0x00000000);
+                    this.codes.Add(0x00020000);
+                    this.codes.Add(0x439BF514);
+                    this.codes.Add(value);
+                    this.codes.Add(0x00000000);
+                    this.codes.Add(0xD0000000);
+                    this.codes.Add(0xDEADCAFE);
 
-                    codes.Add(0x00020000);
-                    codes.Add(0x439BF514);
-                    codes.Add(value);
-                    codes.Add(0x00000000);
+                    this.codes.Add(0x06000000);
+                    this.codes.Add(activator);
+                    this.codes.Add(0x00000040);
+                    this.codes.Add(0x00000000);
+                    this.codes.Add(0x00020000);
+                    this.codes.Add(0x439BF514);
+                    this.codes.Add(0x3F800000);
+                    this.codes.Add(0x00000000);
+                    this.codes.Add(0xD0000000);
+                    this.codes.Add(0xDEADCAFE);
 
-                    //codes.Add(0xD0000000);
-                    //codes.Add(0xDEADCAFE);
+
                 }
 
                 if (cheats.Contains(Cheat.Rupees))
                 {
                     var value = Convert.ToUInt32(CurrentRupees.Text);
 
-                    codes.Add(0x00020000);
-                    codes.Add(0x3FC92D10);
-                    codes.Add(value);
-                    codes.Add(0x00000000);
+                    this.codes.Add(0x00020000);
+                    this.codes.Add(0x3FC92D10);
+                    this.codes.Add(value);
+                    this.codes.Add(0x00000000);
 
-                    codes.Add(0x00020000);
-                    codes.Add(0x4010AA0C);
-                    codes.Add(value);
-                    codes.Add(0x00000000);
+                    this.codes.Add(0x00020000);
+                    this.codes.Add(0x4010AA0C);
+                    this.codes.Add(value);
+                    this.codes.Add(0x00000000);
                 }
 
                 if (cheats.Contains(Cheat.Mon))
                 {
                     var value = Convert.ToUInt32(CurrentMon.Text);
 
-                    codes.Add(0x00020000);
-                    codes.Add(0x3FD41158);
-                    codes.Add(value);
-                    codes.Add(0x00000000);
+                    this.codes.Add(0x00020000);
+                    this.codes.Add(0x3FD41158);
+                    this.codes.Add(value);
+                    this.codes.Add(0x00000000);
 
-                    codes.Add(0x00020000);
-                    codes.Add(0x4010B14C);
-                    codes.Add(value);
-                    codes.Add(0x00000000);
+                    this.codes.Add(0x00020000);
+                    this.codes.Add(0x4010B14C);
+                    this.codes.Add(value);
+                    this.codes.Add(0x00000000);
                 }
 
                 if (cheats.Contains(Cheat.MoonJump))
                 {
-                    uint activator;
                     uint button;
                     if (this.Controller.SelectedValue.ToString() == "Pro")
                     {
-                        activator = 0x112671AB;
                         button = 0x00000008;
                     }
                     else
                     {
-                        activator = 0x102F48AA;
                         button = 0x00000020;
                     }
 
-                    codes.Add(0x09000000);
-                    codes.Add(activator);
-                    codes.Add(button);
-                    codes.Add(0x00000000);
-                    codes.Add(0x00020000);
-                    codes.Add(0x439BF528);
-                    codes.Add(0xBE800000);
-                    codes.Add(0x00000000);
-                    codes.Add(0xD0000000);
-                    codes.Add(0xDEADCAFE);
+                    this.codes.Add(0x09000000);
+                    this.codes.Add(activator);
+                    this.codes.Add(button);
+                    this.codes.Add(0x00000000);
+                    this.codes.Add(0x00020000);
+                    this.codes.Add(0x439BF528);
+                    this.codes.Add(0xBE800000);
+                    this.codes.Add(0x00000000);
+                    this.codes.Add(0xD0000000);
+                    this.codes.Add(0xDEADCAFE);
 
-                    codes.Add(0x06000000);
-                    codes.Add(activator);
-                    codes.Add(button);
-                    codes.Add(0x00000000);
-                    codes.Add(0x00020000);
-                    codes.Add(0x439BF528);
-                    codes.Add(0x3F800000);
-                    codes.Add(0x00000000);
-                    codes.Add(0xD0000000);
-                    codes.Add(0xDEADCAFE);
+                    this.codes.Add(0x06000000);
+                    this.codes.Add(activator);
+                    this.codes.Add(button);
+                    this.codes.Add(0x00000000);
+                    this.codes.Add(0x00020000);
+                    this.codes.Add(0x439BF528);
+                    this.codes.Add(0x3F800000);
+                    this.codes.Add(0x00000000);
+                    this.codes.Add(0xD0000000);
+                    this.codes.Add(0xDEADCAFE);
                 }
 
                 if (cheats.Contains(Cheat.WeaponInv))
                 {
                     var value = Convert.ToUInt32(CurrentWeaponSlots.Text);
 
-                    codes.Add(0x00020000);
-                    codes.Add(0x3FCFB498);
-                    codes.Add(value);
-                    codes.Add(0x00000000);
+                    this.codes.Add(0x00020000);
+                    this.codes.Add(0x3FCFB498);
+                    this.codes.Add(value);
+                    this.codes.Add(0x00000000);
 
-                    codes.Add(0x00020000);
-                    codes.Add(0x4010B34C);
-                    codes.Add(value);
-                    codes.Add(0x00000000);
+                    this.codes.Add(0x00020000);
+                    this.codes.Add(0x4010B34C);
+                    this.codes.Add(value);
+                    this.codes.Add(0x00000000);
                 }
 
                 if (cheats.Contains(Cheat.BowInv))
                 {
                     var value = Convert.ToUInt32(CurrentBowSlots.Text);
 
-                    codes.Add(0x00020000);
-                    codes.Add(0x3FD4BB50);
-                    codes.Add(value);
-                    codes.Add(0x00000000);
+                    this.codes.Add(0x00020000);
+                    this.codes.Add(0x3FD4BB50);
+                    this.codes.Add(value);
+                    this.codes.Add(0x00000000);
 
-                    codes.Add(0x00020000);
-                    codes.Add(0x4011126C);
-                    codes.Add(value);
-                    codes.Add(0x00000000);
+                    this.codes.Add(0x00020000);
+                    this.codes.Add(0x4011126C);
+                    this.codes.Add(value);
+                    this.codes.Add(0x00000000);
                 }
 
                 if (cheats.Contains(Cheat.ShieldInv))
                 {
                     var value = Convert.ToUInt32(CurrentShieldSlots.Text);
 
-                    codes.Add(0x00020000);
-                    codes.Add(0x3FCC0B40);
-                    codes.Add(value);
-                    codes.Add(0x00000000);
+                    this.codes.Add(0x00020000);
+                    this.codes.Add(0x3FCC0B40);
+                    this.codes.Add(value);
+                    this.codes.Add(0x00000000);
 
-                    codes.Add(0x00020000);
-                    codes.Add(0x4011128C);
-                    codes.Add(value);
-                    codes.Add(0x00000000);
+                    this.codes.Add(0x00020000);
+                    this.codes.Add(0x4011128C);
+                    this.codes.Add(value);
+                    this.codes.Add(0x00000000);
                 }
 
                 if (cheats.Contains(Cheat.Keys))
                 {
                     var value = Convert.ToUInt32(CurrentSmallKeys.Text);
 
-                    codes.Add(0x00020000);
-                    codes.Add(0x3FD5CB48);
-                    codes.Add(value);
-                    codes.Add(0x00000000);
+                    this.codes.Add(0x00020000);
+                    this.codes.Add(0x3FD5CB48);
+                    this.codes.Add(value);
+                    this.codes.Add(0x00000000);
 
-                    codes.Add(0x00020000);
-                    codes.Add(0x3FF6EA00);
-                    codes.Add(value);
-                    codes.Add(0x00000000);
+                    this.codes.Add(0x00020000);
+                    this.codes.Add(0x3FF6EA00);
+                    this.codes.Add(value);
+                    this.codes.Add(0x00000000);
                 }
 
                 if (cheats.Contains(Cheat.Urbosa))
                 {
                     var value = Convert.ToUInt32(CurrentUrbosa.Text);
 
-                    codes.Add(0x00020000);
-                    codes.Add(0x3FCFFA80);
-                    codes.Add(value);
-                    codes.Add(0x00000000);
+                    this.codes.Add(0x00020000);
+                    this.codes.Add(0x3FCFFA80);
+                    this.codes.Add(value);
+                    this.codes.Add(0x00000000);
 
-                    codes.Add(0x00020000);
-                    codes.Add(0x4011BA2C);
-                    codes.Add(value);
-                    codes.Add(0x00000000);
+                    this.codes.Add(0x00020000);
+                    this.codes.Add(0x4011BA2C);
+                    this.codes.Add(value);
+                    this.codes.Add(0x00000000);
                 }
 
                 if (cheats.Contains(Cheat.Revali))
                 {
                     var value = Convert.ToUInt32(CurrentRevali.Text);
 
-                    codes.Add(0x00020000);
-                    codes.Add(0x3FD5ED90);
-                    codes.Add(value);
-                    codes.Add(0x00000000);
+                    this.codes.Add(0x00020000);
+                    this.codes.Add(0x3FD5ED90);
+                    this.codes.Add(value);
+                    this.codes.Add(0x00000000);
 
-                    codes.Add(0x00020000);
-                    codes.Add(0x4011BA0C);
-                    codes.Add(value);
-                    codes.Add(0x00000000);
+                    this.codes.Add(0x00020000);
+                    this.codes.Add(0x4011BA0C);
+                    this.codes.Add(value);
+                    this.codes.Add(0x00000000);
                 }
 
                 if (cheats.Contains(Cheat.Daruk))
                 {
                     var value = Convert.ToUInt32(CurrentDaruk.Text);
 
-                    codes.Add(0x00020000);
-                    codes.Add(0x3FD50088);
-                    codes.Add(value);
-                    codes.Add(0x00000000);
+                    this.codes.Add(0x00020000);
+                    this.codes.Add(0x3FD50088);
+                    this.codes.Add(value);
+                    this.codes.Add(0x00000000);
 
-                    codes.Add(0x00020000);
-                    codes.Add(0x4011B9EC);
-                    codes.Add(value);
-                    codes.Add(0x00000000);
+                    this.codes.Add(0x00020000);
+                    this.codes.Add(0x4011B9EC);
+                    this.codes.Add(value);
+                    this.codes.Add(0x00000000);
                 }
 
                 if (cheats.Contains(Cheat.Bombs))
                 {
-                    codes.Add(0x00020000);
-                    codes.Add(0x4383DA34);
-                    codes.Add(0x42B70000);
-                    codes.Add(0x00000000);
+                    this.codes.Add(0x00020000);
+                    this.codes.Add(0x4383DA34);
+                    this.codes.Add(0x42B70000);
+                    this.codes.Add(0x00000000);
 
-                    codes.Add(0x00020000);
-                    codes.Add(0x4383DA4C);
-                    codes.Add(0x42B70000);
-                    codes.Add(0x00000000);
+                    this.codes.Add(0x00020000);
+                    this.codes.Add(0x4383DA4C);
+                    this.codes.Add(0x42B70000);
+                    this.codes.Add(0x00000000);
                 }
 
                 // Write our selected codes
@@ -1383,7 +1387,7 @@
             Progress.Value = percent;
         }
 
-        private void LogError(Exception ex, string more = null)
+        public void LogError(Exception ex, string more = null)
         {
             var paragraph = new Paragraph
             {
