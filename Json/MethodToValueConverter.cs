@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace JsonViewerDemo.ValueConverters
+namespace BotwTrainer.Json
 {
     public sealed class MethodToValueConverter : IValueConverter
     {

@@ -7,7 +7,7 @@ using System.Windows.Input;
 using System.Windows.Threading;
 using Newtonsoft.Json.Linq;
 
-namespace JsonViewerDemo.JsonViewer
+namespace BotwTrainer.Json
 {
     /// <summary>
     /// Interaction logic for JsonViewer.xaml
