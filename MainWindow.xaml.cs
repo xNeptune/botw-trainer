@@ -18,13 +18,9 @@
     using System.Windows.Input;
     using System.Windows.Media;
     using System.Windows.Navigation;
-    using System.Windows.Threading;
 
     using BotwTrainer.Properties;
 
-    using Microsoft.Win32;
-
-    using Newtonsoft.Json;
     using Newtonsoft.Json.Linq;
 
     /// <summary>
@@ -691,8 +687,7 @@
             }
             catch (Exception ex)
             {
-                Dispatcher.Invoke(
-                    () => this.LogError(ex, "Coords Tab"));
+                Dispatcher.Invoke(() => this.LogError(ex, "Coords Tab"));
             }
         }
 

@@ -148,6 +148,15 @@
             return !bytes.Any() ? 0 : BitConverter.ToInt32(bytes, 0);
         }
 
+        public short GetShort(uint address)
+        {
+            var bytes = this.ReadBytes(address, 0x2);
+
+            Array.Reverse(bytes);
+
+            return (short)(!bytes.Any() ? 0 : BitConverter.ToInt16(bytes, 0));
+        }
+
         public uint GetUInt(uint address)
         {
             var bytes = this.ReadBytes(address, 0x4);
@@ -213,6 +222,28 @@
         }
 
         public void WriteUInt(uint address, uint value)
+        {
+            byte[] bytes = BitConverter.GetBytes(value);
+            Array.Reverse(bytes);
+            this.WriteBytes(address, bytes);
+        }
+
+        public void WriteInt(uint address, int value)
+        {
+            byte[] bytes = BitConverter.GetBytes(value);
+            Array.Reverse(bytes);
+            this.WriteBytes(address, bytes);
+        }
+
+        public void WriteShort(uint address, short value)
+        {
+            byte[] bytes = BitConverter.GetBytes(value);
+            Array.Reverse(bytes);
+            this.WriteBytes(address, bytes);
+        }
+
+
+        public void WriteFloat(uint address, float value)
         {
             byte[] bytes = BitConverter.GetBytes(value);
             Array.Reverse(bytes);
