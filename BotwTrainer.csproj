@@ -91,19 +91,19 @@
     <Compile Include="ByteSwap.cs" />
     <Compile Include="Gecko.cs" />
     <Compile Include="Item.cs" />
-    <Compile Include="JsonViewer\JsonViewer.xaml.cs">
+    <Compile Include="Json\JsonViewer.xaml.cs">
       <DependentUpon>JsonViewer.xaml</DependentUpon>
     </Compile>
     <Compile Include="MemAreas.cs" />
     <Compile Include="TcpConn.cs" />
-    <Compile Include="TemplateSelectors\JPropertyDataTemplateSelector.cs" />
-    <Compile Include="ValueConverters\ComplexPropertyMethodToValueConverter.cs" />
-    <Compile Include="ValueConverters\JArrayLengthConverter.cs" />
-    <Compile Include="ValueConverters\JPropertyTypeToColorConverter.cs" />
-    <Compile Include="ValueConverters\JValueConverter.cs" />
-    <Compile Include="ValueConverters\JValueTypeToColorConverter.cs" />
-    <Compile Include="ValueConverters\MethodToValueConverter.cs" />
-    <Page Include="JsonViewer\JsonViewer.xaml">
+    <Compile Include="Json\JPropertyDataTemplateSelector.cs" />
+    <Compile Include="Json\ComplexPropertyMethodToValueConverter.cs" />
+    <Compile Include="Json\JArrayLengthConverter.cs" />
+    <Compile Include="Json\JPropertyTypeToColorConverter.cs" />
+    <Compile Include="Json\JValueConverter.cs" />
+    <Compile Include="Json\JValueTypeToColorConverter.cs" />
+    <Compile Include="Json\MethodToValueConverter.cs" />
+    <Page Include="Json\JsonViewer.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
