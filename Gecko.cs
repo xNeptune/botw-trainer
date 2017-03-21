@@ -318,10 +318,7 @@
                 this.tcpConn.Write(start, 4, ref bytesRead);
                 this.tcpConn.Write(end, 4, ref bytesRead);
 
-                foreach (var chunk in byteChunks)
-                {
-                    address = this.UploadBytes(address, chunk);
-                }
+                address = byteChunks.Aggregate(address, this.UploadBytes);
             }
             catch (Exception ex)
             {
