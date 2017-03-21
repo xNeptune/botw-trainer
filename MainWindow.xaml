@@ -5,7 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:jsonViewer="clr-namespace:JsonViewerDemo.JsonViewer"
       mc:Ignorable="d"
-        Title="BOTW Trainer (PAL 1.1)" Height="700" Width="1020">
+        Title="BOTW Trainer (1.1)" Height="700" Width="1020">
 
     <Grid Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
@@ -91,7 +91,7 @@
                         <ComboBoxItem Tag="42000000" Content="42000000 - 32x Speed"/>
                     </ComboBox>
 
-                    <Label x:Name="SpeedData" Content="Hold B" Height="25" Margin="0" Canvas.Left="275" Canvas.Top="208"/>
+                    <Label x:Name="SpeedData" Content="Hold ZL" Height="25" Margin="0" Canvas.Left="275" Canvas.Top="208"/>
 
                     <Label Content="Moon Jump" Height="26" Canvas.Left="10" Canvas.Top="238"></Label>
                     <CheckBox x:Name="MoonJump" Margin="0" Canvas.Left="120" Canvas.Top="244" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>

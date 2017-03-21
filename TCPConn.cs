@@ -11,10 +11,6 @@
 
         private NetworkStream stream;
 
-        public string Host { get; private set; }
-
-        public int Port { get; private set; }
-
         public TcpConn(string host, int port)
         {
             this.Host = host;
@@ -22,6 +18,10 @@
             this.client = null;
             this.stream = null;
         }
+
+        private string Host { get; set; }
+
+        private int Port { get; set; }
 
         public bool Connect()
         {

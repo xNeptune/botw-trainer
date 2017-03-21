@@ -68,7 +68,7 @@
 
     public class Gecko
     {
-        private const uint MaximumMemoryChunkSize = 0x400;
+        private readonly uint maximumMemoryChunkSize = 0x400;
 
         private readonly TcpConn tcpConn;
 
@@ -78,12 +78,21 @@
         {
             this.tcpConn = tcpConn;
             this.mainWindow = mainWindow;
+            this.maximumMemoryChunkSize = this.ReadDataBufferSize();
         }
 
-        private void SendCommand(Command command)
+        public static string ByteToHexBitFiddle(byte[] bytes)
         {
-            uint bytesWritten = 0;
-            this.tcpConn.Write(new[] { (byte)command }, 1, ref bytesWritten);
+            var c = new char[bytes.Length * 2];
+            for (var i = 0; i < bytes.Length; i++)
+            {
+                var b = bytes[i] >> 4;
+                c[i * 2] = (char)(55 + b + (((b - 10) >> 31) & -7));
+                b = bytes[i] & 0xF;
+                c[i * 2 + 1] = (char)(55 + b + (((b - 10) >> 31) & -7));
+            }
+
+            return new string(c);
         }
 
         public int GetOsVersion()
@@ -179,9 +188,9 @@
                     uint chunkSize = remainingBytesCount;
 
                     // Don't read more bytes than the remote buffer can hold
-                    if (chunkSize > MaximumMemoryChunkSize)
+                    if (chunkSize > this.maximumMemoryChunkSize)
                     {
-                        chunkSize = MaximumMemoryChunkSize;
+                        chunkSize = this.maximumMemoryChunkSize;
                     }
 
                     var buffer = new byte[chunkSize];
@@ -203,6 +212,48 @@
             return null;
         }
 
+        public void WriteUInt(uint address, uint value)
+        {
+            byte[] bytes = BitConverter.GetBytes(value);
+            Array.Reverse(bytes);
+            this.WriteBytes(address, bytes);
+        }
+
+        public void WriteBytes(uint address, byte[] bytes)
+        {
+            var partitionedBytes = Partition(bytes, this.maximumMemoryChunkSize);
+            this.WritePartitionedBytes(address, partitionedBytes);
+        }
+
+        private static IEnumerable<byte[]> Partition(byte[] bytes, uint chunkSize)
+        {
+            var byteArrayChunks = new List<byte[]>();
+            uint startingIndex = 0;
+
+            while (startingIndex < bytes.Length)
+            {
+                var end = Math.Min(bytes.Length, startingIndex + chunkSize);
+                byteArrayChunks.Add(CopyOfRange(bytes, startingIndex, end));
+                startingIndex += chunkSize;
+            }
+
+            return byteArrayChunks;
+        }
+
+        private static byte[] CopyOfRange(byte[] src, long start, long end)
+        {
+            var len = end - start;
+            var dest = new byte[len];
+            Array.Copy(src, start, dest, 0, len);
+            return dest;
+        }
+
+        private void SendCommand(Command command)
+        {
+            uint bytesWritten = 0;
+            this.tcpConn.Write(new[] { (byte)command }, 1, ref bytesWritten);
+        }
+
         private void RequestBytes(uint address, uint length)
         {
             try
@@ -219,26 +270,6 @@
             {
                 this.mainWindow.LogError(ex);
             }
-        }
-
-        public void WriteInt(uint address, int value)
-        {
-            byte[] bytes = BitConverter.GetBytes(value);
-            Array.Reverse(bytes);
-            this.WriteBytes(address, bytes);
-        }
-
-        public void WriteUInt(uint address, uint value)
-        {
-            byte[] bytes = BitConverter.GetBytes(value);
-            Array.Reverse(bytes);
-            this.WriteBytes(address, bytes);
-        }
-
-        public void WriteBytes(uint address, byte[] bytes)
-        {
-            var partitionedBytes = Partition(bytes, MaximumMemoryChunkSize);
-            this.WritePartitionedBytes(address, partitionedBytes);
         }
 
         private void WritePartitionedBytes(uint address, IEnumerable<byte[]> byteChunks)
@@ -278,42 +309,17 @@
             return endAddress;
         }
         
-        private static IEnumerable<byte[]> Partition(byte[] bytes, uint chunkSize)
+        private uint ReadDataBufferSize()
         {
-            var byteArrayChunks = new List<byte[]>();
-            uint startingIndex = 0;
-            
-            while (startingIndex < bytes.Length)
-            {
-                var end = Math.Min(bytes.Length, startingIndex + chunkSize);
-                byteArrayChunks.Add(CopyOfRange(bytes, startingIndex, end));
-                startingIndex += chunkSize;
-            }
-            
-            return byteArrayChunks;
+            this.SendCommand(Command.COMMAND_GET_DATA_BUFFER_SIZE);
+
+            uint bytesRead = 0;
+            var response = new byte[4];
+            this.tcpConn.Read(response, 4, ref bytesRead);
+
+            var buffer = ByteSwap.Swap(BitConverter.ToUInt32(response, 0));
+
+            return buffer;
         }
-
-        private static byte[] CopyOfRange(byte[] src, long start, long end)
-        {
-            var len = end - start;
-            var dest = new byte[len];
-            Array.Copy(src, start, dest, 0, len);
-            return dest;
-        }
-
-        public static string ByteToHexBitFiddle(byte[] bytes)
-        {
-            var c = new char[bytes.Length * 2];
-            for (var i = 0; i < bytes.Length; i++)
-            {
-                var b = bytes[i] >> 4;
-                c[i * 2] = (char)(55 + b + (((b - 10) >> 31) & -7));
-                b = bytes[i] & 0xF;
-                c[i * 2 + 1] = (char)(55 + b + (((b - 10) >> 31) & -7));
-            }
-
-            return new string(c);
-        }
-
     }
 }

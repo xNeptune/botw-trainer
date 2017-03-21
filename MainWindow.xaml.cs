@@ -155,8 +155,6 @@
                         TowerList.Items.Add(new ComboBoxItem { Content = tower.Value["Name"], Tag = tower.Name });
                     }
                 }
-
-                //MessageBox.Show(this.json.SelectToken("Items").Children().Count().ToString());
             }
             catch (Exception ex)
             {
@@ -1016,21 +1014,10 @@
         {
             try
             {
-                uint activator;
-                if (this.Controller.SelectedValue.ToString() == "Pro")
-                {
-                    activator = 0x112671AB;
-                }
-                else
-                {
-                    activator = 0x102F48AA;
-                }
-
                 // Disable codehandler before we modify
                 this.gecko.WriteUInt(CodeHandlerEnabled, 0x00000000);
 
                 // clear current codes
-                var currentCodeSize = this.codes.Count * 4;
                 var array = new byte[4864];
                 Array.Clear(array, 0, array.Length);
                 this.gecko.WriteBytes(CodeHandlerStart, array);
@@ -1070,9 +1057,19 @@
                 {
                     var value = uint.Parse(CbSpeed.SelectedValue.ToString(), NumberStyles.HexNumber);
 
+                    uint activator;
+                    if (this.Controller.SelectedValue.ToString() == "Pro")
+                    {
+                        activator = 0x112671AB;
+                    }
+                    else
+                    {
+                        activator = 0x102F48AB;
+                    }
+
                     this.codes.Add(0x09000000);
                     this.codes.Add(activator);
-                    this.codes.Add(0x00000040);
+                    this.codes.Add(0x00000080);
                     this.codes.Add(0x00000000);
                     this.codes.Add(0x00020000);
                     this.codes.Add(0x439BF514);
@@ -1083,7 +1080,7 @@
 
                     this.codes.Add(0x06000000);
                     this.codes.Add(activator);
-                    this.codes.Add(0x00000040);
+                    this.codes.Add(0x00000080);
                     this.codes.Add(0x00000000);
                     this.codes.Add(0x00020000);
                     this.codes.Add(0x439BF514);
@@ -1091,8 +1088,6 @@
                     this.codes.Add(0x00000000);
                     this.codes.Add(0xD0000000);
                     this.codes.Add(0xDEADCAFE);
-
-
                 }
 
                 if (cheats.Contains(Cheat.Rupees))
@@ -1128,12 +1123,15 @@
                 if (cheats.Contains(Cheat.MoonJump))
                 {
                     uint button;
+                    uint activator;
                     if (this.Controller.SelectedValue.ToString() == "Pro")
                     {
+                        activator = 0x112671AB;
                         button = 0x00000008;
                     }
                     else
                     {
+                        activator = 0x102F48AA;
                         button = 0x00000020;
                     }
 
