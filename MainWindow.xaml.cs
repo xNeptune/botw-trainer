@@ -226,11 +226,11 @@
                                        Equipped = equipped,
                                        NameStart = nameStart,
                                        Id = id,
-                                       Modifier1Value = Gecko.ByteToHexBitFiddle(itemData.Skip(92).Take(4).ToArray()),
-                                       Modifier2Value = Gecko.ByteToHexBitFiddle(itemData.Skip(96).Take(4).ToArray()),
-                                       Modifier3Value = Gecko.ByteToHexBitFiddle(itemData.Skip(100).Take(4).ToArray()),
-                                       Modifier4Value = Gecko.ByteToHexBitFiddle(itemData.Skip(104).Take(4).ToArray()),
-                                       Modifier5Value = Gecko.ByteToHexBitFiddle(itemData.Skip(108).Take(4).ToArray())
+                                       Modifier1Value = this.gecko.ByteToHexBitFiddle(itemData.Skip(92).Take(4).ToArray()),
+                                       Modifier2Value = this.gecko.ByteToHexBitFiddle(itemData.Skip(96).Take(4).ToArray()),
+                                       Modifier3Value = this.gecko.ByteToHexBitFiddle(itemData.Skip(100).Take(4).ToArray()),
+                                       Modifier4Value = this.gecko.ByteToHexBitFiddle(itemData.Skip(104).Take(4).ToArray()),
+                                       Modifier5Value = this.gecko.ByteToHexBitFiddle(itemData.Skip(108).Take(4).ToArray())
                                    };
 
                     // look for name in json

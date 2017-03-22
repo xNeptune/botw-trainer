@@ -1,11 +1,11 @@
-﻿namespace BotwTrainer
-{
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 
+namespace BotwTrainer
+{
     public enum Command
     {
         COMMAND_WRITE_8 = 0x01,
@@ -68,23 +68,35 @@
 
     public class Gecko
     {
-        private readonly uint maximumMemoryChunkSize = 0x400;
+        private readonly uint _maximumMemoryChunkSize;
 
-        private readonly TcpConn tcpConn;
+        private readonly TcpConn _tcpConn;
 
-        private readonly MainWindow mainWindow;
+        private readonly MainWindow _mainWindow;
 
         public Gecko(TcpConn tcpConn, MainWindow mainWindow)
         {
-            this.tcpConn = tcpConn;
-            this.mainWindow = mainWindow;
-            this.maximumMemoryChunkSize = this.ReadDataBufferSize();
+            _tcpConn = tcpConn;
+            _maximumMemoryChunkSize = 0x400;
+            _mainWindow = mainWindow;
+            _maximumMemoryChunkSize = ReadDataBufferSize();
         }
 
-        public static string ByteToHexBitFiddle(byte[] bytes)
+        public string ByteToHexBitFiddle(byte[] bytes)
         {
-            var c = new char[bytes.Length * 2];
-            for (var i = 0; i < bytes.Length; i++)
+            int count;
+
+            try
+            {
+                count = bytes.Length;
+            }
+            catch (OverflowException overflowException)
+            {
+                _mainWindow.LogError(overflowException);
+                return string.Empty;
+            }
+            var c = new char[count * 2];
+            for (var i = 0; i < count; i++)
             {
                 var b = bytes[i] >> 4;
                 c[i * 2] = (char)(55 + b + (((b - 10) >> 31) & -7));
@@ -97,91 +109,201 @@
 
         public int GetOsVersion()
         {
-            this.SendCommand(Command.COMMAND_OS_VERSION);
+            SendCommand(Command.COMMAND_OS_VERSION);
 
             uint bytesRead = 0;
             var response = new byte[4];
-            this.tcpConn.Read(response, 4, ref bytesRead);
+            _tcpConn.Read(response, 4, ref bytesRead);
 
-            var os = ByteSwap.Swap(BitConverter.ToUInt32(response, 0));
+            uint os;
+
+            try
+            {
+                os = ByteSwap.Swap(BitConverter.ToUInt32(response, 0));
+            }
+            catch (ArgumentOutOfRangeException argumentOutOfRangeException)
+            {
+                _mainWindow.LogError(argumentOutOfRangeException);
+                return -1;
+            }
+            catch (ArgumentNullException argumentNullException)
+            {
+                _mainWindow.LogError(argumentNullException);
+                return -1;
+            }
+            catch (ArgumentException argumentException)
+            {
+                _mainWindow.LogError(argumentException);
+                return -1;
+            }
 
             return (int)os;
         }
 
         public string GetServerVersion()
         {
-            this.SendCommand(Command.COMMAND_SERVER_VERSION);
+            SendCommand(Command.COMMAND_SERVER_VERSION);
 
             uint bytesRead = 0;
             var response = new byte[4];
-            this.tcpConn.Read(response, 4, ref bytesRead);
+            _tcpConn.Read(response, 4, ref bytesRead);
 
-            var length = ByteSwap.Swap(BitConverter.ToUInt32(response, 0));
+            uint length;
+
+            try
+            {
+                length = ByteSwap.Swap(BitConverter.ToUInt32(response, 0));
+            }
+            catch (ArgumentException argumentException)
+            {
+                _mainWindow.LogError(argumentException);
+                return string.Empty;
+            }
 
             response = new byte[length];
-            this.tcpConn.Read(response, length, ref bytesRead);
+            _tcpConn.Read(response, length, ref bytesRead);
 
-            var server = Encoding.Default.GetString(response);
+            string server;
+            try
+            {
+                server = Encoding.Default.GetString(response);
+            }
+            catch (ArgumentException argumentException)
+            {
+                _mainWindow.LogError(argumentException);
+                return string.Empty;
+            }
 
             return server;
         }
 
         public int GetServerStatus()
         {
-            this.SendCommand(Command.COMMAND_SERVER_STATUS);
+            SendCommand(Command.COMMAND_SERVER_STATUS);
 
             uint bytesRead = 0;
             var response = new byte[1];
-            this.tcpConn.Read(response, 1, ref bytesRead);
+            _tcpConn.Read(response, 1, ref bytesRead);
 
             var status = response[0];
 
-            return (int)status;
+            return status;
         }
 
         public int GetInt(uint address)
         {
-            var bytes = this.ReadBytes(address, 0x4);
+            var bytes = ReadBytes(address, 0x4);
+            int value;
 
-            Array.Reverse(bytes);
+            try
+            {
+                Array.Reverse(bytes);
+                value = !bytes.Any() ? 0 : BitConverter.ToInt32(bytes, 0);
+            }
+            catch (ArgumentNullException argumentNullException)
+            {
+                _mainWindow.LogError(argumentNullException);
+                return -1;
+            }
+            catch (ArgumentException argumentException)
+            {
+                _mainWindow.LogError(argumentException);
+                return -1;
+            }
+            catch (RankException rankException)
+            {
+                _mainWindow.LogError(rankException);
+                return -1;
+            }
 
-            return !bytes.Any() ? 0 : BitConverter.ToInt32(bytes, 0);
+            return value;
         }
 
         public short GetShort(uint address)
         {
-            var bytes = this.ReadBytes(address, 0x2);
+            var bytes = ReadBytes(address, 0x2);
+            short value;
 
-            Array.Reverse(bytes);
+            try
+            {
+                Array.Reverse(bytes);
+                value = (short) (!bytes.Any() ? 0 : BitConverter.ToInt16(bytes, 0));
+            }
+            catch (ArgumentNullException argumentNullException)
+            {
+                _mainWindow.LogError(argumentNullException);
+                return -1;
+            }
+            catch (ArgumentException argumentException)
+            {
+                _mainWindow.LogError(argumentException);
+                return -1;
+            }
+            catch (RankException rankException)
+            {
+                _mainWindow.LogError(rankException);
+                return -1;
+            }
 
-            return (short)(!bytes.Any() ? 0 : BitConverter.ToInt16(bytes, 0));
+            return value;
         }
 
         public uint GetUInt(uint address)
         {
-            var bytes = this.ReadBytes(address, 0x4);
+            var bytes = ReadBytes(address, 0x4);
+            uint value;
 
-            Array.Reverse(bytes);
+            try
+            {
+                Array.Reverse(bytes);
+                value = !bytes.Any() ? 0 : BitConverter.ToUInt32(bytes, 0);
+            }
+            catch (ArgumentNullException argumentNullException)
+            {
+                _mainWindow.LogError(argumentNullException);
+                return 1;
+            }
+            catch (ArgumentException argumentException)
+            {
+                _mainWindow.LogError(argumentException);
+                return 1;
+            }
+            catch (RankException rankException)
+            {
+                _mainWindow.LogError(rankException);
+                return 1;
+            }
 
-            return !bytes.Any() ? 0 : BitConverter.ToUInt32(bytes, 0);
+            return value;
         }
 
         public string GetString(uint address)
         {
-            var bytes = this.ReadBytes(address, 0x4);
+            var bytes = ReadBytes(address, 0x4);
+            string value;
 
-            return !bytes.Any() ? string.Empty : BitConverter.ToString(bytes).Replace("-", string.Empty);
+            try
+            {
+                value = !bytes.Any() ? string.Empty : BitConverter.ToString(bytes).Replace("-", string.Empty);
+            }
+            catch (ArgumentException argumentException)
+            {
+                _mainWindow.LogError(argumentException);
+                return string.Empty;
+            }
+
+            return value;
         }
 
         public byte[] ReadBytes(uint address, uint length)
         {
             try
             {
-                this.RequestBytes(address, length);
+                RequestBytes(address, length);
 
                 uint bytesRead = 0;
                 var response = new byte[1];
-                this.tcpConn.Read(response, 1, ref bytesRead);
+                _tcpConn.Read(response, 1, ref bytesRead);
 
                 var ms = new MemoryStream();
 
@@ -197,14 +319,14 @@
                     uint chunkSize = remainingBytesCount;
 
                     // Don't read more bytes than the remote buffer can hold
-                    if (chunkSize > this.maximumMemoryChunkSize)
+                    if (chunkSize > _maximumMemoryChunkSize)
                     {
-                        chunkSize = this.maximumMemoryChunkSize;
+                        chunkSize = _maximumMemoryChunkSize;
                     }
 
                     var buffer = new byte[chunkSize];
                     bytesRead = 0;
-                    this.tcpConn.Read(buffer, chunkSize, ref bytesRead);
+                    _tcpConn.Read(buffer, chunkSize, ref bytesRead);
 
                     ms.Write(buffer, 0, (int)chunkSize);
 
@@ -215,7 +337,7 @@
             }
             catch (Exception ex)
             {
-                this.mainWindow.LogError(ex);
+                _mainWindow.LogError(ex);
             }
 
             return null;
@@ -224,36 +346,84 @@
         public void WriteUInt(uint address, uint value)
         {
             byte[] bytes = BitConverter.GetBytes(value);
-            Array.Reverse(bytes);
-            this.WriteBytes(address, bytes);
+            try
+            {
+                Array.Reverse(bytes);
+            }
+            catch (ArgumentNullException argumentNullException)
+            {
+                _mainWindow.LogError(argumentNullException);
+            }
+            catch (RankException rankException)
+            {
+                _mainWindow.LogError(rankException);
+            }
+
+            WriteBytes(address, bytes);
         }
 
         public void WriteInt(uint address, int value)
         {
             byte[] bytes = BitConverter.GetBytes(value);
-            Array.Reverse(bytes);
-            this.WriteBytes(address, bytes);
+            try
+            {
+                Array.Reverse(bytes);
+            }
+            catch (ArgumentNullException argumentNullException)
+            {
+                _mainWindow.LogError(argumentNullException);
+            }
+            catch (RankException rankException)
+            {
+                _mainWindow.LogError(rankException);
+            }
+
+            WriteBytes(address, bytes);
         }
 
         public void WriteShort(uint address, short value)
         {
             byte[] bytes = BitConverter.GetBytes(value);
-            Array.Reverse(bytes);
-            this.WriteBytes(address, bytes);
+            try
+            {
+                Array.Reverse(bytes);
+            }
+            catch (ArgumentNullException argumentNullException)
+            {
+                _mainWindow.LogError(argumentNullException);
+            }
+            catch (RankException rankException)
+            {
+                _mainWindow.LogError(rankException);
+            }
+
+            WriteBytes(address, bytes);
         }
 
 
         public void WriteFloat(uint address, float value)
         {
             byte[] bytes = BitConverter.GetBytes(value);
-            Array.Reverse(bytes);
-            this.WriteBytes(address, bytes);
+            try
+            {
+                Array.Reverse(bytes);
+            }
+            catch (ArgumentNullException argumentNullException)
+            {
+                _mainWindow.LogError(argumentNullException);
+            }
+            catch (RankException rankException)
+            {
+                _mainWindow.LogError(rankException);
+            }
+
+            WriteBytes(address, bytes);
         }
 
         public void WriteBytes(uint address, byte[] bytes)
         {
-            var partitionedBytes = Partition(bytes, this.maximumMemoryChunkSize);
-            this.WritePartitionedBytes(address, partitionedBytes);
+            var partitionedBytes = Partition(bytes, _maximumMemoryChunkSize);
+            WritePartitionedBytes(address, partitionedBytes);
         }
 
         private static IEnumerable<byte[]> Partition(byte[] bytes, uint chunkSize)
@@ -282,47 +452,48 @@
         private void SendCommand(Command command)
         {
             uint bytesWritten = 0;
-            this.tcpConn.Write(new[] { (byte)command }, 1, ref bytesWritten);
+            _tcpConn.Write(new[] { (byte)command }, 1, ref bytesWritten);
         }
 
         private void RequestBytes(uint address, uint length)
         {
             try
             {
-                this.SendCommand(Command.COMMAND_READ_MEMORY);
+                SendCommand(Command.COMMAND_READ_MEMORY);
 
                 uint bytesRead = 0;
                 var bytes = BitConverter.GetBytes(ByteSwap.Swap(address));
                 var bytes2 = BitConverter.GetBytes(ByteSwap.Swap(address + length));
-                this.tcpConn.Write(bytes, 4, ref bytesRead);
-                this.tcpConn.Write(bytes2, 4, ref bytesRead);
+                _tcpConn.Write(bytes, 4, ref bytesRead);
+                _tcpConn.Write(bytes2, 4, ref bytesRead);
             }
             catch (Exception ex)
             {
-                this.mainWindow.LogError(ex);
+                _mainWindow.LogError(ex);
             }
         }
 
         private void WritePartitionedBytes(uint address, IEnumerable<byte[]> byteChunks)
         {
-            var length = (uint)byteChunks.Sum(chunk => chunk.Length);
+            IEnumerable<byte[]> enumerable = byteChunks as IList<byte[]> ?? byteChunks.ToList();
+            var length = (uint)enumerable.Sum(chunk => chunk.Length);
             
             try
             {
-                this.SendCommand(Command.COMMAND_UPLOAD_MEMORY);
+                SendCommand(Command.COMMAND_UPLOAD_MEMORY);
 
                 uint bytesRead = 0;
                 var start = BitConverter.GetBytes(ByteSwap.Swap(address));
                 var end = BitConverter.GetBytes(ByteSwap.Swap(address + length));
 
-                this.tcpConn.Write(start, 4, ref bytesRead);
-                this.tcpConn.Write(end, 4, ref bytesRead);
+                _tcpConn.Write(start, 4, ref bytesRead);
+                _tcpConn.Write(end, 4, ref bytesRead);
 
-                address = byteChunks.Aggregate(address, this.UploadBytes);
+                address = enumerable.Aggregate(address, UploadBytes);
             }
             catch (Exception ex)
             {
-                this.mainWindow.LogError(ex);
+                _mainWindow.LogError(ex);
             }
         }
         
@@ -332,18 +503,18 @@
 
             uint endAddress = address + (uint)bytes.Length;
             uint bytesRead = 0;
-            this.tcpConn.Write(bytes, length, ref bytesRead);
+            _tcpConn.Write(bytes, length, ref bytesRead);
             
             return endAddress;
         }
         
         private uint ReadDataBufferSize()
         {
-            this.SendCommand(Command.COMMAND_GET_DATA_BUFFER_SIZE);
+            SendCommand(Command.COMMAND_GET_DATA_BUFFER_SIZE);
 
             uint bytesRead = 0;
             var response = new byte[4];
-            this.tcpConn.Read(response, 4, ref bytesRead);
+            _tcpConn.Read(response, 4, ref bytesRead);
 
             var buffer = ByteSwap.Swap(BitConverter.ToUInt32(response, 0));
 
