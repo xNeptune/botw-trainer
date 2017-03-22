@@ -1,8 +1,9 @@
-﻿namespace BotwTrainer
-{
-    using System;
-    using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Windows;
 
+namespace BotwTrainer
+{
     public class Item
     {
         public string Id { get; set; }
@@ -15,7 +16,15 @@
         {
             get
             {
-                return this.NameStart.ToString("x8").ToUpper();
+                try
+                {
+                    return NameStart.ToString("x8").ToUpper();
+                }
+                catch (FormatException formatException)
+                {
+                    MessageBox.Show(formatException.Message);
+                    return string.Empty;
+                }
             }
         }
 
@@ -25,7 +34,15 @@
         {
             get
             {
-                return this.BaseAddress.ToString("x8").ToUpper();
+                try
+                {
+                    return BaseAddress.ToString("x8").ToUpper();
+                }
+                catch (FormatException formatException)
+                {
+                    MessageBox.Show(formatException.Message);
+                    return string.Empty;
+                }
             }
         }
 
@@ -35,7 +52,15 @@
         {
             get
             {
-                return this.Value.ToString("x8").ToUpper();
+                try
+                {
+                    return Value.ToString("x8").ToUpper();
+                }
+                catch (FormatException formatException)
+                {
+                    MessageBox.Show(formatException.Message);
+                    return string.Empty;
+                }
             }
         }
 
@@ -43,7 +68,15 @@
         {
             get
             {
-                return (this.BaseAddress + 0x8).ToString("x8").ToUpper();
+                try
+                {
+                    return (BaseAddress + 0x8).ToString("x8").ToUpper();
+                }
+                catch (FormatException formatException)
+                {
+                    MessageBox.Show(formatException.Message);
+                    return string.Empty;
+                }
             }
         }
 
@@ -55,14 +88,19 @@
             {
                 try
                 {
-                    var val = BitConverter.GetBytes(this.Equipped).Reverse().First().ToString();
+                    string val = BitConverter.GetBytes(Equipped).Reverse().First().ToString();
                     return val != "0";
                 }
-                catch
+                catch (ArgumentNullException argumentNullException)
                 {
+                    MessageBox.Show(argumentNullException.Message);
                     return false;
                 }
-                
+                catch (InvalidOperationException invalidOperationException)
+                {
+                    MessageBox.Show(invalidOperationException.Message);
+                    return false;
+                }
             }
         }
 
@@ -72,8 +110,16 @@
         {
             get
             {
-                var offset = this.BaseAddress + 0x5c;
-                return offset.ToString("x8").ToUpper();
+                var offset = BaseAddress + 0x5c;
+                try
+                {
+                    return offset.ToString("x8").ToUpper();
+                }
+                catch (FormatException formatException)
+                {
+                    MessageBox.Show(formatException.Message);
+                    return string.Empty;
+                }
             }
         }
 
@@ -83,8 +129,16 @@
         {
             get
             {
-                var offset = this.BaseAddress + 0x60;
-                return offset.ToString("x8").ToUpper();
+                var offset = BaseAddress + 0x60;
+                try
+                {
+                    return offset.ToString("x8").ToUpper();
+                }
+                catch (FormatException formatException)
+                {
+                    MessageBox.Show(formatException.Message);
+                    return string.Empty;
+                }
             }
         }
 
@@ -94,8 +148,16 @@
         {
             get
             {
-                var offset = this.BaseAddress + 0x64;
-                return offset.ToString("x8").ToUpper();
+                var offset = BaseAddress + 0x64;
+                try
+                {
+                    return offset.ToString("x8").ToUpper();
+                }
+                catch (FormatException formatException)
+                {
+                    MessageBox.Show(formatException.Message);
+                    return string.Empty;
+                }
             }
         }
 
@@ -105,8 +167,16 @@
         {
             get
             {
-                var offset = this.BaseAddress + 0x68;
-                return offset.ToString("x8").ToUpper();
+                var offset = BaseAddress + 0x68;
+                try
+                {
+                    return offset.ToString("x8").ToUpper();
+                }
+                catch (FormatException formatException)
+                {
+                    MessageBox.Show(formatException.Message);
+                    return string.Empty;
+                }
             }
         }
 
@@ -116,8 +186,16 @@
         {
             get
             {
-                var offset = this.BaseAddress + 0x6c;
-                return offset.ToString("x8").ToUpper();
+                var offset = BaseAddress + 0x6c;
+                try
+                {
+                    return offset.ToString("x8").ToUpper();
+                }
+                catch (FormatException formatException)
+                {
+                    MessageBox.Show(formatException.Message);
+                    return string.Empty;
+                }
             }
         }
 
@@ -127,8 +205,8 @@
         {
             get
             {
-                var name = string.Empty;
-                switch (this.Page)
+                string name;
+                switch (Page)
                 {
                     case 0:
                         name = "Weapons";
