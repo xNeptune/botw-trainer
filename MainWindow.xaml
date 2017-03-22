@@ -3,9 +3,9 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:jsonViewer="clr-namespace:JsonViewerDemo.JsonViewer"
+      xmlns:json="clr-namespace:BotwTrainer.Json"
       mc:Ignorable="d"
-        Title="BOTW Trainer (PAL 1.1)" Height="700" Width="1020">
+        Title="BOTW Trainer (PAL/NTSC 1.1)" Height="700" Width="1020">
 
     <Grid Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
@@ -190,7 +190,7 @@
 
             <TabItem Header="Item List" x:Name="ItemTree" Margin="0">
                 <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                    <jsonViewer:JsonViewer x:Name="JsonViewer" DockPanel.Dock="Bottom"/>
+                    <json:JsonViewer x:Name="JsonViewer" DockPanel.Dock="Bottom"/>
                 </DockPanel>
             </TabItem>
 

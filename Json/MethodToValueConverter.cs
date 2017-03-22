@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
 using System.Windows.Data;
-using Newtonsoft.Json.Linq;
 
-namespace JsonViewerDemo.ValueConverters
+namespace BotwTrainer.Json
 {
-    // This converter is only used by JProperty tokens whose Value is Array/Object
-    class ComplexPropertyMethodToValueConverter : IValueConverter
+    public sealed class MethodToValueConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -18,9 +14,8 @@ namespace JsonViewerDemo.ValueConverters
             var methodInfo = value.GetType().GetMethod(methodName, new Type[0]);
             if (methodInfo == null)
                 return null;
-            var invocationResult = methodInfo.Invoke(value, new object[0]);
-            var jTokens = (IEnumerable<JToken>) invocationResult;
-            return jTokens.First().Children() ;
+            var returnValue = methodInfo.Invoke(value, new object[0]);
+            return returnValue;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

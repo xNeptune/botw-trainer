@@ -3,7 +3,7 @@ using System.Globalization;
 using System.Windows.Data;
 using Newtonsoft.Json.Linq;
 
-namespace JsonViewerDemo.ValueConverters
+namespace BotwTrainer.Json
 {
     public sealed class JValueConverter : IValueConverter
     {
