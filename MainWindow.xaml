@@ -136,6 +136,9 @@
                         <TextBox x:Name="CurrentDaruk" Height="25" Width="30" Margin="0" Canvas.Left="150" Canvas.Top="61" PreviewTextInput="NumberValidationTextBox" TextChanged="TextChanged"/>
                         <Label x:Name="DarukData" Content="" Height="25" Margin="0" Canvas.Left="265" Canvas.Top="61"/>
                     </Canvas>
+                    
+                    <Label Content="Horse Whips" Height="26" Canvas.Left="10" Canvas.Top="298"/>
+                    <CheckBox x:Name="HorseWhips" Margin="0" Canvas.Left="120" Canvas.Top="304" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
                 </Canvas>
             </TabItem>
 

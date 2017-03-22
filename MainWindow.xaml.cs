@@ -85,7 +85,8 @@
             Revali = 11,
             Daruk = 12,
             Keys = 13,
-            Bombs = 14
+            Bombs = 14,
+            Whips = 15
         }
 
         private bool HasChanged
@@ -219,7 +220,7 @@
                     var item = new Item
                                    {
                                        BaseAddress = currentItemAddress,
-                                       Page = (int)page,
+                                       Page = page,
                                        Unknown = unknown,
                                        Value = value,
                                        Equipped = equipped,
@@ -424,6 +425,17 @@
                         }
                     }
 
+                    if (type == "Page")
+                    {
+                        var address = uint.Parse(tag.ToString(), NumberStyles.HexNumber);
+                        int val;
+                        bool parsed = int.TryParse(tb.Text, out val);
+                        if (parsed && val < 10 && val >= 0)
+                        {
+                            this.gecko.WriteUInt(address, Convert.ToUInt32(val));
+                        }
+                    }
+
                     if (type == "Mod")
                     {
                         var address = uint.Parse(tag.ToString(), NumberStyles.HexNumber);
@@ -518,6 +530,11 @@
                     if (BombTime.IsChecked == true)
                     {
                         selected.Add(Cheat.Bombs);
+                    }
+
+                    if (HorseWhips.IsChecked == true)
+                    {
+                        selected.Add(Cheat.Whips);
                     }
 
                     this.SetCheats(selected);
@@ -883,40 +900,31 @@
                 val.PreviewTextInput += this.NumberValidationTextBox;
                 grid.Children.Add(val);
 
+                // Page
+                var pgtb = this.GenerateGridTextBox(item.Page.ToString(), item.BaseAddressHex, "Page_", x, 3, 20);
+                pgtb.PreviewTextInput += this.NumberValidationTextBox;
+                grid.Children.Add(pgtb);
+
                 // Mod1
-                var mtb1 = this.GenerateGridTextBox(item.Modifier1Value, item.Modifier1Address, "Mod_", x, 3, 70);
+                var mtb1 = this.GenerateGridTextBox(item.Modifier1Value, item.Modifier1Address, "Mod_", x, 4, 70);
                 grid.Children.Add(mtb1);
 
                 // Mod2
-                var mtb2 = this.GenerateGridTextBox(item.Modifier2Value, item.Modifier2Address, "Mod_", x, 4, 70);
+                var mtb2 = this.GenerateGridTextBox(item.Modifier2Value, item.Modifier2Address, "Mod_", x, 5, 70);
                 grid.Children.Add(mtb2);
 
                 // Mod3s
-                var mtb3 = this.GenerateGridTextBox(item.Modifier3Value, item.Modifier3Address, "Mod_", x, 5, 70);
+                var mtb3 = this.GenerateGridTextBox(item.Modifier3Value, item.Modifier3Address, "Mod_", x, 6, 70);
                 grid.Children.Add(mtb3);
 
                 // Mod4
-                var mtb4 = this.GenerateGridTextBox(item.Modifier4Value, item.Modifier4Address, "Mod_", x, 6, 70);
+                var mtb4 = this.GenerateGridTextBox(item.Modifier4Value, item.Modifier4Address, "Mod_", x, 7, 70);
                 grid.Children.Add(mtb4);
 
                 // Mod5
-                var mtb5 = this.GenerateGridTextBox(item.Modifier5Value, item.Modifier5Address, "Mod_", x, 7, 70);
+                var mtb5 = this.GenerateGridTextBox(item.Modifier5Value, item.Modifier5Address, "Mod_", x, 8, 70);
                 grid.Children.Add(mtb5);
 
-                // dropdown
-                /*
-                var test = new ComboBox
-                               {
-                                   Name = "CbName_" + item.NameStartHex, 
-                                   ItemsSource = this.weaponList, 
-                                   Width = 150, 
-                                   Height = 25, 
-                                   SelectedValue = item.Name
-                               };
-                Grid.SetRow(test, x);
-                Grid.SetColumn(test, 7);
-                grid.Children.Add(test);
-                */
                 x++;
             }
 
@@ -1271,9 +1279,27 @@
                     this.codes.Add(0x00000000);
                 }
 
+                if (cheats.Contains(Cheat.Whips))
+                {
+                    this.codes.Add(0x00000000);
+                    this.codes.Add(0x4011124F);
+                    this.codes.Add(0x00000003);
+                    this.codes.Add(0x00000000);
+
+                    this.codes.Add(0x00000000);
+                    this.codes.Add(0x44AFFA8F);
+                    this.codes.Add(0x00000003);
+                    this.codes.Add(0x00000000);
+
+                    this.codes.Add(0x00000000);
+                    this.codes.Add(0x47558581);
+                    this.codes.Add(0x00000003);
+                    this.codes.Add(0x00000000);
+                }
+
                 // Write our selected codes
                 var ms = new MemoryStream();
-                foreach (var code in codes)
+                foreach (var code in this.codes)
                 {
                     var b = BitConverter.GetBytes(code);
                     ms.Write(b.Reverse().ToArray(), 0, 4);
@@ -1532,7 +1558,8 @@
 
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(210) }); // Name
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(150) }); // Id
-            grid.ColumnDefinitions.Add(new ColumnDefinition());
+            grid.ColumnDefinitions.Add(new ColumnDefinition()); // Value
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(40) }); // Page
 
             grid.RowDefinitions.Add(new RowDefinition());
 
@@ -1571,6 +1598,18 @@
             Grid.SetColumn(valueHeader, 2);
             grid.Children.Add(valueHeader);
 
+            var pageHeader = new TextBlock
+            {
+                Text = "Page",
+                FontSize = 14,
+                FontWeight = FontWeights.Bold,
+                HorizontalAlignment = HorizontalAlignment.Center
+            };
+            Grid.SetRow(pageHeader, 0);
+            Grid.SetColumn(pageHeader, 3);
+            grid.Children.Add(pageHeader);
+
+            grid.ColumnDefinitions.Add(new ColumnDefinition());
             grid.ColumnDefinitions.Add(new ColumnDefinition());
             grid.ColumnDefinitions.Add(new ColumnDefinition());
             grid.ColumnDefinitions.Add(new ColumnDefinition());
@@ -1588,7 +1627,7 @@
 
                 if (tab == "Weapons" || tab == "Bows" || tab == "Shields")
                 {
-                    headerNames = new[] { "Mod Amount", "N/A", " Mod Type", "N/A", "N/A" };
+                    headerNames = new[] { "Mod Amt.", "N/A", " Mod Type", "N/A", "N/A" };
                 }
 
                 var header = new TextBlock
@@ -1599,7 +1638,7 @@
                     HorizontalAlignment = HorizontalAlignment.Center
                 };
                 Grid.SetRow(header, 0);
-                Grid.SetColumn(header, y + 3);
+                Grid.SetColumn(header, y + 4);
                 grid.Children.Add(header);
             }
 
