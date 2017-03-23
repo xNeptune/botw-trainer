@@ -268,7 +268,7 @@
             </TabItem>
 
             <TabItem Header="Credits" x:Name="Credits" Margin="0" Background="SeaGreen">
-                <StackPanel>
+                <WrapPanel>
                     <Label Content="Bully"></Label>
                     <Label Content="CosmoCortney"></Label>
                     <Label Content="5pmeternal"></Label>
@@ -285,7 +285,8 @@
                     <Label Content="awideen"></Label>
                     <Label Content="Paula"></Label>
                     <Label Content="mancoast"></Label>
-                </StackPanel>
+                    <Label Content="skoolzout1"></Label>
+                </WrapPanel>
             </TabItem>
 
             <TabItem Header="Error Log" x:Name="Error" Margin="0" Background="OrangeRed">
