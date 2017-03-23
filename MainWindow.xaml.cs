@@ -50,13 +50,13 @@
 
         private List<Item> items;
 
-        private List<uint> codes;
-
         private JToken json;
 
         private TcpConn tcpConn;
 
         private Gecko gecko;
+
+        private Codes codes;
 
         private int itemsFound;
 
@@ -69,26 +69,6 @@
             this.Loaded += this.MainWindowLoaded;
         }
 
-        private enum Cheat
-        {
-            Stamina = 0,
-            Health = 1,
-            //Run = 2,
-            Rupees = 3,
-            MoonJump = 4,
-            WeaponInv = 5,
-            BowInv = 6,
-            ShieldInv = 7,
-            Speed = 8,
-            Mon = 9,
-            Urbosa = 10,
-            Revali = 11,
-            Daruk = 12,
-            //Keys = 13,
-            Bombs = 14,
-            Whips = 15
-        }
-
         private bool HasChanged
         {
             get
@@ -99,11 +79,14 @@
 
         private void MainWindowLoaded(object sender, RoutedEventArgs e)
         {
+            // Testing
+            // this.TabControl.IsEnabled = true;
+
             this.Title = string.Format("{0} v{1}", this.Title, Settings.Default.CurrentVersion);
 
             this.items = new List<Item>();
 
-            this.codes = new List<uint>();
+            this.codes = new Codes(this);
 
             var client = new WebClient
             {
@@ -385,8 +368,8 @@
                     {
                         var newName = Encoding.Default.GetBytes(tb.Text);
 
-                        var add = uint.Parse(tag.ToString(), NumberStyles.HexNumber);
-                        var thisItem = this.items.Single(i => i.NameStart == add);
+                        var address = uint.Parse(tag.ToString(), NumberStyles.HexNumber);
+                        var thisItem = this.items.Single(i => i.NameStart == address);
 
                         // clear current name
                         var zeros = new byte[36];
@@ -395,12 +378,12 @@
                             zeros[i] = 0x0;
                         }
 
-                        this.gecko.WriteBytes(add, zeros);
+                        this.gecko.WriteBytes(address, zeros);
 
                         uint x = 0x0;
                         foreach (var b in newName)
                         {
-                            this.gecko.WriteBytes(add + x, new[] { b });
+                            this.gecko.WriteBytes(address + x, new[] { b });
                             x = x + 0x1;
                         }
 
@@ -452,7 +435,7 @@
             {
                 this.LogError(ex, "Attempting to update changed fields");
             }
-#endregion
+            #endregion
 
             #region Codes
             try
@@ -460,82 +443,36 @@
                 // For the 'Codes' tab we mimic JGecko and send cheats to codehandler
                 if (Equals(tab, this.Codes))
                 {
-                    var selected = new List<Cheat>();
+                    // Disable codehandler before we modify
+                    this.gecko.WriteUInt(CodeHandlerEnabled, 0x00000000);
 
-                    if (Stamina.IsChecked == true)
+                    // clear current codes
+                    var array = new byte[4864];
+                    Array.Clear(array, 0, array.Length);
+                    this.gecko.WriteBytes(CodeHandlerStart, array);
+
+                    var codelist = this.codes.CreateCodeList();
+
+                    // Write our selected codes to mem stream
+                    var ms = new MemoryStream();
+                    foreach (var code in codelist)
                     {
-                        selected.Add(Cheat.Stamina);
+                        var b = BitConverter.GetBytes(code);
+                        ms.Write(b.Reverse().ToArray(), 0, 4);
                     }
 
-                    if (Health.IsChecked == true)
+                    var bytes = ms.ToArray();
+                    this.gecko.WriteBytes(CodeHandlerStart, bytes);
+
+                    // Re-enable codehandler
+                    this.gecko.WriteUInt(CodeHandlerEnabled, 0x00000001);
+
+                    // Save controller choice
+                    if (Controller.SelectedValue.ToString() != Settings.Default.Controller)
                     {
-                        selected.Add(Cheat.Health);
+                        Settings.Default.Controller = Controller.SelectedValue.ToString();
+                        Settings.Default.Save();
                     }
-
-                    if (Rupees.IsChecked == true)
-                    {
-                        selected.Add(Cheat.Rupees);
-                    }
-
-                    if (Mon.IsChecked == true)
-                    {
-                        selected.Add(Cheat.Mon);
-                    }
-
-                    if (Speed.IsChecked == true)
-                    {
-                        selected.Add(Cheat.Speed);
-                    }
-
-                    if (MoonJump.IsChecked == true)
-                    {
-                        selected.Add(Cheat.MoonJump);
-                    }
-
-                    if (WeaponSlots.IsChecked == true)
-                    {
-                        selected.Add(Cheat.WeaponInv);
-                    }
-
-                    if (BowSlots.IsChecked == true)
-                    {
-                        selected.Add(Cheat.BowInv);
-                    }
-
-                    if (ShieldSlots.IsChecked == true)
-                    {
-                        selected.Add(Cheat.ShieldInv);
-                    }
-
-                    if (Urbosa.IsChecked == true)
-                    {
-                        selected.Add(Cheat.Urbosa);
-                    }
-
-                    if (Revali.IsChecked == true)
-                    {
-                        selected.Add(Cheat.Revali);
-                    }
-
-                    if (Daruk.IsChecked == true)
-                    {
-                        selected.Add(Cheat.Daruk);
-                    }
-
-                    if (BombTime.IsChecked == true)
-                    {
-                        selected.Add(Cheat.Bombs);
-                    }
-
-                    if (HorseWhips.IsChecked == true)
-                    {
-                        selected.Add(Cheat.Whips);
-                    }
-
-                    this.SetCheats(selected);
-
-                    Settings.Default.Controller = Controller.SelectedValue.ToString();
-                    Settings.Default.Save();
                 }
 
                 this.DebugData();
@@ -553,6 +490,11 @@
             #endregion
 
             return true;
+        }
+
+        private async void EnableCoordsOnChecked(object sender, RoutedEventArgs e)
+        {
+            await Task.Run(() => this.LoadCoords());
         }
 
         private async void LoadClick(object sender, RoutedEventArgs e)
@@ -592,6 +534,7 @@
                     CurrentUrbosa.Text = this.gecko.GetInt(0x3FCFFA80).ToString(CultureInfo.InvariantCulture);
                     CurrentRevali.Text = this.gecko.GetInt(0x3FD5ED90).ToString(CultureInfo.InvariantCulture);
                     CurrentDaruk.Text = this.gecko.GetInt(0x3FD50088).ToString(CultureInfo.InvariantCulture);
+                    CurrentTime.Text = this.GetCurrentTime().ToString();
 
                     this.Notification.Content = string.Format("Items found: {0}", this.itemsFound);
 
@@ -1007,295 +950,6 @@
              */
         }
 
-        private void SetCheats(ICollection<Cheat> cheats)
-        {
-            try
-            {
-                // Disable codehandler before we modify
-                this.gecko.WriteUInt(CodeHandlerEnabled, 0x00000000);
-
-                // clear current codes
-                var array = new byte[4864];
-                Array.Clear(array, 0, array.Length);
-                this.gecko.WriteBytes(CodeHandlerStart, array);
-                this.codes.Clear();
-
-                if (cheats.Contains(Cheat.Stamina))
-                {
-                    // Max 453B8000
-                    var value = uint.Parse(CurrentStamina.Text, NumberStyles.HexNumber);
-
-                    this.codes.Add(0x00020000);
-                    this.codes.Add(0x42439594);
-                    this.codes.Add(value);
-                    this.codes.Add(0x00000000);
-
-                    this.codes.Add(0x00020000);
-                    this.codes.Add(0x42439598);
-                    this.codes.Add(value);
-                    this.codes.Add(0x00000000);
-                }
-
-                if (cheats.Contains(Cheat.Health))
-                {
-                    var value = Convert.ToUInt32(CurrentHealth.Text);
-
-                    this.codes.Add(0x30000000);
-                    this.codes.Add(0x4225B4B0);
-                    this.codes.Add(0x43000000);
-                    this.codes.Add(0x46000000);
-                    this.codes.Add(0x00120430);
-                    this.codes.Add(value);
-                    this.codes.Add(0xD0000000);
-                    this.codes.Add(0xDEADCAFE);
-                }
-
-                if (cheats.Contains(Cheat.Speed))
-                {
-                    var value = uint.Parse(CbSpeed.SelectedValue.ToString(), NumberStyles.HexNumber);
-
-                    uint activator;
-                    if (this.Controller.SelectedValue.ToString() == "Pro")
-                    {
-                        activator = 0x112671AB;
-                    }
-                    else
-                    {
-                        activator = 0x102F48AB;
-                    }
-
-                    this.codes.Add(0x09000000);
-                    this.codes.Add(activator);
-                    this.codes.Add(0x00000080);
-                    this.codes.Add(0x00000000);
-                    this.codes.Add(0x00020000);
-                    this.codes.Add(0x439BF514);
-                    this.codes.Add(value);
-                    this.codes.Add(0x00000000);
-                    this.codes.Add(0xD0000000);
-                    this.codes.Add(0xDEADCAFE);
-
-                    this.codes.Add(0x06000000);
-                    this.codes.Add(activator);
-                    this.codes.Add(0x00000080);
-                    this.codes.Add(0x00000000);
-                    this.codes.Add(0x00020000);
-                    this.codes.Add(0x439BF514);
-                    this.codes.Add(0x3F800000);
-                    this.codes.Add(0x00000000);
-                    this.codes.Add(0xD0000000);
-                    this.codes.Add(0xDEADCAFE);
-                }
-
-                if (cheats.Contains(Cheat.Rupees))
-                {
-                    var value = Convert.ToUInt32(CurrentRupees.Text);
-
-                    this.codes.Add(0x00020000);
-                    this.codes.Add(0x3FC92D10);
-                    this.codes.Add(value);
-                    this.codes.Add(0x00000000);
-
-                    this.codes.Add(0x00020000);
-                    this.codes.Add(0x4010AA0C);
-                    this.codes.Add(value);
-                    this.codes.Add(0x00000000);
-                }
-
-                if (cheats.Contains(Cheat.Mon))
-                {
-                    var value = Convert.ToUInt32(CurrentMon.Text);
-
-                    this.codes.Add(0x00020000);
-                    this.codes.Add(0x3FD41158);
-                    this.codes.Add(value);
-                    this.codes.Add(0x00000000);
-
-                    this.codes.Add(0x00020000);
-                    this.codes.Add(0x4010B14C);
-                    this.codes.Add(value);
-                    this.codes.Add(0x00000000);
-                }
-
-                if (cheats.Contains(Cheat.MoonJump))
-                {
-                    uint button;
-                    uint activator;
-                    if (this.Controller.SelectedValue.ToString() == "Pro")
-                    {
-                        activator = 0x112671AB;
-                        button = 0x00000008;
-                    }
-                    else
-                    {
-                        activator = 0x102F48AA;
-                        button = 0x00000020;
-                    }
-
-                    this.codes.Add(0x09000000);
-                    this.codes.Add(activator);
-                    this.codes.Add(button);
-                    this.codes.Add(0x00000000);
-                    this.codes.Add(0x00020000);
-                    this.codes.Add(0x439BF528);
-                    this.codes.Add(0xBE800000);
-                    this.codes.Add(0x00000000);
-                    this.codes.Add(0xD0000000);
-                    this.codes.Add(0xDEADCAFE);
-
-                    this.codes.Add(0x06000000);
-                    this.codes.Add(activator);
-                    this.codes.Add(button);
-                    this.codes.Add(0x00000000);
-                    this.codes.Add(0x00020000);
-                    this.codes.Add(0x439BF528);
-                    this.codes.Add(0x3F800000);
-                    this.codes.Add(0x00000000);
-                    this.codes.Add(0xD0000000);
-                    this.codes.Add(0xDEADCAFE);
-                }
-
-                if (cheats.Contains(Cheat.WeaponInv))
-                {
-                    var value = Convert.ToUInt32(CurrentWeaponSlots.Text);
-
-                    this.codes.Add(0x00020000);
-                    this.codes.Add(0x3FCFB498);
-                    this.codes.Add(value);
-                    this.codes.Add(0x00000000);
-
-                    this.codes.Add(0x00020000);
-                    this.codes.Add(0x4010B34C);
-                    this.codes.Add(value);
-                    this.codes.Add(0x00000000);
-                }
-
-                if (cheats.Contains(Cheat.BowInv))
-                {
-                    var value = Convert.ToUInt32(CurrentBowSlots.Text);
-
-                    this.codes.Add(0x00020000);
-                    this.codes.Add(0x3FD4BB50);
-                    this.codes.Add(value);
-                    this.codes.Add(0x00000000);
-
-                    this.codes.Add(0x00020000);
-                    this.codes.Add(0x4011126C);
-                    this.codes.Add(value);
-                    this.codes.Add(0x00000000);
-                }
-
-                if (cheats.Contains(Cheat.ShieldInv))
-                {
-                    var value = Convert.ToUInt32(CurrentShieldSlots.Text);
-
-                    this.codes.Add(0x00020000);
-                    this.codes.Add(0x3FCC0B40);
-                    this.codes.Add(value);
-                    this.codes.Add(0x00000000);
-
-                    this.codes.Add(0x00020000);
-                    this.codes.Add(0x4011128C);
-                    this.codes.Add(value);
-                    this.codes.Add(0x00000000);
-                }
-
-                if (cheats.Contains(Cheat.Urbosa))
-                {
-                    var value = Convert.ToUInt32(CurrentUrbosa.Text);
-
-                    this.codes.Add(0x00020000);
-                    this.codes.Add(0x3FCFFA80);
-                    this.codes.Add(value);
-                    this.codes.Add(0x00000000);
-
-                    this.codes.Add(0x00020000);
-                    this.codes.Add(0x4011BA2C);
-                    this.codes.Add(value);
-                    this.codes.Add(0x00000000);
-                }
-
-                if (cheats.Contains(Cheat.Revali))
-                {
-                    var value = Convert.ToUInt32(CurrentRevali.Text);
-
-                    this.codes.Add(0x00020000);
-                    this.codes.Add(0x3FD5ED90);
-                    this.codes.Add(value);
-                    this.codes.Add(0x00000000);
-
-                    this.codes.Add(0x00020000);
-                    this.codes.Add(0x4011BA0C);
-                    this.codes.Add(value);
-                    this.codes.Add(0x00000000);
-                }
-
-                if (cheats.Contains(Cheat.Daruk))
-                {
-                    var value = Convert.ToUInt32(CurrentDaruk.Text);
-
-                    this.codes.Add(0x00020000);
-                    this.codes.Add(0x3FD50088);
-                    this.codes.Add(value);
-                    this.codes.Add(0x00000000);
-
-                    this.codes.Add(0x00020000);
-                    this.codes.Add(0x4011B9EC);
-                    this.codes.Add(value);
-                    this.codes.Add(0x00000000);
-                }
-
-                if (cheats.Contains(Cheat.Bombs))
-                {
-                    this.codes.Add(0x00020000);
-                    this.codes.Add(0x4383DA34);
-                    this.codes.Add(0x42B70000);
-                    this.codes.Add(0x00000000);
-
-                    this.codes.Add(0x00020000);
-                    this.codes.Add(0x4383DA4C);
-                    this.codes.Add(0x42B70000);
-                    this.codes.Add(0x00000000);
-                }
-
-                if (cheats.Contains(Cheat.Whips))
-                {
-                    this.codes.Add(0x00000000);
-                    this.codes.Add(0x4011124F);
-                    this.codes.Add(0x00000003);
-                    this.codes.Add(0x00000000);
-
-                    this.codes.Add(0x00000000);
-                    this.codes.Add(0x44AFFA8F);
-                    this.codes.Add(0x00000003);
-                    this.codes.Add(0x00000000);
-
-                    this.codes.Add(0x00000000);
-                    this.codes.Add(0x47558581);
-                    this.codes.Add(0x00000003);
-                    this.codes.Add(0x00000000);
-                }
-
-                // Write our selected codes
-                var ms = new MemoryStream();
-                foreach (var code in this.codes)
-                {
-                    var b = BitConverter.GetBytes(code);
-                    ms.Write(b.Reverse().ToArray(), 0, 4);
-                }
-
-                var bytes = ms.ToArray();
-                this.gecko.WriteBytes(CodeHandlerStart, bytes);
-
-                // Re-enable codehandler
-                this.gecko.WriteUInt(CodeHandlerEnabled, 0x00000001);
-            }
-            catch (Exception ex)
-            {
-                this.LogError(ex, "Set Cheats");
-            }
-        }
-
         private void ToggleControls(string state)
         {
             if (state == "Connected")
@@ -1385,33 +1039,6 @@
             Progress.Value = percent;
         }
 
-        public void LogError(Exception ex, string more = null)
-        {
-            var paragraph = new Paragraph
-            {
-                FontSize = 14,
-                Margin = new Thickness(0),
-                Padding = new Thickness(0),
-                LineHeight = 14
-            };
-
-            if (more != null)
-            {
-                paragraph.Inlines.Add(more + Environment.NewLine);
-            }
-
-            paragraph.Inlines.Add(ex.Message);
-            paragraph.Inlines.Add(ex.StackTrace);
-
-            ErrorLog.Document.Blocks.Add(paragraph);
-
-            ErrorLog.Document.Blocks.Add(new Paragraph());
-
-            TabControl.IsEnabled = true;
-
-            MessageBox.Show("Error caught. Check Error Tab");
-        }
-
         private void TabControlSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (this.Save == null)
@@ -1491,6 +1118,33 @@
         {
             Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
             e.Handled = true;
+        }
+
+        public void LogError(Exception ex, string more = null)
+        {
+            var paragraph = new Paragraph
+            {
+                FontSize = 14,
+                Margin = new Thickness(0),
+                Padding = new Thickness(0),
+                LineHeight = 14
+            };
+
+            if (more != null)
+            {
+                paragraph.Inlines.Add(more + Environment.NewLine);
+            }
+
+            paragraph.Inlines.Add(ex.Message);
+            paragraph.Inlines.Add(ex.StackTrace);
+
+            ErrorLog.Document.Blocks.Add(paragraph);
+
+            ErrorLog.Document.Blocks.Add(new Paragraph());
+
+            TabControl.IsEnabled = true;
+
+            MessageBox.Show("Error caught. Check Error Tab");
         }
 
         private TextBox GenerateGridTextBox(string value, string field, string type, int x, int col, int width = 75)
@@ -1649,9 +1303,24 @@
             }
         }
 
-        private async void EnableCoordsOnChecked(object sender, RoutedEventArgs e)
+        private int GetCurrentTime()
         {
-            await Task.Run(() => this.LoadCoords());
+            try
+            {
+                var timePointer = this.gecko.GetUInt(0x407AABB0);
+
+                var timeFloat = Convert.ToSingle(this.gecko.GetUInt(timePointer + 0x9C));
+
+                var hour = timeFloat / 7.5;
+
+                return 1;
+            }
+            catch (Exception ex)
+            {
+                this.LogError(ex, "Time");
+            }
+
+            return 1;
         }
     }
 }

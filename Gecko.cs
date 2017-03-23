@@ -1,85 +1,83 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-
-namespace BotwTrainer
+﻿namespace BotwTrainer
 {
-    public enum Command
-    {
-        COMMAND_WRITE_8 = 0x01,
-
-        COMMAND_WRITE_16 = 0x02,
-
-        COMMAND_WRITE_32 = 0x03,
-
-        COMMAND_READ_MEMORY = 0x04,
-
-        COMMAND_READ_MEMORY_KERNEL = 0x05,
-
-        COMMAND_VALIDATE_ADDRESS_RANGE = 0x06,
-
-        COMMAND_MEMORY_DISASSEMBLE = 0x08,
-
-        COMMAND_READ_MEMORY_COMPRESSED = 0x09,
-
-        COMMAND_KERNEL_WRITE = 0x0B,
-
-        COMMAND_KERNEL_READ = 0x0C,
-
-        COMMAND_TAKE_SCREEN_SHOT = 0x0D,
-
-        COMMAND_UPLOAD_MEMORY = 0x41,
-
-        COMMAND_SERVER_STATUS = 0x50,
-
-        COMMAND_GET_DATA_BUFFER_SIZE = 0x51,
-
-        COMMAND_READ_FILE = 0x52,
-
-        COMMAND_READ_DIRECTORY = 0x53,
-
-        COMMAND_REPLACE_FILE = 0x54,
-
-        COMMAND_GET_CODE_HANDLER_ADDRESS = 0x55,
-
-        COMMAND_READ_THREADS = 0x56,
-
-        COMMAND_ACCOUNT_IDENTIFIER = 0x57,
-
-        COMMAND_WRITE_SCREEN = 0x58,
-
-        COMMAND_FOLLOW_POINTER = 0x60,
-
-        COMMAND_RPC = 0x70,
-
-        COMMAND_GET_SYMBOL = 0x71,
-
-        COMMAND_MEMORY_SEARCH = 0x73,
-
-        COMMAND_SERVER_VERSION = 0x99,
-
-        COMMAND_OS_VERSION = 0x9A,
-
-        COMMAND_RUN_KERNEL_COPY_SERVICE = 0xCD
-    }
-
+    using System;
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Text;
 
     public class Gecko
     {
-        private readonly uint _maximumMemoryChunkSize;
+        private readonly uint maximumMemoryChunkSize;
 
-        private readonly TcpConn _tcpConn;
+        private readonly TcpConn tcpConn;
 
-        private readonly MainWindow _mainWindow;
+        private readonly MainWindow mainWindow;
 
         public Gecko(TcpConn tcpConn, MainWindow mainWindow)
         {
-            _tcpConn = tcpConn;
-            _maximumMemoryChunkSize = 0x400;
-            _mainWindow = mainWindow;
-            _maximumMemoryChunkSize = ReadDataBufferSize();
+            this.tcpConn = tcpConn;
+            this.mainWindow = mainWindow;
+            this.maximumMemoryChunkSize = this.ReadDataBufferSize();
+        }
+
+        private enum Command
+        {
+            COMMAND_WRITE_8 = 0x01,
+
+            COMMAND_WRITE_16 = 0x02,
+
+            COMMAND_WRITE_32 = 0x03,
+
+            COMMAND_READ_MEMORY = 0x04,
+
+            COMMAND_READ_MEMORY_KERNEL = 0x05,
+
+            COMMAND_VALIDATE_ADDRESS_RANGE = 0x06,
+
+            COMMAND_MEMORY_DISASSEMBLE = 0x08,
+
+            COMMAND_READ_MEMORY_COMPRESSED = 0x09,
+
+            COMMAND_KERNEL_WRITE = 0x0B,
+
+            COMMAND_KERNEL_READ = 0x0C,
+
+            COMMAND_TAKE_SCREEN_SHOT = 0x0D,
+
+            COMMAND_UPLOAD_MEMORY = 0x41,
+
+            COMMAND_SERVER_STATUS = 0x50,
+
+            COMMAND_GET_DATA_BUFFER_SIZE = 0x51,
+
+            COMMAND_READ_FILE = 0x52,
+
+            COMMAND_READ_DIRECTORY = 0x53,
+
+            COMMAND_REPLACE_FILE = 0x54,
+
+            COMMAND_GET_CODE_HANDLER_ADDRESS = 0x55,
+
+            COMMAND_READ_THREADS = 0x56,
+
+            COMMAND_ACCOUNT_IDENTIFIER = 0x57,
+
+            COMMAND_WRITE_SCREEN = 0x58,
+
+            COMMAND_FOLLOW_POINTER = 0x60,
+
+            COMMAND_RPC = 0x70,
+
+            COMMAND_GET_SYMBOL = 0x71,
+
+            COMMAND_MEMORY_SEARCH = 0x73,
+
+            COMMAND_SERVER_VERSION = 0x99,
+
+            COMMAND_OS_VERSION = 0x9A,
+
+            COMMAND_RUN_KERNEL_COPY_SERVICE = 0xCD
         }
 
         public string ByteToHexBitFiddle(byte[] bytes)
@@ -92,7 +90,7 @@ namespace BotwTrainer
             }
             catch (OverflowException overflowException)
             {
-                _mainWindow.LogError(overflowException);
+                this.mainWindow.LogError(overflowException);
                 return string.Empty;
             }
             var c = new char[count * 2];
@@ -109,11 +107,11 @@ namespace BotwTrainer
 
         public int GetOsVersion()
         {
-            SendCommand(Command.COMMAND_OS_VERSION);
+            this.SendCommand(Command.COMMAND_OS_VERSION);
 
             uint bytesRead = 0;
             var response = new byte[4];
-            _tcpConn.Read(response, 4, ref bytesRead);
+            this.tcpConn.Read(response, 4, ref bytesRead);
 
             uint os;
 
@@ -123,17 +121,17 @@ namespace BotwTrainer
             }
             catch (ArgumentOutOfRangeException argumentOutOfRangeException)
             {
-                _mainWindow.LogError(argumentOutOfRangeException);
+                this.mainWindow.LogError(argumentOutOfRangeException);
                 return -1;
             }
             catch (ArgumentNullException argumentNullException)
             {
-                _mainWindow.LogError(argumentNullException);
+                this.mainWindow.LogError(argumentNullException);
                 return -1;
             }
             catch (ArgumentException argumentException)
             {
-                _mainWindow.LogError(argumentException);
+                this.mainWindow.LogError(argumentException);
                 return -1;
             }
 
@@ -142,11 +140,11 @@ namespace BotwTrainer
 
         public string GetServerVersion()
         {
-            SendCommand(Command.COMMAND_SERVER_VERSION);
+            this.SendCommand(Command.COMMAND_SERVER_VERSION);
 
             uint bytesRead = 0;
             var response = new byte[4];
-            _tcpConn.Read(response, 4, ref bytesRead);
+            this.tcpConn.Read(response, 4, ref bytesRead);
 
             uint length;
 
@@ -156,12 +154,12 @@ namespace BotwTrainer
             }
             catch (ArgumentException argumentException)
             {
-                _mainWindow.LogError(argumentException);
+                this.mainWindow.LogError(argumentException);
                 return string.Empty;
             }
 
             response = new byte[length];
-            _tcpConn.Read(response, length, ref bytesRead);
+            this.tcpConn.Read(response, length, ref bytesRead);
 
             string server;
             try
@@ -170,7 +168,7 @@ namespace BotwTrainer
             }
             catch (ArgumentException argumentException)
             {
-                _mainWindow.LogError(argumentException);
+                this.mainWindow.LogError(argumentException);
                 return string.Empty;
             }
 
@@ -179,11 +177,11 @@ namespace BotwTrainer
 
         public int GetServerStatus()
         {
-            SendCommand(Command.COMMAND_SERVER_STATUS);
+            this.SendCommand(Command.COMMAND_SERVER_STATUS);
 
             uint bytesRead = 0;
             var response = new byte[1];
-            _tcpConn.Read(response, 1, ref bytesRead);
+            this.tcpConn.Read(response, 1, ref bytesRead);
 
             var status = response[0];
 
@@ -192,7 +190,7 @@ namespace BotwTrainer
 
         public int GetInt(uint address)
         {
-            var bytes = ReadBytes(address, 0x4);
+            var bytes = this.ReadBytes(address, 0x4);
             int value;
 
             try
@@ -202,17 +200,17 @@ namespace BotwTrainer
             }
             catch (ArgumentNullException argumentNullException)
             {
-                _mainWindow.LogError(argumentNullException);
+                this.mainWindow.LogError(argumentNullException);
                 return -1;
             }
             catch (ArgumentException argumentException)
             {
-                _mainWindow.LogError(argumentException);
+                this.mainWindow.LogError(argumentException);
                 return -1;
             }
             catch (RankException rankException)
             {
-                _mainWindow.LogError(rankException);
+                this.mainWindow.LogError(rankException);
                 return -1;
             }
 
@@ -221,27 +219,27 @@ namespace BotwTrainer
 
         public short GetShort(uint address)
         {
-            var bytes = ReadBytes(address, 0x2);
+            var bytes = this.ReadBytes(address, 0x2);
             short value;
 
             try
             {
                 Array.Reverse(bytes);
-                value = (short) (!bytes.Any() ? 0 : BitConverter.ToInt16(bytes, 0));
+                value = (short)(!bytes.Any() ? 0 : BitConverter.ToInt16(bytes, 0));
             }
             catch (ArgumentNullException argumentNullException)
             {
-                _mainWindow.LogError(argumentNullException);
+                this.mainWindow.LogError(argumentNullException);
                 return -1;
             }
             catch (ArgumentException argumentException)
             {
-                _mainWindow.LogError(argumentException);
+                this.mainWindow.LogError(argumentException);
                 return -1;
             }
             catch (RankException rankException)
             {
-                _mainWindow.LogError(rankException);
+                this.mainWindow.LogError(rankException);
                 return -1;
             }
 
@@ -250,7 +248,7 @@ namespace BotwTrainer
 
         public uint GetUInt(uint address)
         {
-            var bytes = ReadBytes(address, 0x4);
+            var bytes = this.ReadBytes(address, 0x4);
             uint value;
 
             try
@@ -260,17 +258,17 @@ namespace BotwTrainer
             }
             catch (ArgumentNullException argumentNullException)
             {
-                _mainWindow.LogError(argumentNullException);
+                this.mainWindow.LogError(argumentNullException);
                 return 1;
             }
             catch (ArgumentException argumentException)
             {
-                _mainWindow.LogError(argumentException);
+                this.mainWindow.LogError(argumentException);
                 return 1;
             }
             catch (RankException rankException)
             {
-                _mainWindow.LogError(rankException);
+                this.mainWindow.LogError(rankException);
                 return 1;
             }
 
@@ -279,7 +277,7 @@ namespace BotwTrainer
 
         public string GetString(uint address)
         {
-            var bytes = ReadBytes(address, 0x4);
+            var bytes = this.ReadBytes(address, 0x4);
             string value;
 
             try
@@ -288,7 +286,7 @@ namespace BotwTrainer
             }
             catch (ArgumentException argumentException)
             {
-                _mainWindow.LogError(argumentException);
+                this.mainWindow.LogError(argumentException);
                 return string.Empty;
             }
 
@@ -299,11 +297,11 @@ namespace BotwTrainer
         {
             try
             {
-                RequestBytes(address, length);
+                this.RequestBytes(address, length);
 
                 uint bytesRead = 0;
                 var response = new byte[1];
-                _tcpConn.Read(response, 1, ref bytesRead);
+                this.tcpConn.Read(response, 1, ref bytesRead);
 
                 var ms = new MemoryStream();
 
@@ -319,14 +317,14 @@ namespace BotwTrainer
                     uint chunkSize = remainingBytesCount;
 
                     // Don't read more bytes than the remote buffer can hold
-                    if (chunkSize > _maximumMemoryChunkSize)
+                    if (chunkSize > this.maximumMemoryChunkSize)
                     {
-                        chunkSize = _maximumMemoryChunkSize;
+                        chunkSize = this.maximumMemoryChunkSize;
                     }
 
                     var buffer = new byte[chunkSize];
                     bytesRead = 0;
-                    _tcpConn.Read(buffer, chunkSize, ref bytesRead);
+                    this.tcpConn.Read(buffer, chunkSize, ref bytesRead);
 
                     ms.Write(buffer, 0, (int)chunkSize);
 
@@ -337,7 +335,7 @@ namespace BotwTrainer
             }
             catch (Exception ex)
             {
-                _mainWindow.LogError(ex);
+                this.mainWindow.LogError(ex);
             }
 
             return null;
@@ -345,85 +343,84 @@ namespace BotwTrainer
 
         public void WriteUInt(uint address, uint value)
         {
-            byte[] bytes = BitConverter.GetBytes(value);
+            var bytes = BitConverter.GetBytes(value);
             try
             {
                 Array.Reverse(bytes);
             }
             catch (ArgumentNullException argumentNullException)
             {
-                _mainWindow.LogError(argumentNullException);
+                this.mainWindow.LogError(argumentNullException);
             }
             catch (RankException rankException)
             {
-                _mainWindow.LogError(rankException);
+                this.mainWindow.LogError(rankException);
             }
 
-            WriteBytes(address, bytes);
+            this.WriteBytes(address, bytes);
         }
 
         public void WriteInt(uint address, int value)
         {
-            byte[] bytes = BitConverter.GetBytes(value);
+            var bytes = BitConverter.GetBytes(value);
             try
             {
                 Array.Reverse(bytes);
             }
             catch (ArgumentNullException argumentNullException)
             {
-                _mainWindow.LogError(argumentNullException);
+                this.mainWindow.LogError(argumentNullException);
             }
             catch (RankException rankException)
             {
-                _mainWindow.LogError(rankException);
+                this.mainWindow.LogError(rankException);
             }
 
-            WriteBytes(address, bytes);
+            this.WriteBytes(address, bytes);
         }
 
         public void WriteShort(uint address, short value)
         {
-            byte[] bytes = BitConverter.GetBytes(value);
+            var bytes = BitConverter.GetBytes(value);
             try
             {
                 Array.Reverse(bytes);
             }
             catch (ArgumentNullException argumentNullException)
             {
-                _mainWindow.LogError(argumentNullException);
+                this.mainWindow.LogError(argumentNullException);
             }
             catch (RankException rankException)
             {
-                _mainWindow.LogError(rankException);
+                this.mainWindow.LogError(rankException);
             }
 
-            WriteBytes(address, bytes);
+            this.WriteBytes(address, bytes);
         }
-
 
         public void WriteFloat(uint address, float value)
         {
-            byte[] bytes = BitConverter.GetBytes(value);
+            var bytes = BitConverter.GetBytes(value);
             try
             {
                 Array.Reverse(bytes);
             }
             catch (ArgumentNullException argumentNullException)
             {
-                _mainWindow.LogError(argumentNullException);
+                this.mainWindow.LogError(argumentNullException);
             }
             catch (RankException rankException)
             {
-                _mainWindow.LogError(rankException);
+                this.mainWindow.LogError(rankException);
             }
 
-            WriteBytes(address, bytes);
+            this.WriteBytes(address, bytes);
         }
 
         public void WriteBytes(uint address, byte[] bytes)
         {
-            var partitionedBytes = Partition(bytes, _maximumMemoryChunkSize);
-            WritePartitionedBytes(address, partitionedBytes);
+            var partitionedBytes = Partition(bytes, this.maximumMemoryChunkSize);
+            this.WritePartitionedBytes(address, partitionedBytes);
         }
 
         private static IEnumerable<byte[]> Partition(byte[] bytes, uint chunkSize)
@@ -452,24 +449,24 @@ namespace BotwTrainer
         private void SendCommand(Command command)
         {
             uint bytesWritten = 0;
-            _tcpConn.Write(new[] { (byte)command }, 1, ref bytesWritten);
+            this.tcpConn.Write(new[] { (byte)command }, 1, ref bytesWritten);
         }
 
         private void RequestBytes(uint address, uint length)
         {
             try
             {
-                SendCommand(Command.COMMAND_READ_MEMORY);
+                this.SendCommand(Command.COMMAND_READ_MEMORY);
 
                 uint bytesRead = 0;
                 var bytes = BitConverter.GetBytes(ByteSwap.Swap(address));
                 var bytes2 = BitConverter.GetBytes(ByteSwap.Swap(address + length));
-                _tcpConn.Write(bytes, 4, ref bytesRead);
-                _tcpConn.Write(bytes2, 4, ref bytesRead);
+                this.tcpConn.Write(bytes, 4, ref bytesRead);
+                this.tcpConn.Write(bytes2, 4, ref bytesRead);
             }
             catch (Exception ex)
             {
-                _mainWindow.LogError(ex);
+                this.mainWindow.LogError(ex);
             }
         }
 
@@ -480,20 +477,20 @@ namespace BotwTrainer
             
             try
             {
-                SendCommand(Command.COMMAND_UPLOAD_MEMORY);
+                this.SendCommand(Command.COMMAND_UPLOAD_MEMORY);
 
                 uint bytesRead = 0;
                 var start = BitConverter.GetBytes(ByteSwap.Swap(address));
                 var end = BitConverter.GetBytes(ByteSwap.Swap(address + length));
 
-                _tcpConn.Write(start, 4, ref bytesRead);
-                _tcpConn.Write(end, 4, ref bytesRead);
+                this.tcpConn.Write(start, 4, ref bytesRead);
+                this.tcpConn.Write(end, 4, ref bytesRead);
 
-                address = enumerable.Aggregate(address, UploadBytes);
+                enumerable.Aggregate(address, this.UploadBytes);
             }
             catch (Exception ex)
             {
-                _mainWindow.LogError(ex);
+                this.mainWindow.LogError(ex);
             }
         }
         
@@ -503,18 +500,18 @@ namespace BotwTrainer
 
             uint endAddress = address + (uint)bytes.Length;
             uint bytesRead = 0;
-            _tcpConn.Write(bytes, length, ref bytesRead);
+            this.tcpConn.Write(bytes, length, ref bytesRead);
             
             return endAddress;
         }
         
         private uint ReadDataBufferSize()
         {
-            SendCommand(Command.COMMAND_GET_DATA_BUFFER_SIZE);
+            this.SendCommand(Command.COMMAND_GET_DATA_BUFFER_SIZE);
 
             uint bytesRead = 0;
             var response = new byte[4];
-            _tcpConn.Read(response, 4, ref bytesRead);
+            this.tcpConn.Read(response, 4, ref bytesRead);
 
             var buffer = ByteSwap.Swap(BitConverter.ToUInt32(response, 0));
 

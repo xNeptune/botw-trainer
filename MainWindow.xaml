@@ -120,12 +120,17 @@
                     <CheckBox x:Name="ShieldSlots" Margin="0" Canvas.Left="511" Canvas.Top="244" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
                     <TextBox x:Name="CurrentShieldSlots" Height="25" Width="30" Margin="0" Canvas.Left="551" Canvas.Top="239" PreviewTextInput="NumberValidationTextBox" TextChanged="TextChanged"/>
 
-                    <Slider Width="240" Height="30" Orientation="Horizontal" Minimum="0" Maximum="23" Value="12" Canvas.Top="300" Canvas.Left="400"/>
+                    <Label Content="Current Time" Height="26" Margin="0" Canvas.Left="401" Canvas.Top="274"/>
+                    <TextBox x:Name="CurrentTime" Height="25" Width="30" Margin="0" Canvas.Left="551" Canvas.Top="275" IsReadOnly="True" Text="{Binding ElementName=Time,Path=Value}"/>
+
+                    <Slider x:Name="Time" Width="240" Height="20" Orientation="Horizontal" Minimum="0" Maximum="23" Value="12" Canvas.Top="308" Canvas.Left="400" IsSnapToTickEnabled="True" TickFrequency="1" />
+                    
+
 
                 </Canvas>
             </TabItem>
 
-            <TabItem Header="Coords" Margin="0">
+            <TabItem Header="Coordinates" Margin="0">
                 <StackPanel>
 
                     <Grid Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -174,7 +179,7 @@
                 </StackPanel>
             </TabItem>
 
-            <TabItem Header="Item List" x:Name="ItemTree" Margin="0">
+            <TabItem Header="Json Data" x:Name="ItemTree" Margin="0">
                 <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <json:JsonViewer x:Name="JsonViewer" DockPanel.Dock="Bottom"/>
                 </DockPanel>

@@ -89,6 +89,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ByteSwap.cs" />
+    <Compile Include="Codes.cs" />
     <Compile Include="Gecko.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="Json\JsonViewer.xaml.cs">
