@@ -8,7 +8,7 @@
 
     public class Gecko
     {
-        private readonly uint maximumMemoryChunkSize;
+        private readonly uint maximumMemoryChunkSize = 0x400;
 
         private readonly TcpConn tcpConn;
 
