@@ -5,6 +5,7 @@
     using System.IO;
     using System.Linq;
     using System.Text;
+    using System.Windows;
 
     public class Gecko
     {
@@ -18,7 +19,10 @@
         {
             this.tcpConn = tcpConn;
             this.mainWindow = mainWindow;
-            this.maximumMemoryChunkSize = this.ReadDataBufferSize();
+            if (mainWindow.GetBufferSize.IsChecked == true)
+            {
+                this.maximumMemoryChunkSize = this.ReadDataBufferSize();
+            }
         }
 
         private enum Command
@@ -542,9 +546,10 @@
             var response = new byte[4];
             this.tcpConn.Read(response, 4, ref bytesRead);
 
-            var buffer = ByteSwap.Swap(BitConverter.ToUInt32(response, 0));
+            Array.Reverse(response);
+            var bufferSize = BitConverter.ToUInt32(response, 0);
 
-            return buffer;
+            return bufferSize;
         }
     }
 }

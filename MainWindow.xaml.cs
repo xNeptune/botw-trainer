@@ -671,6 +671,8 @@
                 // init gecko
                 this.gecko = new Gecko(this.tcpConn, this);
 
+                //BufferSize.Content = this.gecko.MaximumMemoryChunkSize.ToString("x");
+
                 if (this.connected)
                 {
                     var status = this.gecko.GetServerStatus();
@@ -979,6 +981,7 @@
                 }
 
                 this.Test.IsEnabled = true;
+                this.GetBufferSize.IsEnabled = false;
 
                 // Enable tabs on connect to allow testing
                 // this.TabControl.IsEnabled = true;
@@ -996,6 +999,7 @@
                 this.Refresh.IsEnabled = false;
                 this.Test.IsEnabled = false;
                 this.TabControl.IsEnabled = false;
+                this.GetBufferSize.IsEnabled = true;
             }
 
             if (state == "Load")
