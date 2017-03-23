@@ -26,7 +26,7 @@
     /// <summary>
     /// Interaction logic for MainWindow
     /// </summary>
-    public partial class MainWindow
+    public partial class MainWindow : Window
     {
         // The original list of values that take effect when you save / load
         private const uint SaveItemStart = 0x3FCE7FF0;
@@ -86,7 +86,7 @@
 
             this.items = new List<Item>();
 
-            this.codes = new Codes(this);
+            this.codes = new Codes();
 
             var client = new WebClient
             {

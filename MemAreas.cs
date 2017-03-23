@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BotwTrainer
+﻿namespace BotwTrainer
 {
     public enum AddressType
     {
@@ -10,36 +8,11 @@ namespace BotwTrainer
         UNKNOWN
     }
 
-    public class AddressRange
-    {
-        public AddressType Description { get; private set; }
-
-        private byte Id { get; set; }
-
-        public uint Low { get; private set; }
-
-        public uint High { get; private set; }
-
-        private AddressRange(AddressType desc, byte id, uint low, uint high)
-        {
-            Id = id;
-            Description = desc;
-            Low = low;
-            High = high;
-        }
-
-        public AddressRange(AddressType desc, uint low, uint high)
-            : this(desc, (Byte)(low >> 24), low, high)
-        {
-            
-        }
-    }
-
     public static class ValidMemory
     {
         private const bool AddressDebug = false;
 
-        public static readonly AddressRange[] ValidAreas =
+        private static readonly AddressRange[] ValidAreas =
         {
             new AddressRange(AddressType.EX, 0x01000000, 0x01800000),
             new AddressRange(AddressType.EX, 0x0e300000, 0x10000000),
@@ -59,7 +32,7 @@ namespace BotwTrainer
             return id == -1 ? AddressType.UNKNOWN : ValidAreas[id].Description;
         }
 
-        public static int RangeCheckId(uint address)
+        private static int RangeCheckId(uint address)
         {
             for (var i = 0; i < ValidAreas.Length; i++)
             {
@@ -102,5 +75,29 @@ namespace BotwTrainer
         {
             return ValidRange(low, high, AddressDebug);
         }
+    }
+
+    public class AddressRange
+    {
+        private AddressRange(AddressType desc, byte id, uint low, uint high)
+        {
+            this.Id = id;
+            this.Description = desc;
+            this.Low = low;
+            this.High = high;
+        }
+
+        public AddressRange(AddressType desc, uint low, uint high)
+            : this(desc, (byte)(low >> 24), low, high)
+        {
+        }
+
+        public AddressType Description { get; private set; }
+
+        private byte Id { get; set; }
+
+        public uint Low { get; private set; }
+
+        public uint High { get; private set; }
     }
 }

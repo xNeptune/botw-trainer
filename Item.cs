@@ -1,9 +1,9 @@
-﻿using System;
-using System.Linq;
-using System.Windows;
-
-namespace BotwTrainer
+﻿namespace BotwTrainer
 {
+    using System;
+    using System.Linq;
+    using System.Windows;
+
     public class Item
     {
         public string Id { get; set; }
@@ -18,7 +18,7 @@ namespace BotwTrainer
             {
                 try
                 {
-                    return NameStart.ToString("x8").ToUpper();
+                    return this.NameStart.ToString("x8").ToUpper();
                 }
                 catch (FormatException formatException)
                 {
@@ -36,7 +36,7 @@ namespace BotwTrainer
             {
                 try
                 {
-                    return BaseAddress.ToString("x8").ToUpper();
+                    return this.BaseAddress.ToString("x8").ToUpper();
                 }
                 catch (FormatException formatException)
                 {
@@ -54,7 +54,7 @@ namespace BotwTrainer
             {
                 try
                 {
-                    return Value.ToString("x8").ToUpper();
+                    return this.Value.ToString("x8").ToUpper();
                 }
                 catch (FormatException formatException)
                 {
@@ -70,7 +70,7 @@ namespace BotwTrainer
             {
                 try
                 {
-                    return (BaseAddress + 0x8).ToString("x8").ToUpper();
+                    return (this.BaseAddress + 0x8).ToString("x8").ToUpper();
                 }
                 catch (FormatException formatException)
                 {
@@ -110,7 +110,7 @@ namespace BotwTrainer
         {
             get
             {
-                var offset = BaseAddress + 0x5c;
+                var offset = this.BaseAddress + 0x5c;
                 try
                 {
                     return offset.ToString("x8").ToUpper();
@@ -129,7 +129,7 @@ namespace BotwTrainer
         {
             get
             {
-                var offset = BaseAddress + 0x60;
+                var offset = this.BaseAddress + 0x60;
                 try
                 {
                     return offset.ToString("x8").ToUpper();
@@ -148,7 +148,7 @@ namespace BotwTrainer
         {
             get
             {
-                var offset = BaseAddress + 0x64;
+                var offset = this.BaseAddress + 0x64;
                 try
                 {
                     return offset.ToString("x8").ToUpper();
@@ -167,7 +167,7 @@ namespace BotwTrainer
         {
             get
             {
-                var offset = BaseAddress + 0x68;
+                var offset = this.BaseAddress + 0x68;
                 try
                 {
                     return offset.ToString("x8").ToUpper();
@@ -186,7 +186,7 @@ namespace BotwTrainer
         {
             get
             {
-                var offset = BaseAddress + 0x6c;
+                var offset = this.BaseAddress + 0x6c;
                 try
                 {
                     return offset.ToString("x8").ToUpper();
@@ -206,7 +206,7 @@ namespace BotwTrainer
             get
             {
                 string name;
-                switch (Page)
+                switch (this.Page)
                 {
                     case 0:
                         name = "Weapons";
