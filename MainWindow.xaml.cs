@@ -637,8 +637,8 @@
                         () =>
                             {
                                 // previous float
-                                var prevX = Convert.ToSingle(CoordsX.Content.ToString());
-                                var prevZ = Convert.ToSingle(CoordsZ.Content.ToString());
+                                //var prevX = Convert.ToSingle(CoordsX.Content.ToString());
+                                //var prevZ = Convert.ToSingle(CoordsZ.Content.ToString());
 
                                 CoordsX.Content = string.Format("{0}", Math.Round(xFloat, 2));
                                 CoordsY.Content = string.Format("{0}", Math.Round(yFloat, 2));
