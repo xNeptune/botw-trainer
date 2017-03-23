@@ -59,14 +59,5 @@ namespace BotwTrainer.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Connection failed.
-        /// </summary>
-        public static string Connection_failed {
-            get {
-                return ResourceManager.GetString("Connection_failed", resourceCulture);
-            }
-        }
     }
 }

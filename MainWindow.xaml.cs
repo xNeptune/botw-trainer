@@ -84,7 +84,7 @@
             Urbosa = 10,
             Revali = 11,
             Daruk = 12,
-            Keys = 13,
+            //Keys = 13,
             Bombs = 14,
             Whips = 15
         }
@@ -507,11 +507,6 @@
                         selected.Add(Cheat.ShieldInv);
                     }
 
-                    if (SmallKeys.IsChecked == true)
-                    {
-                        selected.Add(Cheat.Keys);
-                    }
-
                     if (Urbosa.IsChecked == true)
                     {
                         selected.Add(Cheat.Urbosa);
@@ -594,7 +589,6 @@
                     CurrentWeaponSlots.Text = this.gecko.GetInt(0x3FCFB498).ToString(CultureInfo.InvariantCulture);
                     CurrentBowSlots.Text = this.gecko.GetInt(0x3FD4BB50).ToString(CultureInfo.InvariantCulture);
                     CurrentShieldSlots.Text = this.gecko.GetInt(0x3FCC0B40).ToString(CultureInfo.InvariantCulture);
-                    CurrentSmallKeys.Text = this.gecko.GetInt(0x3FD5CB48).ToString(CultureInfo.InvariantCulture);
                     CurrentUrbosa.Text = this.gecko.GetInt(0x3FCFFA80).ToString(CultureInfo.InvariantCulture);
                     CurrentRevali.Text = this.gecko.GetInt(0x3FD5ED90).ToString(CultureInfo.InvariantCulture);
                     CurrentDaruk.Text = this.gecko.GetInt(0x3FD50088).ToString(CultureInfo.InvariantCulture);
@@ -1202,21 +1196,6 @@
 
                     this.codes.Add(0x00020000);
                     this.codes.Add(0x4011128C);
-                    this.codes.Add(value);
-                    this.codes.Add(0x00000000);
-                }
-
-                if (cheats.Contains(Cheat.Keys))
-                {
-                    var value = Convert.ToUInt32(CurrentSmallKeys.Text);
-
-                    this.codes.Add(0x00020000);
-                    this.codes.Add(0x3FD5CB48);
-                    this.codes.Add(value);
-                    this.codes.Add(0x00000000);
-
-                    this.codes.Add(0x00020000);
-                    this.codes.Add(0x3FF6EA00);
                     this.codes.Add(value);
                     this.codes.Add(0x00000000);
                 }
