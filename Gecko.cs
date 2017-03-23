@@ -275,6 +275,35 @@
             return value;
         }
 
+        public float GetFloat(uint address)
+        {
+            var bytes = this.ReadBytes(address, 0x4);
+            float value;
+
+            try
+            {
+                Array.Reverse(bytes);
+                value = !bytes.Any() ? 0 : BitConverter.ToSingle(bytes, 0);
+            }
+            catch (ArgumentNullException argumentNullException)
+            {
+                this.mainWindow.LogError(argumentNullException);
+                return 1;
+            }
+            catch (ArgumentException argumentException)
+            {
+                this.mainWindow.LogError(argumentException);
+                return 1;
+            }
+            catch (RankException rankException)
+            {
+                this.mainWindow.LogError(rankException);
+                return 1;
+            }
+
+            return value;
+        }
+
         public string GetString(uint address)
         {
             var bytes = this.ReadBytes(address, 0x4);

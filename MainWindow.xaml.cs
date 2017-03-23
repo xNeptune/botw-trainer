@@ -86,7 +86,7 @@
 
             this.items = new List<Item>();
 
-            this.codes = new Codes();
+            this.codes = new Codes(this);
 
             var client = new WebClient
             {
@@ -534,7 +534,9 @@
                     CurrentUrbosa.Text = this.gecko.GetInt(0x3FCFFA80).ToString(CultureInfo.InvariantCulture);
                     CurrentRevali.Text = this.gecko.GetInt(0x3FD5ED90).ToString(CultureInfo.InvariantCulture);
                     CurrentDaruk.Text = this.gecko.GetInt(0x3FD50088).ToString(CultureInfo.InvariantCulture);
-                    CurrentTime.Text = this.GetCurrentTime().ToString();
+                    var time = this.GetCurrentTime();
+                    CurrentTime.Text = time.ToString();
+                    TimeSlider.Value = time;
 
                     this.Notification.Content = string.Format("Items found: {0}", this.itemsFound);
 
@@ -587,6 +589,14 @@
             uint address = pointer + 0x140;
 
             this.gecko.WriteBytes(address, bytes);
+        }
+
+        private void ChangeTimeClick(object sender, RoutedEventArgs e)
+        {
+            var hour = Convert.ToSingle(CurrentTime.Text) * 15;
+
+            var timePointer = this.gecko.GetUInt(0x407AABB0);
+            this.gecko.WriteFloat(timePointer + 0x9C, hour);
         }
 
         private void LoadCoords()
@@ -1309,11 +1319,11 @@
             {
                 var timePointer = this.gecko.GetUInt(0x407AABB0);
 
-                var timeFloat = Convert.ToSingle(this.gecko.GetUInt(timePointer + 0x9C));
+                var time = this.gecko.GetFloat(timePointer + 0x98);
 
-                var hour = timeFloat / 7.5;
+                var hour = Convert.ToInt32(time) / 15;
 
-                return 1;
+                return hour;
             }
             catch (Exception ex)
             {

@@ -54,7 +54,7 @@
                     <Label Content="To enable these codes check the box and click save." Height="30" Margin="0" Canvas.Left="10" Canvas.Top="8" FontSize="14" Width="642"/>
 
                     <Label Content="Controller Type" Height="26" Margin="0" Canvas.Left="10" Canvas.Top="38"/>
-                    <ComboBox x:Name="Controller" Canvas.Left="160" Canvas.Top="41" Width="80" SelectedValuePath="Content">
+                    <ComboBox x:Name="Controller" Canvas.Left="160" Canvas.Top="41" Width="90" SelectedValuePath="Content">
                         <ComboBoxItem Content="Pro"/>
                         <ComboBoxItem Content="Gamepad"/>
                     </ComboBox>
@@ -77,8 +77,7 @@
 
                     <Label Content="Speed" Height="26" Margin="0" Canvas.Left="10" Canvas.Top="208"/>
                     <CheckBox x:Name="Speed" Margin="0" Canvas.Left="120" Canvas.Top="214" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
-
-                    <ComboBox x:Name="CbSpeed" Canvas.Left="160" Canvas.Top="211" Width="80" SelectedValuePath="Tag" SelectionChanged="SelectionChanged">
+                    <ComboBox x:Name="CbSpeed" Canvas.Left="160" Canvas.Top="211" Width="90" SelectedValuePath="Tag" SelectionChanged="SelectionChanged">
                         <ComboBoxItem Tag="00000000" Content="00000000 - 0x Speed (Frozen)"/>
                         <ComboBoxItem Tag="3F800000" Content="3F800000 - 1x Speed (Default)"/>
                         <ComboBoxItem Tag="40000000" Content="40000000 - 2x Speed"/>
@@ -86,9 +85,11 @@
                         <ComboBoxItem Tag="41000000" Content="41000000 - 8x Speed"/>
                         <ComboBoxItem Tag="42000000" Content="42000000 - 32x Speed"/>
                     </ComboBox>
+                    <Label x:Name="SpeedData" Content="Hold ZL" Height="25" Margin="0" Canvas.Left="275" Canvas.Top="208"/>
 
                     <Label Content="Moon Jump" Height="26" Canvas.Left="10" Canvas.Top="238"></Label>
                     <CheckBox x:Name="MoonJump" Margin="0" Canvas.Left="120" Canvas.Top="244" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <Label x:Name="MoonJumpData" Content="Hold X" Height="25" Margin="0" Canvas.Left="275" Canvas.Top="238"/>
 
                     <Label Content="Bomb Time" Height="26" Canvas.Left="10" Canvas.Top="268"></Label>
                     <CheckBox x:Name="BombTime" Margin="0" Canvas.Left="120" Canvas.Top="274" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
@@ -120,11 +121,12 @@
                     <CheckBox x:Name="ShieldSlots" Margin="0" Canvas.Left="511" Canvas.Top="244" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
                     <TextBox x:Name="CurrentShieldSlots" Height="25" Width="30" Margin="0" Canvas.Left="551" Canvas.Top="239" PreviewTextInput="NumberValidationTextBox" TextChanged="TextChanged"/>
 
-                    <Label Content="Current Time" Height="26" Margin="0" Canvas.Left="401" Canvas.Top="274"/>
-                    <TextBox x:Name="CurrentTime" Height="25" Width="30" Margin="0" Canvas.Left="551" Canvas.Top="275" IsReadOnly="True" Text="{Binding ElementName=Time,Path=Value}"/>
+                    <Label Content="Current Hour" Height="26" Margin="0" Canvas.Left="401" Canvas.Top="274"/>
+                    <TextBox x:Name="CurrentTime" Height="25" Width="30" Margin="0" Canvas.Left="504" Canvas.Top="275" IsReadOnly="True" Text="{Binding ElementName=TimeSlider,Path=Value}"/>
+                    <Button Content="Update" Canvas.Top="275" Canvas.Left="551" Height="25" Margin="0" Click="ChangeTimeClick" Width="55"/>
 
-                    <Slider x:Name="Time" Width="240" Height="20" Orientation="Horizontal" Minimum="0" Maximum="23" Value="12" Canvas.Top="308" Canvas.Left="400" IsSnapToTickEnabled="True" TickFrequency="1" />
-                    
+                    <Slider x:Name="TimeSlider" Width="210" Height="20" Orientation="Horizontal" Minimum="0" Maximum="23" Value="12" Canvas.Top="308" Canvas.Left="400" IsSnapToTickEnabled="True" TickFrequency="1" Margin="0" />
+
 
 
                 </Canvas>
