@@ -1,60 +1,114 @@
-﻿namespace BotwTrainer
-{
-    using System;
-    using System.IO;
-    using System.Net.Sockets;
-    using System.Windows;
+﻿using System;
+using System.IO;
+using System.Net.Sockets;
+using System.Security;
+using System.Threading;
+using System.Windows;
 
+namespace BotwTrainer
+{
     public class TcpConn
     {
-        private TcpClient client;
+        private TcpClient _client;
 
-        private NetworkStream stream;
+        private NetworkStream _stream;
 
         public TcpConn(string host, int port)
         {
-            this.Host = host;
-            this.Port = port;
-            this.client = null;
-            this.stream = null;
+            Host = host;
+            Port = port;
+            _client = null;
+            _stream = null;
         }
 
-        private string Host { get; set; }
+        private string Host { get; }
 
-        private int Port { get; set; }
+        private int Port { get; }
 
         public bool Connect()
         {
             try
             {
-                this.Close();
+                Close();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
 
-            this.client = new TcpClient { NoDelay = true };
-            var asyncResult = this.client.BeginConnect(this.Host, this.Port, null, null);
-            var waitHandle = asyncResult.AsyncWaitHandle;
+            _client = new TcpClient {NoDelay = true};
+            WaitHandle waitHandle = new object() as WaitHandle;
+
             try
             {
+                var asyncResult = _client.BeginConnect(Host, Port, null, null);
+                waitHandle = asyncResult.AsyncWaitHandle;
                 if (!asyncResult.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(5), false))
                 {
-                    this.client.Close();
+                    _client.Close();
                     return false;
                 }
 
-                this.client.EndConnect(asyncResult);
+                _client.EndConnect(asyncResult);
+            }
+            catch (ArgumentNullException argumentNullException)
+            {
+                MessageBox.Show(argumentNullException.Message);
+            }
+            catch (SocketException socketException)
+            {
+                MessageBox.Show(socketException.Message);
+            }
+            catch (ObjectDisposedException objectDisposedException)
+            {
+                MessageBox.Show(objectDisposedException.Message);
+            }
+            catch (SecurityException securityException)
+            {
+                MessageBox.Show(securityException.Message);
+            }
+            catch (ArgumentOutOfRangeException argumentOutOfRangeException)
+            {
+                MessageBox.Show(argumentOutOfRangeException.Message);
+            }
+            catch (InvalidOperationException invalidOperationException)
+            {
+                MessageBox.Show(invalidOperationException.Message);
+            }
+            catch (AbandonedMutexException abandonedMutexException)
+            {
+                MessageBox.Show(abandonedMutexException.Message);
+            }
+            catch (ArgumentException argumentException)
+            {
+                MessageBox.Show(argumentException.Message);
+            }
+            catch (OverflowException overflowException)
+            {
+                MessageBox.Show(overflowException.Message);
             }
             finally
             {
-                waitHandle.Close();
+                if (waitHandle != null)
+                {
+                    waitHandle.Close();
+                }
             }
 
-            this.stream = this.client.GetStream();
-            this.stream.ReadTimeout = 10000;
-            this.stream.WriteTimeout = 10000;
+            try
+            {
+                _stream = _client.GetStream();
+                _stream.ReadTimeout = 10000;
+                _stream.WriteTimeout = 10000;
+            }
+            catch (InvalidOperationException invalidOperationException)
+            {
+                MessageBox.Show(invalidOperationException.Message);
+            }
+            catch (ArgumentOutOfRangeException argumentOutOfRangeException)
+            {
+                MessageBox.Show(argumentOutOfRangeException.Message);
+            }
 
             return true;
         }
@@ -63,11 +117,10 @@
         {
             try
             {
-                if (this.client != null)
+                if (_client != null)
                 {
-
-                    this.client.Close();
-                    this.client.Dispose();
+                    _client.Close();
+                    _client.Dispose();
                 }
             }
             catch (Exception ex)
@@ -76,29 +129,28 @@
             }
             finally
             {
-                this.client = null;
+                _client = null;
             }
         }
 
+        /// <exception cref="IOException">Connection closed.</exception>
         public void Read(byte[] buffer, uint nobytes, ref uint bytesRead)
         {
             try
             {
-                int offset = 0;
-                if (this.stream == null)
-                {
+                var offset = 0;
+                if (_stream == null)
                     throw new IOException("Not connected.", new NullReferenceException());
-                }
 
                 bytesRead = 0;
                 while (nobytes > 0)
                 {
-                    int read = this.stream.Read(buffer, offset, (int)nobytes);
+                    var read = _stream.Read(buffer, offset, (int) nobytes);
                     if (read >= 0)
                     {
-                        bytesRead += (uint)read;
+                        bytesRead += (uint) read;
                         offset += read;
-                        nobytes -= (uint)read;
+                        nobytes -= (uint) read;
                     }
                     else
                     {
@@ -106,31 +158,46 @@
                     }
                 }
             }
+            catch (ArgumentOutOfRangeException argumentOutOfRangeException)
+            {
+                throw new IOException("Connection closed.", argumentOutOfRangeException);
+            }
+            catch (ArgumentNullException argumentNullException)
+            {
+                throw new IOException("Connection closed.", argumentNullException);
+            }
+            catch (IOException ioException)
+            {
+                throw new IOException("Connection closed.", ioException);
+            }
             catch (ObjectDisposedException e)
             {
                 throw new IOException("Connection closed.", e);
             }
         }
 
+        /// <exception cref="IOException">Not connected.</exception>
         public void Write(byte[] buffer, int nobytes, ref uint bytesWritten)
         {
             try
             {
-                if (this.stream == null)
-                {
+                if (_stream == null)
                     throw new IOException("Not connected.", new NullReferenceException());
-                }
-                this.stream.Write(buffer, 0, nobytes);
+                _stream.Write(buffer, 0, nobytes);
                 if (nobytes >= 0)
-                {
-                    bytesWritten = (uint)nobytes;
-                }
+                    bytesWritten = (uint) nobytes;
                 else
-                {
                     bytesWritten = 0;
-                }
 
-                this.stream.Flush();
+                _stream.Flush();
+            }
+            catch (ArgumentNullException argumentNullException)
+            {
+                throw new IOException("Connection closed.", argumentNullException);
+            }
+            catch (ArgumentOutOfRangeException argumentOutOfRangeException)
+            {
+                throw new IOException("Connection closed.", argumentOutOfRangeException);
             }
             catch (ObjectDisposedException e)
             {
