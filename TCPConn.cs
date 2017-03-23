@@ -1,55 +1,55 @@
-﻿using System;
-using System.IO;
-using System.Net.Sockets;
-using System.Security;
-using System.Threading;
-using System.Windows;
-
-namespace BotwTrainer
+﻿namespace BotwTrainer
 {
+    using System;
+    using System.IO;
+    using System.Net.Sockets;
+    using System.Security;
+    using System.Threading;
+    using System.Windows;
+
     public class TcpConn
     {
-        private TcpClient _client;
+        private TcpClient client;
 
-        private NetworkStream _stream;
+        private NetworkStream stream;
 
         public TcpConn(string host, int port)
         {
-            Host = host;
-            Port = port;
-            _client = null;
-            _stream = null;
+            this.Host = host;
+            this.Port = port;
+            this.client = null;
+            this.stream = null;
         }
 
-        private string Host { get; }
+        private string Host { get; set; }
 
-        private int Port { get; }
+        private int Port { get; set; }
 
         public bool Connect()
         {
             try
             {
-                Close();
+                this.Close();
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
 
-            _client = new TcpClient {NoDelay = true};
-            WaitHandle waitHandle = new object() as WaitHandle;
+            this.client = new TcpClient { NoDelay = true };
+            var waitHandle = new object() as WaitHandle;
 
             try
             {
-                var asyncResult = _client.BeginConnect(Host, Port, null, null);
+                var asyncResult = this.client.BeginConnect(this.Host, this.Port, null, null);
                 waitHandle = asyncResult.AsyncWaitHandle;
                 if (!asyncResult.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(5), false))
                 {
-                    _client.Close();
+                    this.client.Close();
                     return false;
                 }
 
-                _client.EndConnect(asyncResult);
+                this.client.EndConnect(asyncResult);
             }
             catch (ArgumentNullException argumentNullException)
             {
@@ -97,9 +97,9 @@ namespace BotwTrainer
 
             try
             {
-                _stream = _client.GetStream();
-                _stream.ReadTimeout = 10000;
-                _stream.WriteTimeout = 10000;
+                this.stream = this.client.GetStream();
+                this.stream.ReadTimeout = 10000;
+                this.stream.WriteTimeout = 10000;
             }
             catch (InvalidOperationException invalidOperationException)
             {
@@ -117,10 +117,10 @@ namespace BotwTrainer
         {
             try
             {
-                if (_client != null)
+                if (this.client != null)
                 {
-                    _client.Close();
-                    _client.Dispose();
+                    this.client.Close();
+                    this.client.Dispose();
                 }
             }
             catch (Exception ex)
@@ -129,7 +129,7 @@ namespace BotwTrainer
             }
             finally
             {
-                _client = null;
+                this.client = null;
             }
         }
 
@@ -139,18 +139,20 @@ namespace BotwTrainer
             try
             {
                 var offset = 0;
-                if (_stream == null)
+                if (this.stream == null)
+                {
                     throw new IOException("Not connected.", new NullReferenceException());
+                }
 
                 bytesRead = 0;
                 while (nobytes > 0)
                 {
-                    var read = _stream.Read(buffer, offset, (int) nobytes);
+                    var read = this.stream.Read(buffer, offset, (int)nobytes);
                     if (read >= 0)
                     {
-                        bytesRead += (uint) read;
+                        bytesRead += (uint)read;
                         offset += read;
-                        nobytes -= (uint) read;
+                        nobytes -= (uint)read;
                     }
                     else
                     {
@@ -181,15 +183,22 @@ namespace BotwTrainer
         {
             try
             {
-                if (_stream == null)
+                if (this.stream == null)
+                {
                     throw new IOException("Not connected.", new NullReferenceException());
-                _stream.Write(buffer, 0, nobytes);
-                if (nobytes >= 0)
-                    bytesWritten = (uint) nobytes;
-                else
-                    bytesWritten = 0;
+                }
 
-                _stream.Flush();
+                this.stream.Write(buffer, 0, nobytes);
+                if (nobytes >= 0)
+                {
+                    bytesWritten = (uint)nobytes;
+                }
+                else
+                {
+                    bytesWritten = 0;
+                }
+
+                this.stream.Flush();
             }
             catch (ArgumentNullException argumentNullException)
             {
