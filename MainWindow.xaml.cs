@@ -511,6 +511,7 @@
                 if (result)
                 {
                     this.DebugData();
+                    this.GetNonItemData();
 
                     this.LoadTab(this.Weapons, 0);
                     this.LoadTab(this.Bows, 1);
@@ -520,23 +521,6 @@
                     this.LoadTab(this.Materials, 7);
                     this.LoadTab(this.Food, 8);
                     this.LoadTab(this.KeyItems, 9);
-
-                    // Code Tab Values
-                    CurrentStamina.Text = this.gecko.GetString(0x42439598);
-                    var healthPointer = this.gecko.GetUInt(0x4225B4B0);
-                    CurrentHealth.Text = this.gecko.GetInt(healthPointer + 0x430).ToString(CultureInfo.InvariantCulture);
-                    CurrentRupees.Text = this.gecko.GetInt(0x4010AA0C).ToString(CultureInfo.InvariantCulture);
-                    CurrentMon.Text = this.gecko.GetInt(0x4010B14C).ToString(CultureInfo.InvariantCulture);
-                    CbSpeed.SelectedValue = this.gecko.GetString(0x439BF514);
-                    CurrentWeaponSlots.Text = this.gecko.GetInt(0x3FCFB498).ToString(CultureInfo.InvariantCulture);
-                    CurrentBowSlots.Text = this.gecko.GetInt(0x3FD4BB50).ToString(CultureInfo.InvariantCulture);
-                    CurrentShieldSlots.Text = this.gecko.GetInt(0x3FCC0B40).ToString(CultureInfo.InvariantCulture);
-                    CurrentUrbosa.Text = this.gecko.GetInt(0x3FCFFA80).ToString(CultureInfo.InvariantCulture);
-                    CurrentRevali.Text = this.gecko.GetInt(0x3FD5ED90).ToString(CultureInfo.InvariantCulture);
-                    CurrentDaruk.Text = this.gecko.GetInt(0x3FD50088).ToString(CultureInfo.InvariantCulture);
-                    var time = this.GetCurrentTime();
-                    CurrentTime.Text = time.ToString();
-                    TimeSlider.Value = time;
 
                     this.Notification.Content = string.Format("Items found: {0}", this.itemsFound);
 
@@ -671,8 +655,6 @@
                 // init gecko
                 this.gecko = new Gecko(this.tcpConn, this);
 
-                //BufferSize.Content = this.gecko.MaximumMemoryChunkSize.ToString("x");
-
                 if (this.connected)
                 {
                     var status = this.gecko.GetServerStatus();
@@ -681,15 +663,7 @@
                         return;
                     }
 
-                    // Saved settings stuff
-                    var shown = Settings.Default.Warning;
-
-                    if (shown < 3)
-                    {
-                        Settings.Default.Warning++;
-
-                        //MessageBox.Show("WARNING: Item names are now editable. Using bad data may mess up your game so use with care.");
-                    }
+                    this.GetNonItemData();
 
                     Settings.Default.IpAddress = IpAddress.Text;
                     Settings.Default.Save();
@@ -754,6 +728,11 @@
             var os = this.gecko.GetOsVersion();
 
             MessageBox.Show(string.Format("Server: {0}\nOs: {1}", server, os));
+        }
+
+        private void RefreshCodeClick(object sender, RoutedEventArgs e)
+        {
+            this.GetNonItemData();
         }
 
         private void LoadTab(ContentControl tab, int page)
@@ -962,6 +941,30 @@
              */
         }
 
+        private void GetNonItemData()
+        {
+            // Code Tab Values
+            CurrentStamina.Text = this.gecko.GetString(0x42439598);
+            var healthPointer = this.gecko.GetUInt(0x4225B780);
+            CurrentHealth.Text = this.gecko.GetInt(healthPointer + 0x388).ToString(CultureInfo.InvariantCulture);
+            CurrentRupees.Text = this.gecko.GetInt(0x4010AA0C).ToString(CultureInfo.InvariantCulture);
+            CurrentMon.Text = this.gecko.GetInt(0x4010B14C).ToString(CultureInfo.InvariantCulture);
+            CbSpeed.SelectedValue = this.gecko.GetString(0x439BF514);
+            CurrentWeaponSlots.Text = this.gecko.GetInt(0x3FCFB498).ToString(CultureInfo.InvariantCulture);
+            CurrentBowSlots.Text = this.gecko.GetInt(0x3FD4BB50).ToString(CultureInfo.InvariantCulture);
+            CurrentShieldSlots.Text = this.gecko.GetInt(0x3FCC0B40).ToString(CultureInfo.InvariantCulture);
+            CurrentUrbosa.Text = this.gecko.GetInt(0x3FCFFA80).ToString(CultureInfo.InvariantCulture);
+            CurrentRevali.Text = this.gecko.GetInt(0x3FD5ED90).ToString(CultureInfo.InvariantCulture);
+            CurrentDaruk.Text = this.gecko.GetInt(0x3FD50088).ToString(CultureInfo.InvariantCulture);
+            var time = this.GetCurrentTime();
+            CurrentTime.Text = time.ToString(CultureInfo.InvariantCulture);
+            TimeSlider.Value = time;
+
+            this.tbChanged.Clear();
+            this.cbChanged.Clear();
+            this.ddChanged.Clear();
+        }
+
         private void ToggleControls(string state)
         {
             if (state == "Connected")
@@ -983,8 +986,7 @@
                 this.Test.IsEnabled = true;
                 this.GetBufferSize.IsEnabled = false;
 
-                // Enable tabs on connect to allow testing
-                // this.TabControl.IsEnabled = true;
+                this.TabControl.IsEnabled = true;
             }
 
             if (state == "Disconnected")
@@ -1010,6 +1012,15 @@
 
                 this.Refresh.IsEnabled = false;
                 this.Test.IsEnabled = false;
+                this.Weapons.IsEnabled = true;
+                this.Bows.IsEnabled = true;
+                this.Shields.IsEnabled = true;
+                this.Weapons.IsEnabled = true;
+                this.Armor.IsEnabled = true;
+                this.Materials.IsEnabled = true;
+                this.Food.IsEnabled = true;
+                this.KeyItems.IsEnabled = true;
+                this.Debug.IsEnabled = true;
             }
 
             if (state == "DataLoaded")

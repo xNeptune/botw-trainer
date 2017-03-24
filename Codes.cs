@@ -136,11 +136,13 @@
             {
                 var value = Convert.ToUInt32(this.mainWindow.CurrentHealth.Text);
 
+                //[0x4225B780] + 0x388
+
                 codes.Add(0x30000000);
-                codes.Add(0x4225B4B0);
+                codes.Add(0x4225B780);
                 codes.Add(0x43000000);
                 codes.Add(0x46000000);
-                codes.Add(0x00120430);
+                codes.Add(0x00120388);
                 codes.Add(value);
                 codes.Add(0xD0000000);
                 codes.Add(0xDEADCAFE);
@@ -345,12 +347,12 @@
             {
                 codes.Add(0x00020000);
                 codes.Add(0x4383DA34);
-                codes.Add(0x42B70000);
+                codes.Add(0x45B70000);
                 codes.Add(0x00000000);
 
                 codes.Add(0x00020000);
                 codes.Add(0x4383DA4C);
-                codes.Add(0x42B70000);
+                codes.Add(0x45B70000);
                 codes.Add(0x00000000);
             }
 
@@ -363,11 +365,6 @@
 
                 codes.Add(0x00000000);
                 codes.Add(0x44AFFA8F);
-                codes.Add(0x00000003);
-                codes.Add(0x00000000);
-
-                codes.Add(0x00000000);
-                codes.Add(0x47558581);
                 codes.Add(0x00000003);
                 codes.Add(0x00000000);
             }

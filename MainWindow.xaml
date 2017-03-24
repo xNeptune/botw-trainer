@@ -24,35 +24,60 @@
 
             <Button x:Name="Disconnect" Content="Disconnect" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Click="DisconnectClick" IsEnabled="False" Canvas.Left="120" Canvas.Top="13" Visibility="Hidden"/>
 
-            <Button x:Name="Load" Content="Load Data" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="75" Click="LoadClick" Canvas.Left="380" Canvas.Top="13" IsEnabled="False" />
+            <Button x:Name="Load" Content="Load Items" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="75" Click="LoadClick" Canvas.Left="380" Canvas.Top="13" IsEnabled="False" />
 
             <TextBlock Canvas.Right="10" Canvas.Top="14" Canvas.Left="555">           
                 <Hyperlink Foreground="SeaGreen" FontSize="14" NavigateUri="https://github.com/joffnerd/botw-trainer/blob/master/README.md" RequestNavigate="HyperlinkRequestNavigate">
                     https://github.com/joffnerd/botw-trainer/blob/master/README.md
                 </Hyperlink>
             </TextBlock>
-            
+
         </Canvas>
 
         <TabControl x:Name="TabControl" HorizontalAlignment="Stretch" VerticalContentAlignment="Stretch" VerticalAlignment="Top" IsEnabled="False" Grid.Row="1" SelectedIndex="0"  SelectionChanged="TabControlSelectionChanged">
 
-            <TabItem Header="Weapons" x:Name="Weapons" Margin="0,0,0,0" Background="CadetBlue"/>
+            <TabItem Header="Weapons" x:Name="Weapons" Margin="0,0,0,0" Background="CadetBlue" IsEnabled="False"/>
 
-            <TabItem Header="Bows" x:Name="Bows" Margin="0,0,0,0" Background="CadetBlue"/>
+            <TabItem Header="Bows" x:Name="Bows" Margin="0,0,0,0" Background="CadetBlue" IsEnabled="False"/>
 
-            <TabItem Header="Shields" x:Name="Shields" Margin="0,0,0,0" Background="CadetBlue"/>
+            <TabItem Header="Shields" x:Name="Shields" Margin="0,0,0,0" Background="CadetBlue" IsEnabled="False"/>
 
-            <TabItem Header="Armor" x:Name="Armor" Margin="0,0,0,0" Background="CadetBlue"/>
+            <TabItem Header="Armor" x:Name="Armor" Margin="0,0,0,0" Background="CadetBlue" IsEnabled="False"/>
 
-            <TabItem Header="Arrows" x:Name="Arrows" Margin="0,0,0,0" Background="PaleVioletRed"/>
+            <TabItem Header="Arrows" x:Name="Arrows" Margin="0,0,0,0" Background="PaleVioletRed" IsEnabled="False"/>
 
-            <TabItem Header="Materials" x:Name="Materials" Margin="0,0,0,0" Background="PaleVioletRed"/>
+            <TabItem Header="Materials" x:Name="Materials" Margin="0,0,0,0" Background="PaleVioletRed" IsEnabled="False"/>
 
-            <TabItem Header="Food" x:Name="Food" Margin="0,0,0,0" Background="PaleVioletRed"/>
+            <TabItem Header="Food" x:Name="Food" Margin="0,0,0,0" Background="PaleVioletRed" IsEnabled="False"/>
 
-            <TabItem Header="Key Items" x:Name="KeyItems" Margin="0,0,0,0" Background="PaleVioletRed"/>
+            <TabItem Header="Key Items" x:Name="KeyItems" Margin="0,0,0,0" Background="PaleVioletRed" IsEnabled="False"/>
 
-            <TabItem Header="Codes" x:Name="Codes" Margin="0,0,0,0" Background="PaleVioletRed">
+            <TabItem Header="Debug" x:Name="Debug" Margin="0,0,0,0" IsEnabled="False">
+                <WrapPanel Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+
+                    <Button x:Name="Export" Content="Export" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Click="ExportClick" />
+
+                    <DataGrid x:Name="DebugGrid" AutoGenerateColumns="False" Margin="10,10,0,0" ClipboardCopyMode="IncludeHeader" Height="450" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Id" Width="150" Binding="{Binding Id}"/>
+                            <DataGridTextColumn Header="Name" Width="160" Binding="{Binding Name}"/>
+                            <DataGridTextColumn Header="Address" Width="65" Binding="{Binding BaseAddressHex, Mode=OneWay}"/>
+                            <DataGridTextColumn Header="Type" Width="70" Binding="{Binding PageName, Mode=OneWay}"/>
+                            <DataGridTextColumn Header="Value" Width="65" Binding="{Binding Value}"/>
+                            <DataGridCheckBoxColumn Header="Equipped" Width="40" Binding="{Binding EquippedBool, Mode=OneWay}" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="?" Width="30" Binding="{Binding Unknown}"/>
+                            <DataGridTextColumn Header="Modifier1" Width="65" Binding="{Binding Modifier1Value, Mode=OneWay}"/>
+                            <DataGridTextColumn Header="Modifier2" Width="65" Binding="{Binding Modifier2Value, Mode=OneWay}"/>
+                            <DataGridTextColumn Header="Modifier3" Width="65" Binding="{Binding Modifier3Value, Mode=OneWay}"/>
+                            <DataGridTextColumn Header="Modifier4" Width="65" Binding="{Binding Modifier4Value, Mode=OneWay}"/>
+                            <DataGridTextColumn Header="Modifier5" Width="65" Binding="{Binding Modifier5Value, Mode=OneWay}"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                </WrapPanel>
+            </TabItem>
+
+            <TabItem Header="Codes" x:Name="Codes" Margin="0,0,0,0" Background="Yellow">
                 <Canvas HorizontalAlignment="Left" VerticalAlignment="Top" Width="900" Height="400">
                     <Label Content="To enable these codes check the box and click save." Height="30" Margin="0" Canvas.Left="10" Canvas.Top="8" FontSize="14" Width="642"/>
 
@@ -98,7 +123,8 @@
                     <CheckBox x:Name="BombTime" Margin="0" Canvas.Left="120" Canvas.Top="274" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
 
                     <Label Content="Horse Whips" Height="26" Canvas.Left="10" Canvas.Top="298"/>
-                    <CheckBox x:Name="HorseWhips" Margin="0" Canvas.Left="120" Canvas.Top="304" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <CheckBox x:Name="HorseWhips" Margin="0" Canvas.Left="120" Canvas.Top="304" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged" IsEnabled="False"/>
+                    <Label Content="Disabled, bad code" Height="25" Margin="0" Canvas.Left="160" Canvas.Top="298"/>
 
                     <Label Content="Urbosa's Fury" Height="26" Margin="0" Canvas.Left="401" Canvas.Top="88"/>
                     <CheckBox x:Name="Urbosa" Margin="0" Canvas.Left="511" Canvas.Top="94" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
@@ -129,13 +155,12 @@
                     <Button Content="Update" Canvas.Top="275" Canvas.Left="551" Height="25" Margin="0" Click="ChangeTimeClick" Width="55"/>
 
                     <Slider x:Name="TimeSlider" Width="210" Height="20" Orientation="Horizontal" Minimum="0" Maximum="23" Value="12" Canvas.Top="308" Canvas.Left="400" IsSnapToTickEnabled="True" TickFrequency="1" Margin="0" />
-
-
-
+                    
+                    <Button Content="Refresh Code Tab" Canvas.Top="365" Canvas.Left="10" Height="25" Margin="0" Click="RefreshCodeClick" Width="100" RenderTransformOrigin="-7.527,3.88"/>
                 </Canvas>
             </TabItem>
 
-            <TabItem Header="Coordinates" Margin="0">
+            <TabItem Header="Coordinates" Margin="0" Background="Yellow">
                 <StackPanel>
 
                     <Grid Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -184,35 +209,10 @@
                 </StackPanel>
             </TabItem>
 
-            <TabItem Header="Json Data" x:Name="ItemTree" Margin="0">
+            <TabItem Header="Json Data" x:Name="ItemTree" Margin="0" Background="Yellow">
                 <DockPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <json:JsonViewer x:Name="JsonViewer" DockPanel.Dock="Bottom"/>
                 </DockPanel>
-            </TabItem>
-
-            <TabItem Header="Debug" x:Name="Debug" Margin="0,0,0,0" Background="SeaGreen">
-                <WrapPanel Margin="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-
-                    <Button x:Name="Export" Content="Export" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Click="ExportClick" />
-
-                    <DataGrid x:Name="DebugGrid" AutoGenerateColumns="False" Margin="10,10,0,0" ClipboardCopyMode="IncludeHeader" Height="450" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Id" Width="150" Binding="{Binding Id}"/>
-                            <DataGridTextColumn Header="Name" Width="160" Binding="{Binding Name}"/>
-                            <DataGridTextColumn Header="Address" Width="65" Binding="{Binding BaseAddressHex, Mode=OneWay}"/>
-                            <DataGridTextColumn Header="Type" Width="70" Binding="{Binding PageName, Mode=OneWay}"/>
-                            <DataGridTextColumn Header="Value" Width="65" Binding="{Binding Value}"/>
-                            <DataGridCheckBoxColumn Header="Equipped" Width="40" Binding="{Binding EquippedBool, Mode=OneWay}" IsReadOnly="True"/>
-                            <DataGridTextColumn Header="?" Width="30" Binding="{Binding Unknown}"/>
-                            <DataGridTextColumn Header="Modifier1" Width="65" Binding="{Binding Modifier1Value, Mode=OneWay}"/>
-                            <DataGridTextColumn Header="Modifier2" Width="65" Binding="{Binding Modifier2Value, Mode=OneWay}"/>
-                            <DataGridTextColumn Header="Modifier3" Width="65" Binding="{Binding Modifier3Value, Mode=OneWay}"/>
-                            <DataGridTextColumn Header="Modifier4" Width="65" Binding="{Binding Modifier4Value, Mode=OneWay}"/>
-                            <DataGridTextColumn Header="Modifier5" Width="65" Binding="{Binding Modifier5Value, Mode=OneWay}"/>
-                        </DataGrid.Columns>
-                    </DataGrid>
-
-                </WrapPanel>
             </TabItem>
 
             <TabItem Header="Help" x:Name="Help" Margin="0" Background="SeaGreen">
@@ -306,9 +306,9 @@
         </TabControl>
 
         <Canvas Grid.Row="2" Margin="0" HorizontalAlignment="Stretch">
-            <Button x:Name="Refresh" Content="Refresh Data" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="75" Click="LoadClick" Canvas.Top="10" IsEnabled="False" Canvas.Left="0" />
+            <Button x:Name="Refresh" Content="Refresh All" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="75" Click="LoadClick" Canvas.Top="10" IsEnabled="False" Canvas.Left="0" />
 
-            <Button x:Name="Save" Content="Save Data" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="75" Click="SaveClick" Canvas.Left="109" Canvas.Top="10" IsEnabled="False" />
+            <Button x:Name="Save" Content="Save" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Width="75" Click="SaveClick" Canvas.Left="109" Canvas.Top="10" IsEnabled="False" />
 
             <Label x:Name="Notification" Content="You can only save if a value has been changed." Canvas.Right="10" Canvas.Top="7" Width="770" Canvas.Left="200"/>
 
