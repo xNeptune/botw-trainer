@@ -1017,6 +1017,7 @@
                 this.Shields.IsEnabled = true;
                 this.Weapons.IsEnabled = true;
                 this.Armor.IsEnabled = true;
+                this.Arrows.IsEnabled = true;
                 this.Materials.IsEnabled = true;
                 this.Food.IsEnabled = true;
                 this.KeyItems.IsEnabled = true;
