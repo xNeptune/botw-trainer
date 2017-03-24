@@ -2899,49 +2899,49 @@
     },
     "Others": {
         "GameRomHorse00S": {
-            "Name": "Donkey",
+            "Name": "Donkey"
         },
         "GameRomHorseNushi": {
-            "Name": "Lord of the Mountain",
+            "Name": "Lord of the Mountain"
         },
         "WolfLink": {
-            "Name": "Wolf Link",
+            "Name": "Wolf Link"
         },
         "GameRomHorseEpona": {
-            "Name": "Epona",
+            "Name": "Epona"
         },
         "GameRomHorseBone": {
-            "Name": "Stalhorse",
+            "Name": "Stalhorse"
         },
         "Animal_Bear_B": {
-            "Name": "Grizzlemaw Bear",
+            "Name": "Grizzlemaw Bear"
         },
         "Animal_Bear_A": {
-            "Name": "Honeyvore Bear",
+            "Name": "Honeyvore Bear"
         },
         "GameRomHorse00L": {
-            "Name": "Giant Horse",
+            "Name": "Giant Horse"
         },
         "GameRomHorseZelda": {
-            "Name": "Royal White Stallion",
+            "Name": "Royal White Stallion"
         },
         "Obj_HeartUtuwa_A_01": {
-            "Name": "Heart Container",
+            "Name": "Heart Container"
         },
         "Obj_StaminaUtuwa_A_01": {
-            "Name": "Stamina Vessel",
+            "Name": "Stamina Vessel"
         },
         "Obj_Mineral_A_01": {
-            "Name": "Mineral Deposit",
+            "Name": "Mineral Deposit"
         },
         "Obj_Mineral_B_01": {
-            "Name": "SRare Mineral Deposit",
+            "Name": "Rare Mineral Deposit"
         },
         "Obj_Mineral_C_01": {
-            "Name": "Luminous Stone Deposit",
+            "Name": "Luminous Stone Deposit"
         },
         "Dm_Npc_Zelda_Sibyl ": {
-            "Name": "Zelda NPC (White Dress)",
+            "Name": "Zelda NPC (White Dress)"
         }
     },
     "Shrines": {
