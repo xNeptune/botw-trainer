@@ -7,7 +7,11 @@ This is a Trainer made for Legend of Zelda: Breath of The Wild
 
 This is not done yet and is still being improved. If you see an error in the code please create an issue.
 
-Ensure you have the latest version of DotNet Framework patched/installed (4.6.2). Offline Installer is [here](https://www.microsoft.com/en-us/download/details.aspx?id=53344). [Web installer](https://www.microsoft.com/en-us/download/details.aspx?id=53345).  Please download/run the installer if you are not sure that you have the latest framework!
+Ensure you have the latest version of DotNet Framework patched/installed (4.6.2).
+Offline Installer is [here](https://www.microsoft.com/en-us/download/details.aspx?id=53344).
+Web installer is [here](https://www.microsoft.com/en-us/download/details.aspx?id=53345).
+
+Please download/run the installer if you are not sure that you have the latest framework!
 
 Make sure you use the latest files for TCPGecko/CodeHandler, https://github.com/BullyWiiPlaza/Gecko-U-Updater is a great tool for this.
 
