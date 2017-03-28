@@ -26,7 +26,7 @@
     /// <summary>
     /// Interaction logic for MainWindow
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         // The original list of values that take effect when you save / load
         private const uint SaveItemStart = 0x3FCE7FF0;
@@ -160,7 +160,7 @@
 
                     var page = BitConverter.ToInt32(itemData.Take(4).Skip(0).Reverse().ToArray(), 0);
 
-                    if (page > 9 || page < 0)
+                    if (page < 0 || page > 9)
                     {
                         var percent = (100m / 418m) * x;
                         Dispatcher.Invoke(
@@ -176,10 +176,11 @@
                         continue;
                     }
 
-                    int unknown = BitConverter.ToInt32(itemData.Skip(4).Take(4).Reverse().ToArray(), 0);
+                    var unknown = BitConverter.ToInt32(itemData.Skip(4).Take(4).Reverse().ToArray(), 0);
                     var value = BitConverter.ToUInt32(itemData.Skip(8).Take(4).Reverse().ToArray(), 0);
-                    var equipped = BitConverter.ToUInt32(itemData.Skip(12).Take(4).ToArray(), 0);
-                    uint nameStart = currentItemAddress + 0x1C;
+                    var equipped = BitConverter.ToBoolean(itemData.Skip(12).Take(1).Reverse().ToArray(), 0);
+                    var current = BitConverter.ToBoolean(itemData.Skip(13).Take(1).Reverse().ToArray(), 0);
+                    var nameStart = currentItemAddress + 0x1C;
 
                     var builder = new StringBuilder();
                     for (var i = 0; i < 36; i++)
@@ -197,7 +198,17 @@
 
                     if (string.IsNullOrEmpty(id))
                     {
-                        throw new Exception("Can't read item at address: 0x" + nameStart.ToString("x8").ToUpper());
+                        var percent = (100m / 418m) * x;
+                        Dispatcher.Invoke(
+                            () =>
+                                {
+                                    this.LogError(new Exception("Can't read item"), "Address: 0x" + nameStart.ToString("x8").ToUpper());
+                                    ProgressText.Text = string.Format("{0}/{1}", x, 418);
+                                    this.UpdateProgress(Convert.ToInt32(percent));
+                                });
+                        currentItemAddress -= 0x220;
+                        x++;
+                        continue;
                     }
                     
                     var item = new Item
@@ -207,6 +218,7 @@
                                        Unknown = unknown,
                                        Value = value,
                                        Equipped = equipped,
+                                       Current = current,
                                        NameStart = nameStart,
                                        Id = id,
                                        Modifier1Value = this.gecko.ByteToHexBitFiddle(itemData.Skip(92).Take(4).ToArray()),
@@ -475,7 +487,8 @@
                     }
                 }
 
-                this.DebugData();
+                DebugGrid.ItemsSource = this.items;
+                DebugGrid.UpdateLayout();
                 Debug.UpdateLayout();
 
                 // clear changed after save
@@ -510,7 +523,6 @@
 
                 if (result)
                 {
-                    this.DebugData();
                     this.GetNonItemData();
 
                     this.LoadTab(this.Weapons, 0);
@@ -531,6 +543,10 @@
                     this.ddChanged.Clear();
 
                     this.Save.IsEnabled = this.HasChanged;
+
+                    DebugGrid.ItemsSource = this.items;
+                    DebugGrid.UpdateLayout();
+                    Debug.UpdateLayout();
                 }
             }
             catch (Exception ex)
@@ -802,7 +818,7 @@
                 this.RegisterName("Id_" + item.NameStartHex, id);
 
                 // Current item is red
-                if (item.EquippedBool)
+                if (item.Equipped)
                 {
                     id.Foreground = Brushes.Red;
                     name.Foreground = Brushes.Red;
@@ -876,71 +892,6 @@
             tab.Content = scroll;
         }
 
-        private void DebugData()
-        { 
-            // Debug Grid data
-            DebugGrid.ItemsSource = this.items;
-            /*
-            try
-            {
-                // Show extra info in 'Codes' tab to see if our cheats are looking in the correct place
-                var stamina1 = this.gecko.GetString(0x42439594);
-                //var stamina2 = this.gecko.GetString(0x42439598);
-                this.StaminaData.Content = stamina1; //string.Format("[0x42439594 = {0}, 0x42439598 = {1}]", stamina1, stamina2);
-
-                var health1 = this.gecko.GetUInt(0x4225B4B0);
-                var health2 = this.gecko.GetString(health1 + 0x430);
-                this.HealthData.Content = health2; //string.Format("0x{0} = {1}", (health1 + 0430).ToString("x8").ToUpper(), health2);
-
-                var rupee1 = this.gecko.GetString(0x3FC92D10);
-                //var rupee2 = this.gecko.GetString(0x4010AA0C);
-                this.RupeeData.Content = rupee1; //string.Format("[0x3FC92D10 = {0}, 0x4010AA0C = {1}]", rupee1, rupee2);
-
-                var mon1 = this.gecko.GetString(0x3FD41158);
-                //var mon2 = this.gecko.GetString(0x4010B14C);
-                this.MonData.Content = mon1; //string.Format("[0x3FD41158 = {0}, 0x4010B14C = {1}]", mon1, mon2);
-
-                var run = this.gecko.GetString(0x43A88CC4);
-                this.RunData.Content = run; //string.Format("0x43A88CC4 = {0} (Redundant really due to speed code)", run);
-
-                var speed = this.gecko.GetString(0x439BF514);
-                this.SpeedData.Content = speed; //string.Format("0x439BF514 = {0}", speed);
-
-                var weapon1 = this.gecko.GetString(0x3FCFB498);
-                //var weapon2 = this.gecko.GetString(0x4010B34C);
-                this.WeaponSlotsData.Content = weapon1; //string.Format("[0x3FCFB498 = {0}, 0x4010B34C = {1}]", weapon1, weapon2);
-
-                var bow1 = this.gecko.GetString(0x3FD4BB50);
-                //var bow2 = this.gecko.GetString(0x4011126C);
-                this.BowSlotsData.Content = bow1; //string.Format("[0x3FD4BB50 = {0}, 0x4011126C = {1}]", bow1, bow2);
-
-                var shield1 = this.gecko.GetString(0x3FCC0B40);
-                //var shield2 = this.gecko.GetString(0x4011128C);
-                this.ShieldSlotsData.Content = shield1; //string.Format("[0x3FCC0B40 = {0}, 0x4011128C = {1}]", shield1, shield2);
-
-                var key1 = this.gecko.GetString(0x3FD5CB48);
-                //var key2 = this.gecko.GetString(0x3FF6EA00);
-                this.SmallKeysData.Content = key1; //string.Format("[0x3FD5CB48 = {0}, 0x3FF6EA00 = {1}]", key1, key2);
-
-                var urbosa1 = this.gecko.GetString(0x3FCFFA80);
-                //var urbosa2 = this.gecko.GetString(0x4011BA2C);
-                this.UrbosaData.Content = urbosa1; //string.Format("[0x3FCFFA80 = {0}, 0x4011BA2C = {1}]", urbosa1, urbosa2);
-
-                var revali1 = this.gecko.GetString(0x3FD5ED90);
-                //var revali2 = this.gecko.GetString(0x4011BA0C);
-                this.RevaliData.Content = revali1; //string.Format("[0x3FD5ED90 = {0}, 0x4011BA0C = {1}]", revali1, revali2);
-
-                var daruk1 = this.gecko.GetString(0x3FD50088);
-                //var daruk2 = this.gecko.GetString(0x4011B9EC);
-                this.DarukData.Content = daruk1; //string.Format("[0x3FD50088 = {0}, 0x4011B9EC = {1}]", daruk1, daruk2);
-            }
-            catch (Exception ex)
-            {
-                this.LogError(ex, "Code");
-            }
-             */
-        }
-
         private void GetNonItemData()
         {
             // Code Tab Values
@@ -950,6 +901,8 @@
             CurrentRupees.Text = this.gecko.GetInt(0x4010AA0C).ToString(CultureInfo.InvariantCulture);
             CurrentMon.Text = this.gecko.GetInt(0x4010B14C).ToString(CultureInfo.InvariantCulture);
             CbSpeed.SelectedValue = this.gecko.GetString(0x439BF514);
+            CbDamage.SelectedValue = this.gecko.GetString(0x439B7A00);
+            CbWeather.SelectedValue = this.gecko.GetString(0x407B4CA4);
             CurrentWeaponSlots.Text = this.gecko.GetInt(0x3FCFB498).ToString(CultureInfo.InvariantCulture);
             CurrentBowSlots.Text = this.gecko.GetInt(0x3FD4BB50).ToString(CultureInfo.InvariantCulture);
             CurrentShieldSlots.Text = this.gecko.GetInt(0x3FCC0B40).ToString(CultureInfo.InvariantCulture);
@@ -1162,7 +1115,10 @@
             }
 
             paragraph.Inlines.Add(ex.Message);
-            paragraph.Inlines.Add(ex.StackTrace);
+            if (ex.StackTrace != null)
+            {
+                paragraph.Inlines.Add(ex.StackTrace);
+            }
 
             ErrorLog.Document.Blocks.Add(paragraph);
 

@@ -30,7 +30,9 @@
             Daruk = 12,
             //Keys = 13,
             Bombs = 14,
-            Whips = 15
+            Whips = 15,
+            Damage = 16,
+            Weather = 17
         }
 
         private List<Cheat> GetSelected()
@@ -105,6 +107,16 @@
             if (this.mainWindow.HorseWhips.IsChecked == true)
             {
                 selected.Add(Cheat.Whips);
+            }
+
+            if (this.mainWindow.Damage.IsChecked == true)
+            {
+                selected.Add(Cheat.Damage);
+            }
+
+            if (this.mainWindow.Weather.IsChecked == true)
+            {
+                selected.Add(Cheat.Weather);
             }
 
             return selected;
@@ -366,6 +378,26 @@
                 codes.Add(0x00000000);
                 codes.Add(0x44AFFA8F);
                 codes.Add(0x00000003);
+                codes.Add(0x00000000);
+            }
+
+            if (cheats.Contains(Cheat.Damage))
+            {
+                var value = uint.Parse(this.mainWindow.CbDamage.SelectedValue.ToString(), NumberStyles.HexNumber);
+
+                codes.Add(0x00020000);
+                codes.Add(0x439B7A00);
+                codes.Add(value);
+                codes.Add(0x00000000);
+            }
+
+            if (cheats.Contains(Cheat.Weather))
+            {
+                var value = uint.Parse(this.mainWindow.CbWeather.SelectedValue.ToString(), NumberStyles.HexNumber);
+
+                codes.Add(0x00020000);
+                codes.Add(0x407B4CA4);
+                codes.Add(value);
                 codes.Add(0x00000000);
             }
 

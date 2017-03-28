@@ -1,11 +1,12 @@
-﻿using System;
-using System.Globalization;
-using System.Windows.Data;
-using System.Windows.Media;
-using Newtonsoft.Json.Linq;
-
-namespace BotwTrainer.Json
+﻿namespace BotwTrainer.Json
 {
+    using System;
+    using System.Globalization;
+    using System.Windows.Data;
+    using System.Windows.Media;
+
+    using Newtonsoft.Json.Linq;
+
     public sealed class JPropertyTypeToColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

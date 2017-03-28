@@ -1,18 +1,21 @@
-﻿using System;
-using System.Globalization;
-using System.Linq;
-using System.Windows.Data;
-using Newtonsoft.Json.Linq;
-
-namespace BotwTrainer.Json
+﻿namespace BotwTrainer.Json
 {
+    using System;
+    using System.Globalization;
+    using System.Linq;
+    using System.Windows.Data;
+
+    using Newtonsoft.Json.Linq;
+
     public sealed class JArrayLengthConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var jToken = value as JToken;
-            if(jToken == null)
+            if (jToken == null)
+            {
                 throw new Exception("Wrong type for this converter");
+            }
 
             switch (jToken.Type)
             {

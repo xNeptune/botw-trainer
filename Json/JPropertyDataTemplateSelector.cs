@@ -1,24 +1,32 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using Newtonsoft.Json.Linq;
-
-namespace BotwTrainer.Json
+﻿namespace BotwTrainer.Json
 {
+    using System.Windows;
+    using System.Windows.Controls;
+
+    using Newtonsoft.Json.Linq;
+
     public sealed class JPropertyDataTemplateSelector : DataTemplateSelector
     {
         public DataTemplate PrimitivePropertyTemplate { get; set; }
+
         public DataTemplate ComplexPropertyTemplate { get; set; }
+
         public DataTemplate ArrayPropertyTemplate { get; set; }
+
         public DataTemplate ObjectPropertyTemplate { get; set; }
 
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
-            if(item == null)
+            if (item == null)
+            {
                 return null;
+            }
 
             var frameworkElement = container as FrameworkElement;
-            if(frameworkElement == null)
+            if (frameworkElement == null)
+            {
                 return null;
+            }
 
             var type = item.GetType();
             if (type == typeof(JProperty))

@@ -1,7 +1,6 @@
 ﻿namespace BotwTrainer
 {
     using System;
-    using System.Linq;
     using System.Windows;
 
     public class Item
@@ -80,29 +79,9 @@
             }
         }
 
-        public uint Equipped { get; set; }
+        public bool Equipped { get; set; }
 
-        public bool EquippedBool
-        {
-            get
-            {
-                try
-                {
-                    string val = BitConverter.GetBytes(Equipped).Reverse().First().ToString();
-                    return val != "0";
-                }
-                catch (ArgumentNullException argumentNullException)
-                {
-                    MessageBox.Show(argumentNullException.Message);
-                    return false;
-                }
-                catch (InvalidOperationException invalidOperationException)
-                {
-                    MessageBox.Show(invalidOperationException.Message);
-                    return false;
-                }
-            }
-        }
+        public bool Current { get; set; }
 
         public string Modifier1Value { get; set; }
 
