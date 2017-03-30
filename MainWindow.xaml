@@ -79,11 +79,11 @@
             </TabItem>
 
             <TabItem Header="Codes" x:Name="Codes" Margin="0,0,0,0" Background="Yellow">
-                <Canvas HorizontalAlignment="Left" VerticalAlignment="Top" Width="900" Height="450">
-                    <Label Content="To enable these codes check the box and click save." Height="30" Margin="0" Canvas.Left="10" Canvas.Top="8" FontSize="14" Width="642"/>
+                <Canvas HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="800" MinHeight="450">
+                    <Label Content="To enable these codes check the box and click save." Height="30" Margin="0" Canvas.Left="10" Canvas.Top="8" FontSize="14" Width="348"/>
 
-                    <Label Content="Controller Type" Height="26" Margin="0" Canvas.Left="10" Canvas.Top="38"/>
-                    <ComboBox x:Name="Controller" Canvas.Left="160" Canvas.Top="41" Width="90" SelectedValuePath="Content">
+                    <Label Content="Controller Type" Height="26" Margin="0" Canvas.Left="10" Canvas.Top="40"/>
+                    <ComboBox x:Name="Controller" Canvas.Left="160" Canvas.Top="43" Width="90" SelectedValuePath="Content">
                         <ComboBoxItem Content="Pro"/>
                         <ComboBoxItem Content="Gamepad"/>
                     </ComboBox>
@@ -120,7 +120,7 @@
                     <CheckBox x:Name="Damage" Margin="0" Canvas.Left="120" Canvas.Top="244" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
                     <ComboBox x:Name="CbDamage" Canvas.Left="160" Canvas.Top="241" Width="90" SelectedValuePath="Tag" SelectionChanged="SelectionChanged">
                         <ComboBoxItem Tag="3F000000" Content="3F000000 - 0.5"/>
-                        <ComboBoxItem Tag="3F99999A" Content="3F99999A - 1.2 (Default)"/>
+                        <ComboBoxItem Tag="3F800000" Content="3F800000 - 1.0 (Default)"/>
                         <ComboBoxItem Tag="42480000" Content="42480000 - 50"/>
                         <ComboBoxItem Tag="42C80000" Content="42C80000 - 100"/>
                         <ComboBoxItem Tag="43FA0000" Content="43FA0000 - 500"/>
@@ -137,12 +137,14 @@
                         <ComboBoxItem Tag="05000007" Content="05000007 - Fog/Snow"/>
                     </ComboBox>
 
-                    <Label Content="Moon Jump" Height="26" Canvas.Left="10" Canvas.Top="298"></Label>
-                    <CheckBox x:Name="MoonJump" Margin="0" Canvas.Left="120" Canvas.Top="304" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
-                    <Label Content="Hold X" Height="25" Margin="0" Canvas.Left="275" Canvas.Top="298"/>
+                    <Label Content="Durability" Height="26" Margin="0" Canvas.Left="10" Canvas.Top="298"/>
+                    <CheckBox x:Name="Durability" Margin="0" Canvas.Left="120" Canvas.Top="303" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
 
-                    <Label Content="Bomb Time" Height="26" Canvas.Left="10" Canvas.Top="328"></Label>
-                    <CheckBox x:Name="BombTime" Margin="0" Canvas.Left="120" Canvas.Top="334" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <Label Content="Current Hour" Height="26" Margin="0" Canvas.Left="11" Canvas.Top="330"/>
+                    <TextBox x:Name="CurrentTime" Height="25" Width="30" Margin="0" Canvas.Left="114" Canvas.Top="331" IsReadOnly="True" Text="{Binding ElementName=TimeSlider,Path=Value}"/>
+                    <Button Content="Update" Canvas.Top="331" Canvas.Left="161" Height="25" Margin="0" Click="ChangeTimeClick" Width="55"/>
+
+                    <Slider x:Name="TimeSlider" Width="240" Height="20" Orientation="Horizontal" Minimum="0" Maximum="23" Value="12" Canvas.Top="364" Canvas.Left="10" IsSnapToTickEnabled="True" TickFrequency="1" Margin="0" />
 
                     <Label Content="Horse Whips" Height="26" Canvas.Left="401" Canvas.Top="268"/>
                     <CheckBox x:Name="HorseWhips" Margin="0" Canvas.Left="511" Canvas.Top="274" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged" IsEnabled="False"/>
@@ -172,13 +174,19 @@
                     <CheckBox x:Name="ShieldSlots" Margin="0" Canvas.Left="511" Canvas.Top="244" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
                     <TextBox x:Name="CurrentShieldSlots" Height="25" Width="30" Margin="0" Canvas.Left="551" Canvas.Top="239" PreviewTextInput="NumberValidationTextBox" TextChanged="TextChanged"/>
 
-                    <Label Content="Current Hour" Height="26" Margin="0" Canvas.Left="401" Canvas.Top="304"/>
-                    <TextBox x:Name="CurrentTime" Height="25" Width="30" Margin="0" Canvas.Left="504" Canvas.Top="305" IsReadOnly="True" Text="{Binding ElementName=TimeSlider,Path=Value}"/>
-                    <Button Content="Update" Canvas.Top="305" Canvas.Left="551" Height="25" Margin="0" Click="ChangeTimeClick" Width="55"/>
+                    <Label Content="Moon Jump" Height="26" Canvas.Left="401" Canvas.Top="298"></Label>
+                    <CheckBox x:Name="MoonJump" Margin="0" Canvas.Left="511" Canvas.Top="304" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <Label Content="Hold X" Height="25" Margin="0" Canvas.Left="551" Canvas.Top="298"/>
 
-                    <Slider x:Name="TimeSlider" Width="210" Height="20" Orientation="Horizontal" Minimum="0" Maximum="23" Value="12" Canvas.Top="338" Canvas.Left="400" IsSnapToTickEnabled="True" TickFrequency="1" Margin="0" />
+                    <Label Content="Bomb Time" Height="26" Canvas.Left="401" Canvas.Top="328"></Label>
+                    <CheckBox x:Name="BombTime" Margin="0" Canvas.Left="511" Canvas.Top="334" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+
+                    <Label Content="Wolf Health" Height="26" Canvas.Left="401" Canvas.Top="358"/>
+                    <CheckBox x:Name="WolfHealth" Margin="0" Canvas.Left="511" Canvas.Top="364" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
 
                     <Button Content="Refresh Code Tab" Canvas.Top="415" Canvas.Left="10" Height="25" Margin="0" Click="RefreshCodeClick" Width="100" RenderTransformOrigin="-7.527,3.88"/>
+
+
                 </Canvas>
             </TabItem>
 
@@ -211,7 +219,6 @@
                         <Label x:Name="CoordsX" Content="0.0" Grid.Row="3" Grid.Column="0"/>
                         <Label x:Name="CoordsY" Content="0.0" Grid.Row="4" Grid.Column="0"/>
                         <Label x:Name="CoordsZ" Content="0.0" Grid.Row="5" Grid.Column="0"/>
-                        <Label x:Name="Angle" Content="0.0" Grid.Row="6" Grid.Column="0" Visibility="Hidden"/>
 
                         <Label Content="Enter coordinates or select a destination and click GO." Margin="0" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" />
 
@@ -224,7 +231,7 @@
                         <TextBox x:Name="CoordsXValue" Text="-568" Grid.Row="3" Grid.Column="1" Width="75" HorizontalAlignment="Left"/>
                         <TextBox x:Name="CoordsYValue" Text="246" Grid.Row="4" Grid.Column="1" Width="75" HorizontalAlignment="Left"/>
                         <TextBox x:Name="CoordsZValue" Text="1697" Grid.Row="5" Grid.Column="1" Width="75" HorizontalAlignment="Left"/>
-                        <Button x:Name="CoordsGo" Content="Go" Grid.Row="6" Grid.Column="1" Width="50" Click="CoordsGoClick" HorizontalAlignment="Left"></Button>
+                        <Button Content="Go" Grid.Row="6" Grid.Column="1" Width="50" Click="CoordsGoClick" HorizontalAlignment="Left"></Button>
 
 
                     </Grid>
@@ -314,7 +321,7 @@
                 </WrapPanel>
             </TabItem>
 
-            <TabItem Header="Error Log" x:Name="Error" Margin="0" Background="OrangeRed">
+            <TabItem Header="Error Log" x:Name="Error" Margin="0" Background="OrangeRed" IsEnabled="False">
                 <WrapPanel>
                     <RichTextBox x:Name="ErrorLog" IsReadOnly="True" Margin="10" BorderThickness="0">
                         <FlowDocument>

@@ -5,7 +5,6 @@
     using System.IO;
     using System.Linq;
     using System.Text;
-    using System.Windows;
 
     public class Gecko
     {
@@ -77,36 +76,15 @@
 
             COMMAND_MEMORY_SEARCH = 0x73,
 
+            COMMAND_SYS_CALL = 0x80,
+
+            COMMAND_EXECUTE_ASSEMBLY = 0x81,
+
             COMMAND_SERVER_VERSION = 0x99,
 
             COMMAND_OS_VERSION = 0x9A,
 
             COMMAND_RUN_KERNEL_COPY_SERVICE = 0xCD
-        }
-
-        public string ByteToHexBitFiddle(byte[] bytes)
-        {
-            int count;
-
-            try
-            {
-                count = bytes.Length;
-            }
-            catch (OverflowException overflowException)
-            {
-                this.mainWindow.LogError(overflowException);
-                return string.Empty;
-            }
-            var c = new char[count * 2];
-            for (var i = 0; i < count; i++)
-            {
-                var b = bytes[i] >> 4;
-                c[i * 2] = (char)(55 + b + (((b - 10) >> 31) & -7));
-                b = bytes[i] & 0xF;
-                c[i * 2 + 1] = (char)(55 + b + (((b - 10) >> 31) & -7));
-            }
-
-            return new string(c);
         }
 
         public int GetOsVersion()
@@ -550,6 +528,31 @@
             var bufferSize = BitConverter.ToUInt32(response, 0);
 
             return bufferSize;
+        }
+
+        public string ByteToHexBitFiddle(byte[] bytes)
+        {
+            int count;
+
+            try
+            {
+                count = bytes.Length;
+            }
+            catch (OverflowException overflowException)
+            {
+                this.mainWindow.LogError(overflowException);
+                return string.Empty;
+            }
+            var c = new char[count * 2];
+            for (var i = 0; i < count; i++)
+            {
+                var b = bytes[i] >> 4;
+                c[i * 2] = (char)(55 + b + (((b - 10) >> 31) & -7));
+                b = bytes[i] & 0xF;
+                c[i * 2 + 1] = (char)(55 + b + (((b - 10) >> 31) & -7));
+            }
+
+            return new string(c);
         }
     }
 }

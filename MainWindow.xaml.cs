@@ -7,6 +7,7 @@
     using System.IO;
     using System.Linq;
     using System.Net;
+    using System.Net.Sockets;
     using System.Reflection;
     using System.Text;
     using System.Text.RegularExpressions;
@@ -114,25 +115,28 @@
             try
             {
                 var file = Assembly.GetExecutingAssembly().GetManifestResourceStream("BotwTrainer.items.json");
-                using (var reader = new StreamReader(file))
+                if (file != null)
                 {
-                    var data = reader.ReadToEnd();
-                    this.json = JObject.Parse(data);
-
-                    JsonViewer.Load(data);
-
-                    // Shrine data
-                    var shrines = this.json.SelectToken("Shrines").Value<JObject>().Properties().ToList().OrderBy(x => x.Name);
-                    foreach (var shrine in shrines)
+                    using (var reader = new StreamReader(file))
                     {
-                        ShrineList.Items.Add(new ComboBoxItem { Content = shrine.Value["Name"], Tag = shrine.Name });
-                    }
+                        var data = reader.ReadToEnd();
+                        this.json = JObject.Parse(data);
 
-                    // Tower data
-                    var towers = this.json.SelectToken("Towers").Value<JObject>().Properties().ToList().OrderBy(x => x.Name);
-                    foreach (var tower in towers)
-                    {
-                        TowerList.Items.Add(new ComboBoxItem { Content = tower.Value["Name"], Tag = tower.Name });
+                        this.JsonViewer.Load(data);
+
+                        // Shrine data
+                        var shrines = this.json.SelectToken("Shrines").Value<JObject>().Properties().ToList().OrderBy(x => x.Name);
+                        foreach (var shrine in shrines)
+                        {
+                            this.ShrineList.Items.Add(new ComboBoxItem { Content = shrine.Value["Name"], Tag = shrine.Name });
+                        }
+
+                        // Tower data
+                        var towers = this.json.SelectToken("Towers").Value<JObject>().Properties().ToList().OrderBy(x => x.Name);
+                        foreach (var tower in towers)
+                        {
+                            this.TowerList.Items.Add(new ComboBoxItem { Content = tower.Value["Name"], Tag = tower.Name });
+                        }
                     }
                 }
             }
@@ -557,7 +561,6 @@
 
         private void SaveClick(object sender, RoutedEventArgs e)
         {
-            //var result = await Task.Run(() => this.SaveData((TabItem)TabControl.SelectedItem));
             this.Save.IsEnabled = false;
 
             var result = this.SaveData((TabItem)TabControl.SelectedItem);
@@ -605,8 +608,8 @@
 
             try
             {
-                uint pointer = this.gecko.GetUInt(0x439BF794);
-                uint address = pointer + 0x140;
+                var pointer = this.gecko.GetUInt(0x439BF794);
+                var address = pointer + 0x140;
 
                 Dispatcher.Invoke(
                     () =>
@@ -636,10 +639,6 @@
                     Dispatcher.Invoke(
                         () =>
                             {
-                                // previous float
-                                //var prevX = Convert.ToSingle(CoordsX.Content.ToString());
-                                //var prevZ = Convert.ToSingle(CoordsZ.Content.ToString());
-
                                 CoordsX.Content = string.Format("{0}", Math.Round(xFloat, 2));
                                 CoordsY.Content = string.Format("{0}", Math.Round(yFloat, 2));
                                 CoordsZ.Content = string.Format("{0}", Math.Round(zFloat, 2));
@@ -761,11 +760,11 @@
             var grid = this.GenerateTabGrid(tab.Name);
 
             var x = 1;
-            var list = this.items.Where(i => i.Page == page).OrderByDescending(i => i.BaseAddress);
+            var list = this.items.Where(i => i.Page == page).OrderBy(i => i.Name);
 
             if (page == 4)
             {
-                list = this.items.Where(i => i.Page == 4 || i.Page == 5 || i.Page == 6).OrderByDescending(i => i.BaseAddress);
+                list = this.items.Where(i => i.Page == 4 || i.Page == 5 || i.Page == 6).OrderBy(i => i.Name);
             }
 
             foreach (var item in list)
@@ -792,7 +791,6 @@
                 }
 
                 this.RegisterName("JsonName_" + item.NameStartHex, name);
-                
 
                 // Id
                 var id = new TextBox
@@ -840,12 +838,12 @@
                     value = 0;
                 }
 
-                var val = this.GenerateGridTextBox(value.ToString(), item.ValueAddressHex, "Value_", x, 2, 70);
+                var val = this.GenerateGridTextBox(value.ToString(CultureInfo.InvariantCulture), item.ValueAddressHex, "Value_", x, 2, 70);
                 val.PreviewTextInput += this.NumberValidationTextBox;
                 grid.Children.Add(val);
 
                 // Page
-                var pgtb = this.GenerateGridTextBox(item.Page.ToString(), item.BaseAddressHex, "Page_", x, 3, 20);
+                var pgtb = this.GenerateGridTextBox(item.Page.ToString(CultureInfo.InvariantCulture), item.BaseAddressHex, "Page_", x, 3, 20);
                 pgtb.PreviewTextInput += this.NumberValidationTextBox;
                 grid.Children.Add(pgtb);
 
@@ -901,7 +899,8 @@
             CurrentRupees.Text = this.gecko.GetInt(0x4010AA0C).ToString(CultureInfo.InvariantCulture);
             CurrentMon.Text = this.gecko.GetInt(0x4010B14C).ToString(CultureInfo.InvariantCulture);
             CbSpeed.SelectedValue = this.gecko.GetString(0x439BF514);
-            CbDamage.SelectedValue = this.gecko.GetString(0x439B7A00);
+            var damagePointer = this.gecko.GetUInt(0x43AB8C30);
+            CbDamage.SelectedValue = this.gecko.GetString(damagePointer + 0x770);
             CbWeather.SelectedValue = this.gecko.GetString(0x407B4CA4);
             CurrentWeaponSlots.Text = this.gecko.GetInt(0x3FCFB498).ToString(CultureInfo.InvariantCulture);
             CurrentBowSlots.Text = this.gecko.GetInt(0x3FD4BB50).ToString(CultureInfo.InvariantCulture);
@@ -1074,7 +1073,7 @@
         {
             var thisTb = sender as TextBox;
 
-            var exists = this.tbChanged.Where(x => x.Tag == thisTb.Tag);
+            var exists = this.tbChanged.Where(x => thisTb != null && x.Tag == thisTb.Tag);
 
             if (exists.Any())
             {
@@ -1125,8 +1124,9 @@
             ErrorLog.Document.Blocks.Add(new Paragraph());
 
             TabControl.IsEnabled = true;
+            Error.IsEnabled = true;
 
-            MessageBox.Show("Error caught. Check Error Tab");
+            //MessageBox.Show("Error caught. Check Error Tab");
         }
 
         private TextBox GenerateGridTextBox(string value, string field, string type, int x, int col, int width = 75)

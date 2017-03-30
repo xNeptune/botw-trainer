@@ -32,7 +32,9 @@
             Bombs = 14,
             Whips = 15,
             Damage = 16,
-            Weather = 17
+            Weather = 17,
+            WolfHealth = 18,
+            WeapDurability = 19
         }
 
         private List<Cheat> GetSelected()
@@ -119,6 +121,16 @@
                 selected.Add(Cheat.Weather);
             }
 
+            if (this.mainWindow.WolfHealth.IsChecked == true)
+            {
+                selected.Add(Cheat.WolfHealth);
+            }
+
+            if (this.mainWindow.Durability.IsChecked == true)
+            {
+                selected.Add(Cheat.WeapDurability);
+            }
+
             return selected;
         }
 
@@ -147,8 +159,6 @@
             if (cheats.Contains(Cheat.Health))
             {
                 var value = Convert.ToUInt32(this.mainWindow.CurrentHealth.Text);
-
-                //[0x4225B780] + 0x388
 
                 codes.Add(0x30000000);
                 codes.Add(0x4225B780);
@@ -399,6 +409,42 @@
                 codes.Add(0x407B4CA4);
                 codes.Add(value);
                 codes.Add(0x00000000);
+            }
+
+            if (cheats.Contains(Cheat.WolfHealth))
+            {
+                codes.Add(0x30000000);
+                codes.Add(0x108FC494);
+                codes.Add(0x45000000);
+                codes.Add(0x4C89FFFF);
+                codes.Add(0x31000000);
+                codes.Add(0x00000050);
+                codes.Add(0x30100000);
+                codes.Add(0x00000000);
+                codes.Add(0x45000000);
+                codes.Add(0x4C89FFFF);
+                codes.Add(0x00120160);
+                codes.Add(0x00000028);
+                codes.Add(0xD0000000);
+                codes.Add(0xDEADCAFE);
+            }
+
+            if (cheats.Contains(Cheat.WeapDurability))
+            {
+                codes.Add(0x30000000);
+                codes.Add(0x439B6730);
+                codes.Add(0x40000000);
+                codes.Add(0x48000000);
+                codes.Add(0x31000000);
+                codes.Add(0x00000040);
+                codes.Add(0x30100000);
+                codes.Add(0x00000000);
+                codes.Add(0x40000000);
+                codes.Add(0x48000000);
+                codes.Add(0x00120980);
+                codes.Add(0x0001869F);
+                codes.Add(0xD0000000);
+                codes.Add(0xDEADCAFE);
             }
 
             return codes;
