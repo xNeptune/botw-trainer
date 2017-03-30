@@ -83,30 +83,30 @@
                     <Label Content="To enable these codes check the box and click save." Height="30" Margin="0" Canvas.Left="10" Canvas.Top="8" FontSize="14" Width="348"/>
 
                     <Label Content="Controller Type" Height="26" Margin="0" Canvas.Left="10" Canvas.Top="40"/>
-                    <ComboBox x:Name="Controller" Canvas.Left="160" Canvas.Top="43" Width="90" SelectedValuePath="Content">
+                    <ComboBox x:Name="Controller" Canvas.Left="180" Canvas.Top="43" Width="90" SelectedValuePath="Content">
                         <ComboBoxItem Content="Pro"/>
                         <ComboBoxItem Content="Gamepad"/>
                     </ComboBox>
 
                     <Label Content="Stamina" Height="26" Margin="0" Canvas.Left="10" Canvas.Top="88"/>
-                    <CheckBox x:Name="Stamina" Margin="0" Canvas.Left="120" Canvas.Top="94" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged" />
-                    <TextBox x:Name="CurrentStamina" Height="25" Width="90" Margin="0" Canvas.Left="160" Canvas.Top="88" CharacterCasing="Upper" MaxLength="8" TextChanged="TextChanged"/>
+                    <CheckBox x:Name="Stamina" Margin="0" Canvas.Left="140" Canvas.Top="94" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged" />
+                    <TextBox x:Name="CurrentStamina" Height="25" Width="90" Margin="0" Canvas.Left="180" Canvas.Top="88" CharacterCasing="Upper" MaxLength="8" TextChanged="TextChanged"/>
 
                     <Label Content="Health (Max 120)" Height="26" Margin="0" Canvas.Left="10" Canvas.Top="118"/>
-                    <CheckBox x:Name="Health" Margin="0" Canvas.Left="120" Canvas.Top="124" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
-                    <TextBox x:Name="CurrentHealth" Height="25" Width="90" Margin="0" Canvas.Left="160" Canvas.Top="118" TextChanged="TextChanged"/>
+                    <CheckBox x:Name="Health" Margin="0" Canvas.Left="140" Canvas.Top="124" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <TextBox x:Name="CurrentHealth" Height="25" Width="90" Margin="0" Canvas.Left="180" Canvas.Top="118" TextChanged="TextChanged"/>
 
                     <Label Content="Rupees" Height="26" Margin="0" Canvas.Left="10" Canvas.Top="148"></Label>
-                    <CheckBox x:Name="Rupees" Margin="0" Canvas.Left="120" Canvas.Top="154" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
-                    <TextBox x:Name="CurrentRupees" Height="25" Width="90" Margin="0" Canvas.Left="160" Canvas.Top="149" PreviewTextInput="NumberValidationTextBox" TextChanged="TextChanged"/>
+                    <CheckBox x:Name="Rupees" Margin="0" Canvas.Left="140" Canvas.Top="154" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <TextBox x:Name="CurrentRupees" Height="25" Width="90" Margin="0" Canvas.Left="180" Canvas.Top="149" PreviewTextInput="NumberValidationTextBox" TextChanged="TextChanged"/>
 
                     <Label Content="Mon" Height="26" Margin="0" Canvas.Left="10" Canvas.Top="178"/>
-                    <CheckBox x:Name="Mon" Margin="0" Canvas.Left="120" Canvas.Top="184" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
-                    <TextBox x:Name="CurrentMon" Height="25" Width="90" Margin="0" Canvas.Left="160" Canvas.Top="179" PreviewTextInput="NumberValidationTextBox" TextChanged="TextChanged"/>
+                    <CheckBox x:Name="Mon" Margin="0" Canvas.Left="140" Canvas.Top="184" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <TextBox x:Name="CurrentMon" Height="25" Width="90" Margin="0" Canvas.Left="180" Canvas.Top="179" PreviewTextInput="NumberValidationTextBox" TextChanged="TextChanged"/>
 
                     <Label Content="Speed" Height="26" Margin="0" Canvas.Left="10" Canvas.Top="208"/>
-                    <CheckBox x:Name="Speed" Margin="0" Canvas.Left="120" Canvas.Top="214" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
-                    <ComboBox x:Name="CbSpeed" Canvas.Left="160" Canvas.Top="211" Width="90" SelectedValuePath="Tag" SelectionChanged="SelectionChanged">
+                    <CheckBox x:Name="Speed" Margin="0" Canvas.Left="140" Canvas.Top="214" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <ComboBox x:Name="CbSpeed" Canvas.Left="180" Canvas.Top="211" Width="90" SelectedValuePath="Tag" SelectionChanged="SelectionChanged">
                         <ComboBoxItem Tag="00000000" Content="00000000 - 0x Speed (Frozen)"/>
                         <ComboBoxItem Tag="3F800000" Content="3F800000 - 1x Speed (Default)"/>
                         <ComboBoxItem Tag="40000000" Content="40000000 - 2x Speed"/>
@@ -117,8 +117,8 @@
                     <Label Content="Hold ZL" Height="25" Margin="0" Canvas.Left="275" Canvas.Top="208"/>
 
                     <Label Content="Damage Mult." Height="26" Margin="0" Canvas.Left="10" Canvas.Top="238"/>
-                    <CheckBox x:Name="Damage" Margin="0" Canvas.Left="120" Canvas.Top="244" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
-                    <ComboBox x:Name="CbDamage" Canvas.Left="160" Canvas.Top="241" Width="90" SelectedValuePath="Tag" SelectionChanged="SelectionChanged">
+                    <CheckBox x:Name="Damage" Margin="0" Canvas.Left="140" Canvas.Top="244" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <ComboBox x:Name="CbDamage" Canvas.Left="180" Canvas.Top="241" Width="90" SelectedValuePath="Tag" SelectionChanged="SelectionChanged">
                         <ComboBoxItem Tag="3F000000" Content="3F000000 - 0.5"/>
                         <ComboBoxItem Tag="3F800000" Content="3F800000 - 1.0 (Default)"/>
                         <ComboBoxItem Tag="42480000" Content="42480000 - 50"/>
@@ -128,8 +128,8 @@
                     </ComboBox>
 
                     <Label Content="Weather" Height="26" Margin="0" Canvas.Left="10" Canvas.Top="268"/>
-                    <CheckBox x:Name="Weather" Margin="0" Canvas.Left="120" Canvas.Top="274" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
-                    <ComboBox x:Name="CbWeather" Canvas.Left="160" Canvas.Top="271" Width="90" SelectedValuePath="Tag" SelectionChanged="SelectionChanged">
+                    <CheckBox x:Name="Weather" Margin="0" Canvas.Left="140" Canvas.Top="274" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <ComboBox x:Name="CbWeather" Canvas.Left="180" Canvas.Top="271" Width="90" SelectedValuePath="Tag" SelectionChanged="SelectionChanged">
                         <ComboBoxItem Tag="01030002" Content="01030002 - Cloudy"/>
                         <ComboBoxItem Tag="03010002" Content="03010002 - Raining"/>
                         <ComboBoxItem Tag="00010002" Content="00010002 - Sunny"/>
@@ -137,14 +137,16 @@
                         <ComboBoxItem Tag="05000007" Content="05000007 - Fog/Snow"/>
                     </ComboBox>
 
-                    <Label Content="Durability" Height="26" Margin="0" Canvas.Left="10" Canvas.Top="298"/>
-                    <CheckBox x:Name="Durability" Margin="0" Canvas.Left="120" Canvas.Top="303" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <Label Content="Durability: W | S | B" Height="26" Margin="0" Canvas.Left="10" Canvas.Top="298"/>
+                    <CheckBox x:Name="WeaponDurability" Margin="0" Canvas.Left="140" Canvas.Top="305" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged" ToolTip="Weapon"/>
+                    <CheckBox x:Name="ShieldDurability" Margin="0" Canvas.Left="180" Canvas.Top="305" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged" ToolTip="Shield"/>
+                    <CheckBox x:Name="BowDurability" Margin="0" Canvas.Left="220" Canvas.Top="305" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged" ToolTip="Bow"/>
 
-                    <Label Content="Current Hour" Height="26" Margin="0" Canvas.Left="11" Canvas.Top="330"/>
-                    <TextBox x:Name="CurrentTime" Height="25" Width="30" Margin="0" Canvas.Left="114" Canvas.Top="331" IsReadOnly="True" Text="{Binding ElementName=TimeSlider,Path=Value}"/>
-                    <Button Content="Update" Canvas.Top="331" Canvas.Left="161" Height="25" Margin="0" Click="ChangeTimeClick" Width="55"/>
+                    <Label Content="Current Hour" Height="26" Margin="0" Canvas.Left="11" Canvas.Top="340"/>
+                    <TextBox x:Name="CurrentTime" Height="25" Width="30" Margin="0" Canvas.Left="134" Canvas.Top="341" IsReadOnly="True" Text="{Binding ElementName=TimeSlider,Path=Value}"/>
+                    <Button Content="Update" Canvas.Top="341" Canvas.Left="181" Height="25" Margin="0" Click="ChangeTimeClick" Width="55"/>
 
-                    <Slider x:Name="TimeSlider" Width="240" Height="20" Orientation="Horizontal" Minimum="0" Maximum="23" Value="12" Canvas.Top="364" Canvas.Left="10" IsSnapToTickEnabled="True" TickFrequency="1" Margin="0" />
+                    <Slider x:Name="TimeSlider" Width="240" Height="20" Orientation="Horizontal" Minimum="0" Maximum="23" Value="12" Canvas.Top="374" Canvas.Left="10" IsSnapToTickEnabled="True" TickFrequency="1" Margin="0" />
 
                     <Label Content="Horse Whips" Height="26" Canvas.Left="401" Canvas.Top="268"/>
                     <CheckBox x:Name="HorseWhips" Margin="0" Canvas.Left="511" Canvas.Top="274" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged" IsEnabled="False"/>

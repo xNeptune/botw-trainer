@@ -34,7 +34,9 @@
             Damage = 16,
             Weather = 17,
             WolfHealth = 18,
-            WeapDurability = 19
+            WeaponDurability = 19,
+            ShieldDurability = 20,
+            BowDurability = 21
         }
 
         private List<Cheat> GetSelected()
@@ -126,9 +128,19 @@
                 selected.Add(Cheat.WolfHealth);
             }
 
-            if (this.mainWindow.Durability.IsChecked == true)
+            if (this.mainWindow.WeaponDurability.IsChecked == true)
             {
-                selected.Add(Cheat.WeapDurability);
+                selected.Add(Cheat.WeaponDurability);
+            }
+
+            if (this.mainWindow.ShieldDurability.IsChecked == true)
+            {
+                selected.Add(Cheat.ShieldDurability);
+            }
+
+            if (this.mainWindow.BowDurability.IsChecked == true)
+            {
+                selected.Add(Cheat.BowDurability);
             }
 
             return selected;
@@ -429,7 +441,7 @@
                 codes.Add(0xDEADCAFE);
             }
 
-            if (cheats.Contains(Cheat.WeapDurability))
+            if (cheats.Contains(Cheat.WeaponDurability))
             {
                 codes.Add(0x30000000);
                 codes.Add(0x439B6730);
@@ -442,7 +454,43 @@
                 codes.Add(0x40000000);
                 codes.Add(0x48000000);
                 codes.Add(0x00120980);
-                codes.Add(0x0001869F);
+                codes.Add(0x0063FF9C);
+                codes.Add(0xD0000000);
+                codes.Add(0xDEADCAFE);
+            }
+
+            if (cheats.Contains(Cheat.ShieldDurability))
+            {
+                codes.Add(0x30000000);
+                codes.Add(0x439B6740);
+                codes.Add(0x40000000);
+                codes.Add(0x48000000);
+                codes.Add(0x31000000);
+                codes.Add(0x00000040);
+                codes.Add(0x30100000);
+                codes.Add(0x00000000);
+                codes.Add(0x40000000);
+                codes.Add(0x48000000);
+                codes.Add(0x00120980);
+                codes.Add(0x0063FF9C);
+                codes.Add(0xD0000000);
+                codes.Add(0xDEADCAFE);
+            }
+
+            if (cheats.Contains(Cheat.BowDurability))
+            {
+                codes.Add(0x30000000);
+                codes.Add(0x439B6750);
+                codes.Add(0x40000000);
+                codes.Add(0x48000000);
+                codes.Add(0x31000000);
+                codes.Add(0x00000040);
+                codes.Add(0x30100000);
+                codes.Add(0x00000000);
+                codes.Add(0x40000000);
+                codes.Add(0x48000000);
+                codes.Add(0x00120980);
+                codes.Add(0x0063FF9C);
                 codes.Add(0xD0000000);
                 codes.Add(0xDEADCAFE);
             }
