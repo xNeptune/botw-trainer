@@ -1,5 +1,8 @@
 # Legend of Zelda: Breath of The Wild Trainer
-Version Of The Game Needed: 1.1 (v33)
+
+# Version Of The Game Needed: 1.1 (v33)
+
+## This trainer won't work with the latest update until we find the new offsets
 
 ## About
 
