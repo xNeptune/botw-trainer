@@ -2,3 +2,5 @@ obj/
 bin/
 notes.txt
 _bak/
+.vs/
+packages/

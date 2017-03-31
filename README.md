@@ -1,5 +1,8 @@
 # Legend of Zelda: Breath of The Wild Trainer
-Version Of The Game Needed: 1.1 (v33)
+
+# Version Of The Game Needed: 1.1 (v33)
+
+## This trainer won't work with the latest update until we find the new offsets
 
 ## About
 
@@ -7,7 +10,17 @@ This is a Trainer made for Legend of Zelda: Breath of The Wild
 
 This is not done yet and is still being improved. If you see an error in the code please create an issue.
 
-Make sure you use the latest files, https://github.com/BullyWiiPlaza/Gecko-U-Updater is a great tool for this.
+Ensure you have the latest version of DotNet Framework patched/installed (4.6.2).
+Offline Installer is [here](https://www.microsoft.com/en-us/download/details.aspx?id=53344).
+Web installer is [here](https://www.microsoft.com/en-us/download/details.aspx?id=53345).
+
+Please download/run the installer if you are not sure that you have the latest framework!
+
+Make sure you use the latest files for TCPGecko/CodeHandler, https://github.com/BullyWiiPlaza/Gecko-U-Updater is a great tool for this.
+
+The latest version of the compiled trainer can be found [here](https://github.com/joffnerd/botw-trainer/releases).
+
+To avoid crashing and unwanted errors please wait until you have loaded into your save file before using the "connect" feature on the trainer.
 
 ## How To Use
 
@@ -24,9 +37,9 @@ Make sure you use the latest files, https://github.com/BullyWiiPlaza/Gecko-U-Upd
 6. Edit what you want
 
 ## Contributors
-Program and Codes: [PandaOnSmack](http://gbatemp.net/members/pandaonsmack.374906/)
+Program / Codes: [PandaOnSmack](http://gbatemp.net/members/pandaonsmack.374906/) / GBA Temp Users
 
-ReadMe: [AecdArmy](http://gbatemp.net/members/aecdarmy.378662/)
+ReadMe: [AecdArmy](http://gbatemp.net/members/aecdarmy.378662/) / totesadorbs
 
 See Credits Tab for full list
 
