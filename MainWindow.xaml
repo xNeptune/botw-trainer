@@ -132,7 +132,7 @@
                     <ComboBox x:Name="CbWeather" Canvas.Left="180" Canvas.Top="271" Width="90" SelectedValuePath="Tag" SelectionChanged="SelectionChanged">
                         <ComboBoxItem Tag="01030002" Content="01030002 - Cloudy"/>
                         <ComboBoxItem Tag="03010002" Content="03010002 - Raining"/>
-                        <ComboBoxItem Tag="00010002" Content="00010002 - Sunny"/>
+                        <ComboBoxItem Tag="00010002" Content="00000100 - Sunny"/>
                         <ComboBoxItem Tag="07000007" Content="07000007 - Lightning"/>
                         <ComboBoxItem Tag="05000007" Content="05000007 - Fog/Snow"/>
                     </ComboBox>
@@ -233,7 +233,7 @@
                         <TextBox x:Name="CoordsXValue" Text="-568" Grid.Row="3" Grid.Column="1" Width="75" HorizontalAlignment="Left"/>
                         <TextBox x:Name="CoordsYValue" Text="246" Grid.Row="4" Grid.Column="1" Width="75" HorizontalAlignment="Left"/>
                         <TextBox x:Name="CoordsZValue" Text="1697" Grid.Row="5" Grid.Column="1" Width="75" HorizontalAlignment="Left"/>
-                        <Button Content="Go" Grid.Row="6" Grid.Column="1" Width="50" Click="CoordsGoClick" HorizontalAlignment="Left"></Button>
+                        <Button Content="Go" Grid.Row="6" Grid.Column="1" Width="50" Click="CoordsGoClick" HorizontalAlignment="Left"/>
 
 
                     </Grid>
@@ -320,6 +320,7 @@
                     <Label Content="Paula"></Label>
                     <Label Content="mancoast"></Label>
                     <Label Content="skoolzout1"></Label>
+                    <Label Content="RandomUser"></Label>
                 </WrapPanel>
             </TabItem>
 

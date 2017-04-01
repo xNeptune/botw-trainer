@@ -158,12 +158,12 @@
                 var value = uint.Parse(this.mainWindow.CurrentStamina.Text, NumberStyles.HexNumber);
 
                 codes.Add(0x00020000);
-                codes.Add(0x42439594);
+                codes.Add(0x4243A594);
                 codes.Add(value);
                 codes.Add(0x00000000);
 
                 codes.Add(0x00020000);
-                codes.Add(0x42439598);
+                codes.Add(0x4243A598);
                 codes.Add(value);
                 codes.Add(0x00000000);
             }
@@ -173,7 +173,7 @@
                 var value = Convert.ToUInt32(this.mainWindow.CurrentHealth.Text);
 
                 codes.Add(0x30000000);
-                codes.Add(0x4225B780);
+                codes.Add(0x4225C780);
                 codes.Add(0x43000000);
                 codes.Add(0x46000000);
                 codes.Add(0x00120388);
@@ -201,7 +201,7 @@
                 codes.Add(0x00000080);
                 codes.Add(0x00000000);
                 codes.Add(0x00020000);
-                codes.Add(0x439BF514);
+                codes.Add(0x439C0514);
                 codes.Add(value);
                 codes.Add(0x00000000);
                 codes.Add(0xD0000000);
@@ -212,7 +212,7 @@
                 codes.Add(0x00000080);
                 codes.Add(0x00000000);
                 codes.Add(0x00020000);
-                codes.Add(0x439BF514);
+                codes.Add(0x439C0514);
                 codes.Add(0x3F800000);
                 codes.Add(0x00000000);
                 codes.Add(0xD0000000);
@@ -224,12 +224,12 @@
                 var value = Convert.ToUInt32(this.mainWindow.CurrentRupees.Text);
 
                 codes.Add(0x00020000);
-                codes.Add(0x3FC92D10);
+                codes.Add(0x3FC93D10);
                 codes.Add(value);
                 codes.Add(0x00000000);
 
                 codes.Add(0x00020000);
-                codes.Add(0x4010AA0C);
+                codes.Add(0x4010BA4C);
                 codes.Add(value);
                 codes.Add(0x00000000);
             }
@@ -239,12 +239,12 @@
                 var value = Convert.ToUInt32(this.mainWindow.CurrentMon.Text);
 
                 codes.Add(0x00020000);
-                codes.Add(0x3FD41158);
+                codes.Add(0x3FD42158);
                 codes.Add(value);
                 codes.Add(0x00000000);
-
+                
                 codes.Add(0x00020000);
-                codes.Add(0x4010B14C);
+                codes.Add(0x4010C18C);
                 codes.Add(value);
                 codes.Add(0x00000000);
             }
@@ -269,7 +269,7 @@
                 codes.Add(button);
                 codes.Add(0x00000000);
                 codes.Add(0x00020000);
-                codes.Add(0x439BF528);
+                codes.Add(0x439C0528);
                 codes.Add(0xBE800000);
                 codes.Add(0x00000000);
                 codes.Add(0xD0000000);
@@ -280,7 +280,7 @@
                 codes.Add(button);
                 codes.Add(0x00000000);
                 codes.Add(0x00020000);
-                codes.Add(0x439BF528);
+                codes.Add(0x439C0528);
                 codes.Add(0x3F800000);
                 codes.Add(0x00000000);
                 codes.Add(0xD0000000);
@@ -292,12 +292,12 @@
                 var value = Convert.ToUInt32(this.mainWindow.CurrentWeaponSlots.Text);
 
                 codes.Add(0x00020000);
-                codes.Add(0x3FCFB498);
+                codes.Add(0x3FCFC498);
                 codes.Add(value);
                 codes.Add(0x00000000);
 
                 codes.Add(0x00020000);
-                codes.Add(0x4010B34C);
+                codes.Add(0x4010C38C);
                 codes.Add(value);
                 codes.Add(0x00000000);
             }
@@ -307,12 +307,12 @@
                 var value = Convert.ToUInt32(this.mainWindow.CurrentBowSlots.Text);
 
                 codes.Add(0x00020000);
-                codes.Add(0x3FD4BB50);
+                codes.Add(0x3FD4CB50);
                 codes.Add(value);
                 codes.Add(0x00000000);
 
                 codes.Add(0x00020000);
-                codes.Add(0x4011126C);
+                codes.Add(0x401122AC);
                 codes.Add(value);
                 codes.Add(0x00000000);
             }
@@ -322,12 +322,12 @@
                 var value = Convert.ToUInt32(this.mainWindow.CurrentShieldSlots.Text);
 
                 codes.Add(0x00020000);
-                codes.Add(0x3FCC0B40);
+                codes.Add(0x3FCC1B40);
                 codes.Add(value);
                 codes.Add(0x00000000);
 
                 codes.Add(0x00020000);
-                codes.Add(0x4011128C);
+                codes.Add(0x401122CC);
                 codes.Add(value);
                 codes.Add(0x00000000);
             }
@@ -337,12 +337,12 @@
                 var value = Convert.ToUInt32(this.mainWindow.CurrentUrbosa.Text);
 
                 codes.Add(0x00020000);
-                codes.Add(0x3FCFFA80);
+                codes.Add(0x3FD00A80);
                 codes.Add(value);
                 codes.Add(0x00000000);
 
                 codes.Add(0x00020000);
-                codes.Add(0x4011BA2C);
+                codes.Add(0x4011CA6C);
                 codes.Add(value);
                 codes.Add(0x00000000);
             }
@@ -352,12 +352,12 @@
                 var value = Convert.ToUInt32(this.mainWindow.CurrentRevali.Text);
 
                 codes.Add(0x00020000);
-                codes.Add(0x3FD5ED90);
+                codes.Add(0x3FD5FD90);
                 codes.Add(value);
                 codes.Add(0x00000000);
 
                 codes.Add(0x00020000);
-                codes.Add(0x4011BA0C);
+                codes.Add(0x4011CA4C);
                 codes.Add(value);
                 codes.Add(0x00000000);
             }
@@ -367,12 +367,12 @@
                 var value = Convert.ToUInt32(this.mainWindow.CurrentDaruk.Text);
 
                 codes.Add(0x00020000);
-                codes.Add(0x3FD50088);
+                codes.Add(0x3FD51088);
                 codes.Add(value);
                 codes.Add(0x00000000);
 
                 codes.Add(0x00020000);
-                codes.Add(0x4011B9EC);
+                codes.Add(0x4011CA2C);
                 codes.Add(value);
                 codes.Add(0x00000000);
             }
@@ -380,12 +380,12 @@
             if (cheats.Contains(Cheat.Bombs))
             {
                 codes.Add(0x00020000);
-                codes.Add(0x4383DA34);
+                codes.Add(0x4383EA34);
                 codes.Add(0x45B70000);
                 codes.Add(0x00000000);
 
                 codes.Add(0x00020000);
-                codes.Add(0x4383DA4C);
+                codes.Add(0x4383EA4C);
                 codes.Add(0x45B70000);
                 codes.Add(0x00000000);
             }
@@ -393,24 +393,29 @@
             if (cheats.Contains(Cheat.Whips))
             {
                 codes.Add(0x00000000);
-                codes.Add(0x4011124F);
-                codes.Add(0x00000003);
+                codes.Add(0x4011224F);
+                codes.Add(0x000000FF);
                 codes.Add(0x00000000);
-
+                /*
                 codes.Add(0x00000000);
                 codes.Add(0x44AFFA8F);
-                codes.Add(0x00000003);
+                codes.Add(0x000000FF);
                 codes.Add(0x00000000);
+                 */
             }
 
             if (cheats.Contains(Cheat.Damage))
             {
                 var value = uint.Parse(this.mainWindow.CbDamage.SelectedValue.ToString(), NumberStyles.HexNumber);
 
-                codes.Add(0x00020000);
-                codes.Add(0x439B7A00);
+                codes.Add(0x30000000);
+                codes.Add(0x43AB9C30);
+                codes.Add(0x41000000);
+                codes.Add(0x46000000);
+                codes.Add(0x00120770);
                 codes.Add(value);
-                codes.Add(0x00000000);
+                codes.Add(0xD0000000);
+                codes.Add(0xDEADCAFE);
             }
 
             if (cheats.Contains(Cheat.Weather))
@@ -418,7 +423,7 @@
                 var value = uint.Parse(this.mainWindow.CbWeather.SelectedValue.ToString(), NumberStyles.HexNumber);
 
                 codes.Add(0x00020000);
-                codes.Add(0x407B4CA4);
+                codes.Add(0x407B5CE4);
                 codes.Add(value);
                 codes.Add(0x00000000);
             }
@@ -426,7 +431,7 @@
             if (cheats.Contains(Cheat.WolfHealth))
             {
                 codes.Add(0x30000000);
-                codes.Add(0x108FC494);
+                codes.Add(0x108FC4D4);
                 codes.Add(0x45000000);
                 codes.Add(0x4C89FFFF);
                 codes.Add(0x31000000);
@@ -444,7 +449,7 @@
             if (cheats.Contains(Cheat.WeaponDurability))
             {
                 codes.Add(0x30000000);
-                codes.Add(0x439B6730);
+                codes.Add(0x45188784);
                 codes.Add(0x40000000);
                 codes.Add(0x48000000);
                 codes.Add(0x31000000);
@@ -462,7 +467,7 @@
             if (cheats.Contains(Cheat.ShieldDurability))
             {
                 codes.Add(0x30000000);
-                codes.Add(0x439B6740);
+                codes.Add(0x451887E0);
                 codes.Add(0x40000000);
                 codes.Add(0x48000000);
                 codes.Add(0x31000000);
@@ -480,7 +485,7 @@
             if (cheats.Contains(Cheat.BowDurability))
             {
                 codes.Add(0x30000000);
-                codes.Add(0x439B6750);
+                codes.Add(0x4518883C);
                 codes.Add(0x40000000);
                 codes.Add(0x48000000);
                 codes.Add(0x31000000);

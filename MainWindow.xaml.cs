@@ -7,7 +7,6 @@
     using System.IO;
     using System.Linq;
     using System.Net;
-    using System.Net.Sockets;
     using System.Reflection;
     using System.Text;
     using System.Text.RegularExpressions;
@@ -30,7 +29,7 @@
     public partial class MainWindow
     {
         // The original list of values that take effect when you save / load
-        private const uint SaveItemStart = 0x3FCE7FF0;
+        private const uint SaveItemStart = 0x3FCE8FF0;
 
         // Technically your first item as they are stored in reverse so we work backwards
         private const uint ItemEnd = 0x43CA2AEC;
@@ -588,8 +587,8 @@
 
             var bytes = ms.ToArray();
 
-            uint pointer = this.gecko.GetUInt(0x439BF794);
-            uint address = pointer + 0x140;
+            var pointer = this.gecko.GetUInt(0x439C0794);
+            var address = pointer + 0x140;
 
             this.gecko.WriteBytes(address, bytes);
         }
@@ -598,7 +597,7 @@
         {
             var hour = Convert.ToSingle(CurrentTime.Text) * 15;
 
-            var timePointer = this.gecko.GetUInt(0x407AABB0);
+            var timePointer = this.gecko.GetUInt(0x407ABBF0);
             this.gecko.WriteFloat(timePointer + 0x9C, hour);
         }
 
@@ -608,7 +607,7 @@
 
             try
             {
-                var pointer = this.gecko.GetUInt(0x439BF794);
+                var pointer = this.gecko.GetUInt(0x439C0794);
                 var address = pointer + 0x140;
 
                 Dispatcher.Invoke(
@@ -893,24 +892,29 @@
         private void GetNonItemData()
         {
             // Code Tab Values
-            CurrentStamina.Text = this.gecko.GetString(0x42439598);
-            var healthPointer = this.gecko.GetUInt(0x4225B780);
+            CurrentStamina.Text = this.gecko.GetString(0x4243A598);
+            var healthPointer = this.gecko.GetUInt(0x4225C780);
             CurrentHealth.Text = this.gecko.GetInt(healthPointer + 0x388).ToString(CultureInfo.InvariantCulture);
-            CurrentRupees.Text = this.gecko.GetInt(0x4010AA0C).ToString(CultureInfo.InvariantCulture);
-            CurrentMon.Text = this.gecko.GetInt(0x4010B14C).ToString(CultureInfo.InvariantCulture);
-            CbSpeed.SelectedValue = this.gecko.GetString(0x439BF514);
-            var damagePointer = this.gecko.GetUInt(0x43AB8C30);
+            CurrentRupees.Text = this.gecko.GetInt(0x4010BA4C).ToString(CultureInfo.InvariantCulture);
+            CurrentMon.Text = this.gecko.GetInt(0x4010C18C).ToString(CultureInfo.InvariantCulture);
+            CurrentWeaponSlots.Text = this.gecko.GetInt(0x4010C38C).ToString(CultureInfo.InvariantCulture);
+            CurrentBowSlots.Text = this.gecko.GetInt(0x401122AC).ToString(CultureInfo.InvariantCulture);
+            CurrentShieldSlots.Text = this.gecko.GetInt(0x401122CC).ToString(CultureInfo.InvariantCulture);
+            CurrentUrbosa.Text = this.gecko.GetInt(0x4011CA6C).ToString(CultureInfo.InvariantCulture);
+            CurrentRevali.Text = this.gecko.GetInt(0x4011CA4C).ToString(CultureInfo.InvariantCulture);
+            CurrentDaruk.Text = this.gecko.GetInt(0x4011CA2C).ToString(CultureInfo.InvariantCulture);
+
+            var damagePointer = this.gecko.GetUInt(0x43AB9C30);
             CbDamage.SelectedValue = this.gecko.GetString(damagePointer + 0x770);
-            CbWeather.SelectedValue = this.gecko.GetString(0x407B4CA4);
-            CurrentWeaponSlots.Text = this.gecko.GetInt(0x3FCFB498).ToString(CultureInfo.InvariantCulture);
-            CurrentBowSlots.Text = this.gecko.GetInt(0x3FD4BB50).ToString(CultureInfo.InvariantCulture);
-            CurrentShieldSlots.Text = this.gecko.GetInt(0x3FCC0B40).ToString(CultureInfo.InvariantCulture);
-            CurrentUrbosa.Text = this.gecko.GetInt(0x3FCFFA80).ToString(CultureInfo.InvariantCulture);
-            CurrentRevali.Text = this.gecko.GetInt(0x3FD5ED90).ToString(CultureInfo.InvariantCulture);
-            CurrentDaruk.Text = this.gecko.GetInt(0x3FD50088).ToString(CultureInfo.InvariantCulture);
+            CbSpeed.SelectedValue = this.gecko.GetString(0x439C0514);
+            CbWeather.SelectedValue = this.gecko.GetString(0x407B5CE4);
+
             var time = this.GetCurrentTime();
             CurrentTime.Text = time.ToString(CultureInfo.InvariantCulture);
             TimeSlider.Value = time;
+
+            //CurrentMipha.Text = this.gecko.GetInt(0x3FD50088).ToString(CultureInfo.InvariantCulture);
+
 
             this.tbChanged.Clear();
             this.cbChanged.Clear();
@@ -1289,7 +1293,7 @@
         {
             try
             {
-                var timePointer = this.gecko.GetUInt(0x407AABB0);
+                var timePointer = this.gecko.GetUInt(0x407ABBF0);
 
                 var time = this.gecko.GetFloat(timePointer + 0x98);
 
