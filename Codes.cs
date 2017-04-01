@@ -28,7 +28,7 @@
             Urbosa = 10,
             Revali = 11,
             Daruk = 12,
-            //Keys = 13,
+            Mipha = 13,
             Bombs = 14,
             Whips = 15,
             Damage = 16,
@@ -36,7 +36,11 @@
             WolfHealth = 18,
             WeaponDurability = 19,
             ShieldDurability = 20,
-            BowDurability = 21
+            BowDurability = 21,
+            MasterCharge = 22,
+            StasisCooldown = 23,
+            Stealthy = 24,
+            Amiibo = 25
         }
 
         private List<Cheat> GetSelected()
@@ -103,6 +107,11 @@
                 selected.Add(Cheat.Daruk);
             }
 
+            if (this.mainWindow.Mipha.IsChecked == true)
+            {
+                selected.Add(Cheat.Mipha);
+            }
+
             if (this.mainWindow.BombTime.IsChecked == true)
             {
                 selected.Add(Cheat.Bombs);
@@ -141,6 +150,26 @@
             if (this.mainWindow.BowDurability.IsChecked == true)
             {
                 selected.Add(Cheat.BowDurability);
+            }
+
+            if (this.mainWindow.MasterCharge.IsChecked == true)
+            {
+                selected.Add(Cheat.MasterCharge);
+            }
+
+            if (this.mainWindow.StasisCooldown.IsChecked == true)
+            {
+                selected.Add(Cheat.StasisCooldown);
+            }
+
+            if (this.mainWindow.Stealthy.IsChecked == true)
+            {
+                selected.Add(Cheat.Stealthy);
+            }
+
+            if (this.mainWindow.Amiibo.IsChecked == true)
+            {
+                selected.Add(Cheat.Amiibo);
             }
 
             return selected;
@@ -377,6 +406,20 @@
                 codes.Add(0x00000000);
             }
 
+            if (cheats.Contains(Cheat.Mipha))
+            {
+                codes.Add(0x30000000);
+                codes.Add(0x43ABA020);
+                codes.Add(0x10000000);
+                codes.Add(0x50000000);
+                codes.Add(0x31000000);
+                codes.Add(0x0000047C);
+                codes.Add(0x00120000);
+                codes.Add(0x00000000);
+                codes.Add(0xD0000000);
+                codes.Add(0xDEADCAFE);
+            }
+
             if (cheats.Contains(Cheat.Bombs))
             {
                 codes.Add(0x00020000);
@@ -498,6 +541,48 @@
                 codes.Add(0x0063FF9C);
                 codes.Add(0xD0000000);
                 codes.Add(0xDEADCAFE);
+            }
+
+            if (cheats.Contains(Cheat.MasterCharge))
+            {
+                codes.Add(0x30000000);
+                codes.Add(0x43ABA020);
+                codes.Add(0x10000000);
+                codes.Add(0x50000000);
+                codes.Add(0x31000000);
+                codes.Add(0x00000488);
+                codes.Add(0x05120000);
+                codes.Add(0x00000000);
+                codes.Add(0x40800000);
+                codes.Add(0x00000000);
+                codes.Add(0x00120000);
+                codes.Add(0x40200000);
+                codes.Add(0xD0000000);
+                codes.Add(0xDEADCAFE);
+            }
+
+            if (cheats.Contains(Cheat.StasisCooldown))
+            {
+                codes.Add(0x00020000);
+                codes.Add(0x4383EABC);
+                codes.Add(0x00000000);
+                codes.Add(0x00000000);
+            }
+
+            if (cheats.Contains(Cheat.Stealthy))
+            {
+                codes.Add(0x00020000);
+                codes.Add(0x43A5FCA8);
+                codes.Add(0x00000000);
+                codes.Add(0x00000000);
+            }
+
+            if (cheats.Contains(Cheat.Amiibo))
+            {
+                codes.Add(0x00020000);
+                codes.Add(0x4011C28C);
+                codes.Add(0x012C9985);
+                codes.Add(0x00000000);
             }
 
             return codes;

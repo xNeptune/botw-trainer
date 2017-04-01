@@ -79,7 +79,7 @@
             </TabItem>
 
             <TabItem Header="Codes" x:Name="Codes" Margin="0,0,0,0" Background="Yellow">
-                <Canvas HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="800" MinHeight="450">
+                <Canvas HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="800" MinHeight="500">
                     <Label Content="To enable these codes check the box and click save." Height="30" Margin="0" Canvas.Left="10" Canvas.Top="8" FontSize="14" Width="348"/>
 
                     <Label Content="Controller Type" Height="26" Margin="0" Canvas.Left="10" Canvas.Top="40"/>
@@ -142,27 +142,30 @@
                     <CheckBox x:Name="ShieldDurability" Margin="0" Canvas.Left="180" Canvas.Top="305" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged" ToolTip="Shield"/>
                     <CheckBox x:Name="BowDurability" Margin="0" Canvas.Left="220" Canvas.Top="305" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged" ToolTip="Bow"/>
 
-                    <Label Content="Current Hour" Height="26" Margin="0" Canvas.Left="11" Canvas.Top="340"/>
-                    <TextBox x:Name="CurrentTime" Height="25" Width="30" Margin="0" Canvas.Left="134" Canvas.Top="341" IsReadOnly="True" Text="{Binding ElementName=TimeSlider,Path=Value}"/>
-                    <Button Content="Update" Canvas.Top="341" Canvas.Left="181" Height="25" Margin="0" Click="ChangeTimeClick" Width="55"/>
+                    <Label Content="Current Hour" Height="26" Margin="0" Canvas.Left="11" Canvas.Top="370"/>
+                    <TextBox x:Name="CurrentTime" Height="25" Width="30" Margin="0" Canvas.Left="134" Canvas.Top="371" IsReadOnly="True" Text="{Binding ElementName=TimeSlider,Path=Value}"/>
+                    <Button Content="Update" Canvas.Top="371" Canvas.Left="181" Height="25" Margin="0" Click="ChangeTimeClick" Width="55"/>
 
-                    <Slider x:Name="TimeSlider" Width="240" Height="20" Orientation="Horizontal" Minimum="0" Maximum="23" Value="12" Canvas.Top="374" Canvas.Left="10" IsSnapToTickEnabled="True" TickFrequency="1" Margin="0" />
+                    <Slider x:Name="TimeSlider" Width="240" Height="20" Orientation="Horizontal" Minimum="0" Maximum="23" Value="12" Canvas.Top="404" Canvas.Left="10" IsSnapToTickEnabled="True" TickFrequency="1" Margin="0" />
 
-                    <Label Content="Horse Whips" Height="26" Canvas.Left="401" Canvas.Top="268"/>
-                    <CheckBox x:Name="HorseWhips" Margin="0" Canvas.Left="511" Canvas.Top="274" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged" IsEnabled="False"/>
-                    <Label Content="Disabled, bad code" Height="25" Margin="0" Canvas.Left="551" Canvas.Top="268"/>
+                    <Label Content="Horse Whips" Height="26" Canvas.Left="9" Canvas.Top="329"/>
+                    <CheckBox x:Name="HorseWhips" Margin="0" Canvas.Left="140" Canvas.Top="335" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged" IsEnabled="False"/>
+                    <Label Content="Disabled, bad code" Height="25" Margin="0" Canvas.Left="179" Canvas.Top="329"/>
 
-                    <Label Content="Urbosa's Fury" Height="26" Margin="0" Canvas.Left="401" Canvas.Top="88"/>
-                    <CheckBox x:Name="Urbosa" Margin="0" Canvas.Left="511" Canvas.Top="94" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
-                    <TextBox x:Name="CurrentUrbosa" Height="25" Width="30" Margin="0" Canvas.Left="551" Canvas.Top="89" PreviewTextInput="NumberValidationTextBox" TextChanged="TextChanged"/>
+                    <Label Content="Urbosa's Fury" Height="26" Margin="0" Canvas.Left="401" Canvas.Top="58"/>
+                    <CheckBox x:Name="Urbosa" Margin="0" Canvas.Left="511" Canvas.Top="64" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <TextBox x:Name="CurrentUrbosa" Height="25" Width="30" Margin="0" Canvas.Left="551" Canvas.Top="59" PreviewTextInput="NumberValidationTextBox" TextChanged="TextChanged"/>
 
-                    <Label Content="Revali's Gale" Height="26" Margin="0" Canvas.Top="118" Canvas.Left="401"/>
-                    <CheckBox x:Name="Revali" Margin="0" Canvas.Left="511" Canvas.Top="124" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
-                    <TextBox x:Name="CurrentRevali" Height="25" Width="30" Margin="0" Canvas.Left="551" Canvas.Top="119" PreviewTextInput="NumberValidationTextBox" TextChanged="TextChanged"/>
+                    <Label Content="Revali's Gale" Height="26" Margin="0" Canvas.Top="88" Canvas.Left="401"/>
+                    <CheckBox x:Name="Revali" Margin="0" Canvas.Left="511" Canvas.Top="94" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <TextBox x:Name="CurrentRevali" Height="25" Width="30" Margin="0" Canvas.Left="551" Canvas.Top="89" PreviewTextInput="NumberValidationTextBox" TextChanged="TextChanged"/>
 
-                    <Label Content="Daruk's Protection" Height="26" Margin="0" Canvas.Top="148" Canvas.Left="401"/>
-                    <CheckBox x:Name="Daruk" Margin="0" Canvas.Left="511" Canvas.Top="154" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
-                    <TextBox x:Name="CurrentDaruk" Height="25" Width="30" Margin="0" Canvas.Left="551" Canvas.Top="149" PreviewTextInput="NumberValidationTextBox" TextChanged="TextChanged"/>
+                    <Label Content="Daruk's Protection" Height="26" Margin="0" Canvas.Top="118" Canvas.Left="401"/>
+                    <CheckBox x:Name="Daruk" Margin="0" Canvas.Left="511" Canvas.Top="124" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <TextBox x:Name="CurrentDaruk" Height="25" Width="30" Margin="0" Canvas.Left="551" Canvas.Top="119" PreviewTextInput="NumberValidationTextBox" TextChanged="TextChanged"/>
+
+                    <Label Content="Mipha's Grace" Height="26" Margin="0" Canvas.Top="148" Canvas.Left="401"/>
+                    <CheckBox x:Name="Mipha" Margin="0" Canvas.Left="511" Canvas.Top="154" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
 
                     <Label Content="Weapon Slots" Height="26" Margin="0" Canvas.Left="401" Canvas.Top="178"></Label>
                     <CheckBox x:Name="WeaponSlots" Margin="0" Canvas.Left="511" Canvas.Top="184" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
@@ -176,19 +179,29 @@
                     <CheckBox x:Name="ShieldSlots" Margin="0" Canvas.Left="511" Canvas.Top="244" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
                     <TextBox x:Name="CurrentShieldSlots" Height="25" Width="30" Margin="0" Canvas.Left="551" Canvas.Top="239" PreviewTextInput="NumberValidationTextBox" TextChanged="TextChanged"/>
 
-                    <Label Content="Moon Jump" Height="26" Canvas.Left="401" Canvas.Top="298"></Label>
-                    <CheckBox x:Name="MoonJump" Margin="0" Canvas.Left="511" Canvas.Top="304" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
-                    <Label Content="Hold X" Height="25" Margin="0" Canvas.Left="551" Canvas.Top="298"/>
+                    <Label Content="Moon Jump" Height="26" Canvas.Left="401" Canvas.Top="268"></Label>
+                    <CheckBox x:Name="MoonJump" Margin="0" Canvas.Left="511" Canvas.Top="274" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <Label Content="Hold X" Height="25" Margin="0" Canvas.Left="551" Canvas.Top="268"/>
 
-                    <Label Content="Bomb Time" Height="26" Canvas.Left="401" Canvas.Top="328"></Label>
-                    <CheckBox x:Name="BombTime" Margin="0" Canvas.Left="511" Canvas.Top="334" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <Label Content="Bomb Time" Height="26" Canvas.Left="401" Canvas.Top="298"></Label>
+                    <CheckBox x:Name="BombTime" Margin="0" Canvas.Left="511" Canvas.Top="304" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+
+                    <Label Content="Stasis Cooldown" Height="26" Canvas.Left="401" Canvas.Top="328"/>
+                    <CheckBox x:Name="StasisCooldown" Margin="0" Canvas.Left="511" Canvas.Top="334" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
 
                     <Label Content="Wolf Health" Height="26" Canvas.Left="401" Canvas.Top="358"/>
                     <CheckBox x:Name="WolfHealth" Margin="0" Canvas.Left="511" Canvas.Top="364" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
 
-                    <Button Content="Refresh Code Tab" Canvas.Top="415" Canvas.Left="10" Height="25" Margin="0" Click="RefreshCodeClick" Width="100" RenderTransformOrigin="-7.527,3.88"/>
+                    <Label Content="Master Charge" Height="26" Canvas.Left="401" Canvas.Top="388"/>
+                    <CheckBox x:Name="MasterCharge" Margin="0" Canvas.Left="511" Canvas.Top="394" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
 
+                    <Label Content="Stealthy" Height="26" Canvas.Left="401" Canvas.Top="418"/>
+                    <CheckBox x:Name="Stealthy" Margin="0" Canvas.Left="511" Canvas.Top="424" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
 
+                    <Label Content="Inf Amiibo" Height="26" Canvas.Left="401" Canvas.Top="448"/>
+                    <CheckBox x:Name="Amiibo" Margin="0" Canvas.Left="511" Canvas.Top="454" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+
+                    <Button Content="Refresh Code Tab" Canvas.Top="455" Canvas.Left="10" Height="25" Margin="0" Click="RefreshCodeClick" Width="100" RenderTransformOrigin="-7.527,3.88"/>
                 </Canvas>
             </TabItem>
 
