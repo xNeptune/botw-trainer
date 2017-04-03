@@ -205,11 +205,12 @@
                 </Canvas>
             </TabItem>
 
-            <TabItem Header="Coordinates" Margin="0" Background="Yellow">
+<TabItem Header="Coordinates" Margin="0" Background="Yellow">
                 <StackPanel>
 
                     <Grid Margin="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="*"/>
@@ -234,6 +235,10 @@
                         <Label x:Name="CoordsX" Content="0.0" Grid.Row="3" Grid.Column="0"/>
                         <Label x:Name="CoordsY" Content="0.0" Grid.Row="4" Grid.Column="0"/>
                         <Label x:Name="CoordsZ" Content="0.0" Grid.Row="5" Grid.Column="0"/>
+                        <TextBox x:Name="CoordsAll" Text="0.0" Grid.Row="7" Grid.Column="0" Margin="0,0,28,0"/>
+                        <Button Content="Save Coords" Grid.Row="7" Width="92" Height="20" Click="CoordsSaveClick" HorizontalAlignment="Left" Margin="0,20,0,-40"/>
+
+                        <Label Content="Saves coords to a text file in the same directory as your trainer" Margin="110,27,132,-27" Grid.Row="7" Grid.ColumnSpan="3" />
 
                         <Label Content="Enter coordinates or select a destination and click GO." Margin="0" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" />
 
