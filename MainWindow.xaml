@@ -79,34 +79,34 @@
             </TabItem>
 
             <TabItem Header="Codes" x:Name="Codes" Margin="0,0,0,0" Background="Yellow">
-                <Canvas HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="800" MinHeight="500">
+                <Canvas HorizontalAlignment="Left" VerticalAlignment="Top" MinWidth="850" MinHeight="500">
                     <Label Content="To enable these codes check the box and click save." Height="30" Margin="0" Canvas.Left="10" Canvas.Top="8" FontSize="14" Width="348"/>
 
                     <Label Content="Controller Type" Height="26" Margin="0" Canvas.Left="10" Canvas.Top="40"/>
-                    <ComboBox x:Name="Controller" Canvas.Left="180" Canvas.Top="43" Width="90" SelectedValuePath="Content">
+                    <ComboBox x:Name="Controller" Canvas.Left="200" Canvas.Top="43" Width="90" SelectedValuePath="Content">
                         <ComboBoxItem Content="Pro"/>
                         <ComboBoxItem Content="Gamepad"/>
                     </ComboBox>
 
-                    <Label Content="Stamina" Height="26" Margin="0" Canvas.Left="10" Canvas.Top="88"/>
-                    <CheckBox x:Name="Stamina" Margin="0" Canvas.Left="140" Canvas.Top="94" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged" />
-                    <TextBox x:Name="CurrentStamina" Height="25" Width="90" Margin="0" Canvas.Left="180" Canvas.Top="88" CharacterCasing="Upper" MaxLength="8" TextChanged="TextChanged"/>
+                    <Label Content="Stamina" Height="26" Margin="0" Canvas.Left="10" Canvas.Top="88" ToolTip="Infinite Stamina"/>
+                    <CheckBox x:Name="Stamina" Margin="0" Canvas.Left="160" Canvas.Top="94" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged" />
+                    <TextBox x:Name="CurrentStamina" Height="25" Width="90" Margin="0" Canvas.Left="200" Canvas.Top="88" CharacterCasing="Upper" MaxLength="8" TextChanged="TextChanged"/>
 
-                    <Label Content="Health (Max 120)" Height="26" Margin="0" Canvas.Left="10" Canvas.Top="118"/>
-                    <CheckBox x:Name="Health" Margin="0" Canvas.Left="140" Canvas.Top="124" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
-                    <TextBox x:Name="CurrentHealth" Height="25" Width="90" Margin="0" Canvas.Left="180" Canvas.Top="118" TextChanged="TextChanged"/>
+                    <Label Content="Health (Max 120)" Height="26" Margin="0" Canvas.Left="10" Canvas.Top="118" ToolTip="Infinite Health"/>
+                    <CheckBox x:Name="Health" Margin="0" Canvas.Left="160" Canvas.Top="124" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <TextBox x:Name="CurrentHealth" Height="25" Width="90" Margin="0" Canvas.Left="200" Canvas.Top="118" TextChanged="TextChanged"/>
 
-                    <Label Content="Rupees" Height="26" Margin="0" Canvas.Left="10" Canvas.Top="148"></Label>
-                    <CheckBox x:Name="Rupees" Margin="0" Canvas.Left="140" Canvas.Top="154" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
-                    <TextBox x:Name="CurrentRupees" Height="25" Width="90" Margin="0" Canvas.Left="180" Canvas.Top="149" PreviewTextInput="NumberValidationTextBox" TextChanged="TextChanged"/>
+                    <Label Content="Rupees" Height="26" Margin="0" Canvas.Left="10" Canvas.Top="148" ToolTip="Infinite Rupees"/>
+                    <CheckBox x:Name="Rupees" Margin="0" Canvas.Left="160" Canvas.Top="154" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <TextBox x:Name="CurrentRupees" Height="25" Width="90" Margin="0" Canvas.Left="200" Canvas.Top="149" PreviewTextInput="NumberValidationTextBox" TextChanged="TextChanged"/>
 
-                    <Label Content="Mon" Height="26" Margin="0" Canvas.Left="10" Canvas.Top="178"/>
-                    <CheckBox x:Name="Mon" Margin="0" Canvas.Left="140" Canvas.Top="184" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
-                    <TextBox x:Name="CurrentMon" Height="25" Width="90" Margin="0" Canvas.Left="180" Canvas.Top="179" PreviewTextInput="NumberValidationTextBox" TextChanged="TextChanged"/>
+                    <Label Content="Mon" Height="26" Margin="0" Canvas.Left="10" Canvas.Top="178" ToolTip="Infinite Mon for Monster Shop"/>
+                    <CheckBox x:Name="Mon" Margin="0" Canvas.Left="160" Canvas.Top="184" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <TextBox x:Name="CurrentMon" Height="25" Width="90" Margin="0" Canvas.Left="200" Canvas.Top="179" PreviewTextInput="NumberValidationTextBox" TextChanged="TextChanged"/>
 
-                    <Label Content="Speed" Height="26" Margin="0" Canvas.Left="10" Canvas.Top="208"/>
-                    <CheckBox x:Name="Speed" Margin="0" Canvas.Left="140" Canvas.Top="214" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
-                    <ComboBox x:Name="CbSpeed" Canvas.Left="180" Canvas.Top="211" Width="90" SelectedValuePath="Tag" SelectionChanged="SelectionChanged">
+                    <Label Content="Speed" Height="26" Margin="0" Canvas.Left="10" Canvas.Top="208" ToolTip="Hold ZL to move at the selected speed"/>
+                    <CheckBox x:Name="Speed" Margin="0" Canvas.Left="160" Canvas.Top="214" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <ComboBox x:Name="CbSpeed" Canvas.Left="200" Canvas.Top="211" Width="90" SelectedValuePath="Tag" SelectionChanged="SelectionChanged">
                         <ComboBoxItem Tag="00000000" Content="00000000 - 0x Speed (Frozen)"/>
                         <ComboBoxItem Tag="3F800000" Content="3F800000 - 1x Speed (Default)"/>
                         <ComboBoxItem Tag="40000000" Content="40000000 - 2x Speed"/>
@@ -114,11 +114,11 @@
                         <ComboBoxItem Tag="41000000" Content="41000000 - 8x Speed"/>
                         <ComboBoxItem Tag="42000000" Content="42000000 - 32x Speed"/>
                     </ComboBox>
-                    <Label Content="Hold ZL" Height="25" Margin="0" Canvas.Left="275" Canvas.Top="208"/>
+                    <Label Content="Hold ZL" Height="25" Margin="0" Canvas.Left="295" Canvas.Top="208"/>
 
-                    <Label Content="Damage Mult." Height="26" Margin="0" Canvas.Left="10" Canvas.Top="238"/>
-                    <CheckBox x:Name="Damage" Margin="0" Canvas.Left="140" Canvas.Top="244" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
-                    <ComboBox x:Name="CbDamage" Canvas.Left="180" Canvas.Top="241" Width="90" SelectedValuePath="Tag" SelectionChanged="SelectionChanged">
+                    <Label Content="Damage Mult." Height="26" Margin="0" Canvas.Left="10" Canvas.Top="238" ToolTip="Damage Multiplier when striking an enemy"/>
+                    <CheckBox x:Name="Damage" Margin="0" Canvas.Left="160" Canvas.Top="244" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <ComboBox x:Name="CbDamage" Canvas.Left="200" Canvas.Top="241" Width="90" SelectedValuePath="Tag" SelectionChanged="SelectionChanged">
                         <ComboBoxItem Tag="3F000000" Content="3F000000 - 0.5"/>
                         <ComboBoxItem Tag="3F800000" Content="3F800000 - 1.0 (Default)"/>
                         <ComboBoxItem Tag="42480000" Content="42480000 - 50"/>
@@ -127,9 +127,9 @@
                         <ComboBoxItem Tag="461C4000" Content="461C4000 - 10,000"/>
                     </ComboBox>
 
-                    <Label Content="Weather" Height="26" Margin="0" Canvas.Left="10" Canvas.Top="268"/>
-                    <CheckBox x:Name="Weather" Margin="0" Canvas.Left="140" Canvas.Top="274" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
-                    <ComboBox x:Name="CbWeather" Canvas.Left="180" Canvas.Top="271" Width="90" SelectedValuePath="Tag" SelectionChanged="SelectionChanged">
+                    <Label Content="Weather" Height="26" Margin="0" Canvas.Left="10" Canvas.Top="268" ToolTip="Set the current weather"/>
+                    <CheckBox x:Name="Weather" Margin="0" Canvas.Left="160" Canvas.Top="274" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <ComboBox x:Name="CbWeather" Canvas.Left="200" Canvas.Top="271" Width="90" SelectedValuePath="Tag" SelectionChanged="SelectionChanged">
                         <ComboBoxItem Tag="01030002" Content="01030002 - Cloudy"/>
                         <ComboBoxItem Tag="03010002" Content="03010002 - Raining"/>
                         <ComboBoxItem Tag="00010002" Content="00000100 - Sunny"/>
@@ -137,69 +137,66 @@
                         <ComboBoxItem Tag="05000007" Content="05000007 - Fog/Snow"/>
                     </ComboBox>
 
-                    <Label Content="Durability: W | S | B" Height="26" Margin="0" Canvas.Left="10" Canvas.Top="298"/>
-                    <CheckBox x:Name="WeaponDurability" Margin="0" Canvas.Left="140" Canvas.Top="305" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged" ToolTip="Weapon"/>
-                    <CheckBox x:Name="ShieldDurability" Margin="0" Canvas.Left="180" Canvas.Top="305" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged" ToolTip="Shield"/>
-                    <CheckBox x:Name="BowDurability" Margin="0" Canvas.Left="220" Canvas.Top="305" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged" ToolTip="Bow"/>
+                    <Label Content="Durability: W | S | B" Height="26" Margin="0" Canvas.Left="10" Canvas.Top="298" ToolTip="Infinite (W)eapon, (S)hield and (B)ow Durability for the currently equipped item"/>
+                    <CheckBox x:Name="WeaponDurability" Margin="0" Canvas.Left="160" Canvas.Top="305" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged" ToolTip="Weapon"/>
+                    <CheckBox x:Name="ShieldDurability" Margin="0" Canvas.Left="200" Canvas.Top="305" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged" ToolTip="Shield"/>
+                    <CheckBox x:Name="BowDurability" Margin="0" Canvas.Left="240" Canvas.Top="305" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged" ToolTip="Bow"/>
 
-                    <Label Content="Current Hour" Height="26" Margin="0" Canvas.Left="11" Canvas.Top="370"/>
-                    <TextBox x:Name="CurrentTime" Height="25" Width="30" Margin="0" Canvas.Left="134" Canvas.Top="371" IsReadOnly="True" Text="{Binding ElementName=TimeSlider,Path=Value}"/>
-                    <Button Content="Update" Canvas.Top="371" Canvas.Left="181" Height="25" Margin="0" Click="ChangeTimeClick" Width="55"/>
+                    <Label Content="Current Hour" Height="26" Margin="0" Canvas.Left="11" Canvas.Top="370" ToolTip="Change the current time  in the game by moving the slider and clicking update"/>
+                    <TextBox x:Name="CurrentTime" Height="25" Width="30" Margin="0" Canvas.Left="154" Canvas.Top="371" IsReadOnly="True" Text="{Binding ElementName=TimeSlider,Path=Value}"/>
+                    <Button Content="Update" Canvas.Top="371" Canvas.Left="201" Height="25" Margin="0" Click="ChangeTimeClick" Width="55"/>
 
                     <Slider x:Name="TimeSlider" Width="240" Height="20" Orientation="Horizontal" Minimum="0" Maximum="23" Value="12" Canvas.Top="404" Canvas.Left="10" IsSnapToTickEnabled="True" TickFrequency="1" Margin="0" />
 
                     <Label Content="Horse Whips" Height="26" Canvas.Left="9" Canvas.Top="329"/>
-                    <CheckBox x:Name="HorseWhips" Margin="0" Canvas.Left="140" Canvas.Top="335" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged" IsEnabled="False"/>
-                    <Label Content="Disabled, bad code" Height="25" Margin="0" Canvas.Left="179" Canvas.Top="329"/>
+                    <CheckBox x:Name="HorseWhips" Margin="0" Canvas.Left="160" Canvas.Top="335" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged" IsEnabled="False"/>
+                    <Label Content="Disabled, bad code" Height="25" Margin="0" Canvas.Left="199" Canvas.Top="329"/>
 
-                    <Label Content="Urbosa's Fury" Height="26" Margin="0" Canvas.Left="401" Canvas.Top="58"/>
-                    <CheckBox x:Name="Urbosa" Margin="0" Canvas.Left="511" Canvas.Top="64" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
-                    <TextBox x:Name="CurrentUrbosa" Height="25" Width="30" Margin="0" Canvas.Left="551" Canvas.Top="59" PreviewTextInput="NumberValidationTextBox" TextChanged="TextChanged"/>
+                    <Label Content="Urbosa's Fury" Height="26" Margin="0" Canvas.Left="401" Canvas.Top="58" ToolTip="Instant Urbosa's Fury Recharge" />
+                    <CheckBox x:Name="Urbosa" Margin="0" Canvas.Left="521" Canvas.Top="64" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
 
-                    <Label Content="Revali's Gale" Height="26" Margin="0" Canvas.Top="88" Canvas.Left="401"/>
-                    <CheckBox x:Name="Revali" Margin="0" Canvas.Left="511" Canvas.Top="94" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
-                    <TextBox x:Name="CurrentRevali" Height="25" Width="30" Margin="0" Canvas.Left="551" Canvas.Top="89" PreviewTextInput="NumberValidationTextBox" TextChanged="TextChanged"/>
+                    <Label Content="Revali's Gale" Height="26" Margin="0" Canvas.Top="88" Canvas.Left="401" ToolTip="Instant Revali's Gale Recharge"/>
+                    <CheckBox x:Name="Revali" Margin="0" Canvas.Left="521" Canvas.Top="94" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
 
-                    <Label Content="Daruk's Protection" Height="26" Margin="0" Canvas.Top="118" Canvas.Left="401"/>
-                    <CheckBox x:Name="Daruk" Margin="0" Canvas.Left="511" Canvas.Top="124" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
-                    <TextBox x:Name="CurrentDaruk" Height="25" Width="30" Margin="0" Canvas.Left="551" Canvas.Top="119" PreviewTextInput="NumberValidationTextBox" TextChanged="TextChanged"/>
+                    <Label Content="Daruk's Protection" Height="26" Margin="0" Canvas.Top="118" Canvas.Left="401" ToolTip="Instant Daruk's Protection Recharge"/>
+                    <CheckBox x:Name="Daruk" Margin="0" Canvas.Left="521" Canvas.Top="124" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
 
-                    <Label Content="Mipha's Grace" Height="26" Margin="0" Canvas.Top="148" Canvas.Left="401"/>
-                    <CheckBox x:Name="Mipha" Margin="0" Canvas.Left="511" Canvas.Top="154" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <Label Content="Mipha's Grace" Height="26" Margin="0" Canvas.Top="148" Canvas.Left="401" ToolTip="Instant Mipha's Grace Recharge"/>
+                    <CheckBox x:Name="Mipha" Margin="0" Canvas.Left="521" Canvas.Top="154" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
 
-                    <Label Content="Weapon Slots" Height="26" Margin="0" Canvas.Left="401" Canvas.Top="178"></Label>
-                    <CheckBox x:Name="WeaponSlots" Margin="0" Canvas.Left="511" Canvas.Top="184" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <Label Content="Weapon Slots" Height="26" Margin="0" Canvas.Left="401" Canvas.Top="178" ToolTip="Current weapon slots available"/>
+                    <CheckBox x:Name="WeaponSlots" Margin="0" Canvas.Left="521" Canvas.Top="184" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
                     <TextBox x:Name="CurrentWeaponSlots" Height="25" Width="30" Margin="0" Canvas.Left="551" Canvas.Top="179" PreviewTextInput="NumberValidationTextBox" TextChanged="TextChanged"/>
 
-                    <Label Content="Bow Slots" Height="26" Margin="0" Canvas.Left="401" Canvas.Top="208"/>
-                    <CheckBox x:Name="BowSlots" Margin="0" Canvas.Left="511" Canvas.Top="214" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <Label Content="Bow Slots" Height="26" Margin="0" Canvas.Left="401" Canvas.Top="208" ToolTip="Current bow slots available"/>
+                    <CheckBox x:Name="BowSlots" Margin="0" Canvas.Left="521" Canvas.Top="214" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
                     <TextBox x:Name="CurrentBowSlots" Height="25" Width="30" Margin="0" Canvas.Left="551" Canvas.Top="209" PreviewTextInput="NumberValidationTextBox" TextChanged="TextChanged"/>
 
-                    <Label Content="Shield Slots" Height="26" Margin="0" Canvas.Left="401" Canvas.Top="238"/>
-                    <CheckBox x:Name="ShieldSlots" Margin="0" Canvas.Left="511" Canvas.Top="244" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <Label Content="Shield Slots" Height="26" Margin="0" Canvas.Left="401" Canvas.Top="238" ToolTip="Current shield slots available"/>
+                    <CheckBox x:Name="ShieldSlots" Margin="0" Canvas.Left="521" Canvas.Top="244" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
                     <TextBox x:Name="CurrentShieldSlots" Height="25" Width="30" Margin="0" Canvas.Left="551" Canvas.Top="239" PreviewTextInput="NumberValidationTextBox" TextChanged="TextChanged"/>
 
-                    <Label Content="Moon Jump" Height="26" Canvas.Left="401" Canvas.Top="268"></Label>
-                    <CheckBox x:Name="MoonJump" Margin="0" Canvas.Left="511" Canvas.Top="274" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
-                    <Label Content="Hold X" Height="25" Margin="0" Canvas.Left="551" Canvas.Top="268"/>
+                    <Label Content="Moon Jump" Height="26" Canvas.Left="621" Canvas.Top="58"/>
+                    <CheckBox x:Name="MoonJump" Margin="0" Canvas.Left="751" Canvas.Top="64" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <Label Content="Hold X" Height="25" Margin="0" Canvas.Left="781" Canvas.Top="58"/>
 
-                    <Label Content="Bomb Time" Height="26" Canvas.Left="401" Canvas.Top="298"></Label>
-                    <CheckBox x:Name="BombTime" Margin="0" Canvas.Left="511" Canvas.Top="304" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <Label Content="Bomb Time" Height="26" Canvas.Left="621" Canvas.Top="88" ToolTip="Instant bomb recharge"/>
+                    <CheckBox x:Name="BombTime" Margin="0" Canvas.Left="751" Canvas.Top="94" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
 
-                    <Label Content="Stasis Cooldown" Height="26" Canvas.Left="401" Canvas.Top="328"/>
-                    <CheckBox x:Name="StasisCooldown" Margin="0" Canvas.Left="511" Canvas.Top="334" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <Label Content="Stasis Cooldown" Height="26" Canvas.Left="621" Canvas.Top="118" ToolTip="Instant Stasis recharge"/>
+                    <CheckBox x:Name="StasisCooldown" Margin="0" Canvas.Left="751" Canvas.Top="124" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
 
-                    <Label Content="Wolf Health" Height="26" Canvas.Left="401" Canvas.Top="358"/>
-                    <CheckBox x:Name="WolfHealth" Margin="0" Canvas.Left="511" Canvas.Top="364" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <Label Content="Wolf Health" Height="26" Canvas.Left="621" Canvas.Top="148" ToolTip="Infinite health for Amiibo Wolf Link"/>
+                    <CheckBox x:Name="WolfHealth" Margin="0" Canvas.Left="751" Canvas.Top="154" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
 
-                    <Label Content="Master Charge" Height="26" Canvas.Left="401" Canvas.Top="388"/>
-                    <CheckBox x:Name="MasterCharge" Margin="0" Canvas.Left="511" Canvas.Top="394" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <Label Content="Master Sword Charge" Height="26" Canvas.Left="621" Canvas.Top="178" ToolTip="Instant Master Sword Recharge"/>
+                    <CheckBox x:Name="MasterCharge" Margin="0" Canvas.Left="751" Canvas.Top="184" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
 
-                    <Label Content="Stealthy" Height="26" Canvas.Left="401" Canvas.Top="418"/>
-                    <CheckBox x:Name="Stealthy" Margin="0" Canvas.Left="511" Canvas.Top="424" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <Label Content="Stealthy" Height="26" Canvas.Left="621" Canvas.Top="208" ToolTip="Always stealthy (Meter still moves)"/>
+                    <CheckBox x:Name="Stealthy" Margin="0" Canvas.Left="751" Canvas.Top="214" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
 
-                    <Label Content="Inf Amiibo" Height="26" Canvas.Left="401" Canvas.Top="448"/>
-                    <CheckBox x:Name="Amiibo" Margin="0" Canvas.Left="511" Canvas.Top="454" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
+                    <Label Content="Inf Amiibo" Height="26" Canvas.Left="621" Canvas.Top="238" ToolTip="Infinite amiibo uses"/>
+                    <CheckBox x:Name="Amiibo" Margin="0" Canvas.Left="751" Canvas.Top="244" Checked="CheckBoxChanged" Unchecked="CheckBoxChanged"/>
 
                     <Button Content="Refresh Code Tab" Canvas.Top="455" Canvas.Left="10" Height="25" Margin="0" Click="RefreshCodeClick" Width="100" RenderTransformOrigin="-7.527,3.88"/>
                 </Canvas>

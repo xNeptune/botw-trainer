@@ -31,11 +31,6 @@
         // The original list of values that take effect when you save / load
         private const uint SaveItemStart = 0x3FCE8FF0;
 
-        // Technically your first item as they are stored in reverse so we work backwards
-        private const uint ItemEnd = 0x43CA2AEC;
-
-        private const uint ItemStart = 0x43C6B2AC;
-
         private const uint CodeHandlerStart = 0x01133000;
 
         private const uint CodeHandlerEnd = 0x01134300;
@@ -48,6 +43,13 @@
 
         private readonly List<CheckBox> cbChanged = new List<CheckBox>();
 
+        // Technically your first item as they are stored in reverse so we work backwards
+        private uint itemEnd = 0x43CA2AEC;
+
+        private uint itemStart = 0x43C6B2AC;
+
+        private int itemTotal = 0;
+
         private List<Item> items;
 
         private JToken json;
@@ -57,8 +59,6 @@
         private Gecko gecko;
 
         private Codes codes;
-
-        private int itemsFound;
 
         private bool connected;
 
@@ -153,37 +153,24 @@
         {
             try
             {
-                var x = 0;
+                this.itemEnd = this.gecko.GetUInt(0x43C6B068) + 0x8;
 
-                var currentItemAddress = ItemEnd;
+                this.itemStart = this.gecko.GetUInt(0x43C6B064) + 0x8;
 
-                while (currentItemAddress >= ItemStart)
+                this.itemTotal = this.gecko.GetInt(0x43C6B06C);
+
+                var currentItemAddress = this.itemEnd;
+
+                for (var x = 1; x <= this.itemTotal; x++)
                 {
                     var itemData = this.gecko.ReadBytes(currentItemAddress, 0x70);
 
                     var page = BitConverter.ToInt32(itemData.Take(4).Skip(0).Reverse().ToArray(), 0);
-
                     if (page < 0 || page > 9)
                     {
-                        var percent = (100m / 418m) * x;
-                        Dispatcher.Invoke(
-                            () =>
-                                {
-                                    ProgressText.Text = string.Format("{0}/{1}", x, 418);
-                                    this.UpdateProgress(Convert.ToInt32(percent));
-                                });
-
                         currentItemAddress -= 0x220;
-                        x++;
-
                         continue;
                     }
-
-                    var unknown = BitConverter.ToInt32(itemData.Skip(4).Take(4).Reverse().ToArray(), 0);
-                    var value = BitConverter.ToUInt32(itemData.Skip(8).Take(4).Reverse().ToArray(), 0);
-                    var equipped = BitConverter.ToBoolean(itemData.Skip(12).Take(1).Reverse().ToArray(), 0);
-                    var current = BitConverter.ToBoolean(itemData.Skip(13).Take(1).Reverse().ToArray(), 0);
-                    var nameStart = currentItemAddress + 0x1C;
 
                     var builder = new StringBuilder();
                     for (var i = 0; i < 36; i++)
@@ -198,22 +185,18 @@
                     }
 
                     var id = builder.ToString();
-
-                    if (string.IsNullOrEmpty(id))
+                    if (string.IsNullOrWhiteSpace(id))
                     {
-                        var percent = (100m / 418m) * x;
-                        Dispatcher.Invoke(
-                            () =>
-                                {
-                                    this.LogError(new Exception("Can't read item"), "Address: 0x" + nameStart.ToString("x8").ToUpper());
-                                    ProgressText.Text = string.Format("{0}/{1}", x, 418);
-                                    this.UpdateProgress(Convert.ToInt32(percent));
-                                });
                         currentItemAddress -= 0x220;
-                        x++;
                         continue;
                     }
-                    
+
+                    var unknown = BitConverter.ToInt32(itemData.Skip(4).Take(4).Reverse().ToArray(), 0);
+                    var value = BitConverter.ToUInt32(itemData.Skip(8).Take(4).Reverse().ToArray(), 0);
+                    var equipped = BitConverter.ToBoolean(itemData.Skip(12).Take(1).Reverse().ToArray(), 0);
+                    var current = BitConverter.ToBoolean(itemData.Skip(13).Take(1).Reverse().ToArray(), 0);
+                    var nameStart = currentItemAddress + 0x1C;
+
                     var item = new Item
                                    {
                                        BaseAddress = currentItemAddress,
@@ -237,19 +220,16 @@
 
                     this.items.Add(item);
 
-                    var currentPercent = (100m / 418m) * x;
+                    var currentPercent = (100m / this.itemTotal) * x;
                     Dispatcher.Invoke(
                         () =>
                             {
-                                ProgressText.Text = string.Format("{0}/{1}", x, 418);
+                                ProgressText.Text = string.Format("{0}/{1}", x, this.itemTotal);
                                 this.UpdateProgress(Convert.ToInt32(currentPercent));
                             });
 
                     currentItemAddress -= 0x220;
-                    x++;
                 }
-
-                this.itemsFound = this.items.Count;
 
                 return true;
             }
@@ -537,7 +517,7 @@
                     this.LoadTab(this.Food, 8);
                     this.LoadTab(this.KeyItems, 9);
 
-                    this.Notification.Content = string.Format("Items found: {0}", this.itemsFound);
+                    this.Notification.Content = string.Format("Items found: {0}", this.itemTotal);
 
                     this.ToggleControls("DataLoaded");
 
@@ -900,9 +880,6 @@
             CurrentWeaponSlots.Text = this.gecko.GetInt(0x4010C38C).ToString(CultureInfo.InvariantCulture);
             CurrentBowSlots.Text = this.gecko.GetInt(0x401122AC).ToString(CultureInfo.InvariantCulture);
             CurrentShieldSlots.Text = this.gecko.GetInt(0x401122CC).ToString(CultureInfo.InvariantCulture);
-            CurrentUrbosa.Text = this.gecko.GetInt(0x4011CA6C).ToString(CultureInfo.InvariantCulture);
-            CurrentRevali.Text = this.gecko.GetInt(0x4011CA4C).ToString(CultureInfo.InvariantCulture);
-            CurrentDaruk.Text = this.gecko.GetInt(0x4011CA2C).ToString(CultureInfo.InvariantCulture);
 
             var damagePointer = this.gecko.GetUInt(0x43AB9C30);
             CbDamage.SelectedValue = this.gecko.GetString(damagePointer + 0x770);
@@ -912,9 +889,6 @@
             var time = this.GetCurrentTime();
             CurrentTime.Text = time.ToString(CultureInfo.InvariantCulture);
             TimeSlider.Value = time;
-
-            //CurrentMipha.Text = this.gecko.GetInt(0x3FD50088).ToString(CultureInfo.InvariantCulture);
-
 
             this.tbChanged.Clear();
             this.cbChanged.Clear();
